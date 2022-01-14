@@ -32,3 +32,4 @@ def save(forecasts: List[Forecast], session: Session):
 
     # save objects to database
     session.add_all(forecasts_sql)
+    session.commit()

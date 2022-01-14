@@ -11,6 +11,8 @@ Base = declarative_base()
 # The primary keys could be 'gsp_id' and 'target_datetime_utc'.
 
 # sqlalchemy models
+
+# TODO add sql mixin for created_utc
 class StatisticSQL(Base):
 
     __tablename__ = 'statistic'
