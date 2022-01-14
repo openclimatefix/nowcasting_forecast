@@ -27,6 +27,7 @@ def floor_30_minutes_dt(dt):
 
     return dt
 
+
 def run(url, fake: bool = False):
     """
     Run main app.
@@ -39,15 +40,15 @@ def run(url, fake: bool = False):
     else:
         # 1. load data
         # 2. Make data into examples
-        raise Exception('Not implemented yet')
+        raise Exception("Not implemented yet")
 
     connection = DatabaseConnection(url=url)
     with connection.get_session() as session:
-        save(forecasts=forecasts,session=session)
+        save(forecasts=forecasts, session=session)
 
 
 def make_dummy_forecasts():
-    """ Make dummy forecasts
+    """Make dummy forecasts
 
     Dummy forecasts are made for all gsps and for several forecast horizons
     """
@@ -58,10 +59,13 @@ def make_dummy_forecasts():
     forecasts = []
     for i in range(N_GSP):
         for horizon in [0, 30, 60, 90]:
-            s = Statistic(name='yhat', value=np.random.uniform(0, 1000))
-            f = Forecast(t0_datetime_utc=t0_datetime_utc,
-                         target_datetime_utc=t0_datetime_utc + timedelta(minutes=horizon),
-                         gsp_id=i, statistics=[s])
+            s = Statistic(name="yhat", value=np.random.uniform(0, 1000))
+            f = Forecast(
+                t0_datetime_utc=t0_datetime_utc,
+                target_datetime_utc=t0_datetime_utc + timedelta(minutes=horizon),
+                gsp_id=i,
+                statistics=[s],
+            )
 
             forecasts.append(f)
 

@@ -5,7 +5,8 @@ from sqlalchemy.orm.session import Session
 
 
 class DatabaseConnection:
-    """ Database connection class """
+    """Database connection class"""
+
     def __init__(self, url):
         """
         Set up database connection
@@ -18,5 +19,5 @@ class DatabaseConnection:
         self.Session = sessionmaker(bind=self.engine)
 
     def get_session(self) -> Session:
-        """ Get sqlalamcy session """
+        """Get sqlalamcy session"""
         return self.Session()

@@ -15,20 +15,22 @@ Base = declarative_base()
 
 # TODO add sql mixin for created_utc
 class StatisticSQL(Base):
-    """ Statistic SQL model """
-    __tablename__ = 'statistic'
+    """Statistic SQL model"""
+
+    __tablename__ = "statistic"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     value = Column(Float)
-    child_id = Column(Integer, ForeignKey('forecast.id'))
+    child_id = Column(Integer, ForeignKey("forecast.id"))
 
     forecast = relationship("ForecastSQL", back_populates="statistics")
 
 
 class ForecastSQL(Base):
-    """ Forecast SQL model """
-    __tablename__ = 'forecast'
+    """Forecast SQL model"""
+
+    __tablename__ = "forecast"
 
     id = Column(Integer, primary_key=True)
     t0_datetime_utc = Column(DateTime)
