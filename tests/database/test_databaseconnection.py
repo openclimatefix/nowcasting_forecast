@@ -1,5 +1,6 @@
-from nowcasting_forecast.database.models import ForecastSQL
 from typing import List
+
+from nowcasting_forecast.database.models import ForecastSQL
 
 
 def test_get_session(db_connection):
