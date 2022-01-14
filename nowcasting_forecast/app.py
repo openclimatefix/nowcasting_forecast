@@ -1,9 +1,11 @@
 """ Main Application """
-from nowcasting_forecast.models import Forecast, Statistic
+from datetime import datetime, timedelta
+
+import numpy as np
+
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.save import save
-from datetime import datetime, timedelta
-import numpy as np
+from nowcasting_forecast.models import Forecast, Statistic
 
 N_GSP = 338
 

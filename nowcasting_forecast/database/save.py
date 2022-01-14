@@ -1,9 +1,10 @@
 """ Save forecasts to the database """
-from nowcasting_forecast.database.models import ForecastSQL, StatisticSQL
-from nowcasting_forecast.models import Forecast
+from typing import List
+
 from sqlalchemy.orm.session import Session
 
-from typing import List
+from nowcasting_forecast.database.models import ForecastSQL, StatisticSQL
+from nowcasting_forecast.models import Forecast
 
 
 def save(forecasts: List[Forecast], session: Session):
