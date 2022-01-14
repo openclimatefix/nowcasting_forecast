@@ -1,3 +1,4 @@
+""" Save forecasts to the database """
 from nowcasting_forecast.database.models import ForecastSQL, StatisticSQL
 from nowcasting_forecast.models import Forecast
 from sqlalchemy.orm.session import Session

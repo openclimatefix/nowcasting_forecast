@@ -1,3 +1,4 @@
+""" Main Application """
 from nowcasting_forecast.models import Forecast, Statistic
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.save import save
@@ -27,10 +28,17 @@ def floor_30_minutes_dt(dt):
     return dt
 
 def run(url, fake: bool = False):
+    """
+    Run main app.
+
+    There is an option to make fake forecasts
+    """
 
     if fake:
         forecasts = make_dummy_forecasts()
     else:
+        # 1. load data
+        # 2. Make data into examples
         raise Exception('Not implemented yet')
 
     connection = DatabaseConnection(url=url)
@@ -39,6 +47,10 @@ def run(url, fake: bool = False):
 
 
 def make_dummy_forecasts():
+    """ Make dummy forecasts
+
+    Dummy forecasts are made for all gsps and for several forecast horizons
+    """
     # time now rounded down by 30 mins
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
 

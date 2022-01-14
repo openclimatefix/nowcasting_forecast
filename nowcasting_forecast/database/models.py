@@ -1,3 +1,4 @@
+""" Sqlalchemy models for the database"""
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
@@ -14,7 +15,7 @@ Base = declarative_base()
 
 # TODO add sql mixin for created_utc
 class StatisticSQL(Base):
-
+    """ Statistic SQL model """
     __tablename__ = 'statistic'
 
     id = Column(Integer, primary_key=True)
@@ -26,6 +27,7 @@ class StatisticSQL(Base):
 
 
 class ForecastSQL(Base):
+    """ Forecast SQL model """
     __tablename__ = 'forecast'
 
     id = Column(Integer, primary_key=True)
