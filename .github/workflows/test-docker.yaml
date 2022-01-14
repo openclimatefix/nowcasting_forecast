@@ -1,0 +1,14 @@
+name: Test Docker image
+on: [push]
+
+jobs:
+  push_to_registry:
+    name: Build docker file for testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker build -t nowcasting_forecast --build-arg TESTING=1 -f infrastructure/docker/Dockerfile .
+      - name: Run tests inside the container
+        run: docker run nowcasting_forecast pytest
