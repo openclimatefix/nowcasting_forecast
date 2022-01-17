@@ -12,7 +12,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     name="nowcasting_forecast",
     packages=find_packages(),
-    version="0.0.5",
+    version="0.0.6",
     license="MIT",
     description="Live forecast for the OCF owcasting project",
     author="Peter Dudfield",
