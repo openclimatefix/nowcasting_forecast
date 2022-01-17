@@ -1,9 +1,11 @@
 """ Database Connection class"""
+import logging
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+
 from nowcasting_forecast.database.models import Base
-import logging
 
 logger = logging.getLogger(__name__)
 
