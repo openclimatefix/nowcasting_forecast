@@ -2,11 +2,11 @@ FROM python:3.9-slim
 
 ARG TESTING=0
 
-RUN apt-get -qq update \
-    && apt-get -qq install -y --no-install-recommends \
-        libpq-dev \
-    && apt-get autoclean && apt-get autoremove \
-    > /dev/null
+#RUN apt-get -qq update \
+#    && apt-get -qq install -y --no-install-recommends \
+#        libpq-dev \
+#    && apt-get autoclean && apt-get autoremove \
+#    > /dev/null
 
 # copy files
 COPY setup.py app/setup.py
