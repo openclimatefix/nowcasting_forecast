@@ -2,7 +2,6 @@
 from datetime import datetime, timedelta
 
 import click
-
 import numpy as np
 
 from nowcasting_forecast.database.connection import DatabaseConnection
@@ -90,6 +89,6 @@ def make_dummy_forecasts():
 
     return forecasts
 
+
 if __name__ == "__main__":
     run()
-
