@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class DatabaseConnection:
     """Database connection class"""
 
