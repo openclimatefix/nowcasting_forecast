@@ -20,6 +20,10 @@ class StatisticSQL(Base):
 
     __tablename__ = "statistic"
 
+    # Temporary making table automatically. Really we want a migration script, perhaps using alembic
+    # https: // alembic.sqlalchemy.org / en / latest /
+    __table_args__ = {"extend_existing": True}
+
     id = Column(Integer, primary_key=True)
     name = Column(String)
     value = Column(Float)
@@ -32,6 +36,10 @@ class ForecastSQL(Base):
     """Forecast SQL model"""
 
     __tablename__ = "forecast"
+
+    # Temporary making table automatically. Really we want a migration script, perhaps using alembic
+    # https: // alembic.sqlalchemy.org / en / latest /
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True)
     t0_datetime_utc = Column(DateTime)
