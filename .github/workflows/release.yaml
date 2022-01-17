@@ -12,5 +12,5 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      image_base_name: metoffice_weather_datahub
+      image_base_name: metoffice_forecast
       docker_file: infrastructure/docker/Dockerfile
