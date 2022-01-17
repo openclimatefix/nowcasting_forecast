@@ -1,3 +1,4 @@
 pydantic
 sqlalchemy
 numpy
+click

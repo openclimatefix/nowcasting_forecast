@@ -1,6 +1,8 @@
 """ Main Application """
 from datetime import datetime, timedelta
 
+import click
+
 import numpy as np
 
 from nowcasting_forecast.database.connection import DatabaseConnection
@@ -30,7 +32,22 @@ def floor_30_minutes_dt(dt):
     return dt
 
 
-def run(url, fake: bool = False):
+@click.command()
+@click.option(
+    "--db-url",
+    default=None,
+    envvar="DB_URL",
+    help="The Database URL where forecasts will be saved",
+    type=click.STRING,
+)
+@click.option(
+    "--fake",
+    default=False,
+    envvar="FAKE",
+    help="Option to make Fake forecasts",
+    type=click.BOOL,
+)
+def run(db_url: str, fake: bool = False):
     """
     Run main app.
 
@@ -44,7 +61,7 @@ def run(url, fake: bool = False):
         # 2. Make data into examples
         raise Exception("Not implemented yet")
 
-    connection = DatabaseConnection(url=url)
+    connection = DatabaseConnection(url=db_url)
     with connection.get_session() as session:
         save(forecasts=forecasts, session=session)
 
@@ -72,3 +89,7 @@ def make_dummy_forecasts():
             forecasts.append(f)
 
     return forecasts
+
+if __name__ == "__main__":
+    run()
+
