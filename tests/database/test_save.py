@@ -1,5 +1,5 @@
-from nowcasting_forecast.database.save import save
 from nowcasting_forecast.database.fake import make_fake_forecasts
+from nowcasting_forecast.database.save import save
 
 
 def test_save(db_session):

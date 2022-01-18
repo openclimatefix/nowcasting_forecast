@@ -1,10 +1,9 @@
 import tempfile
 from datetime import datetime
-from sqlalchemy import event
 
 import numpy as np
-
 import pytest
+from sqlalchemy import event
 
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.models import Base, ForecastSQL, StatisticSQL
