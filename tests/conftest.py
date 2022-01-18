@@ -1,5 +1,8 @@
 import tempfile
 from datetime import datetime
+from sqlalchemy import event
+
+import numpy as np
 
 import pytest
 
@@ -23,24 +26,6 @@ def forecast_sql(db_session):
     db_session.add(f)
 
     return f
-
-
-@pytest.fixture
-def forecasts():
-
-    # create
-
-    s0 = Statistic(name="yhat", value=50.0)
-    s1 = Statistic(name="p10", value=10.0)
-
-    f = Forecast(
-        t0_datetime_utc=datetime(2022, 1, 1),
-        target_datetime_utc=datetime(2022, 1, 1),
-        gsp_id=1,
-        statistics=[s0, s1],
-    )
-
-    return [f]
 
 
 @pytest.fixture
