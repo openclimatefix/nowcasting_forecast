@@ -1,8 +1,9 @@
 """ Sqlalchemy models for the database"""
+from datetime import datetime
+
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
-from datetime import datetime
 
 Base = declarative_base()
 
@@ -17,7 +18,9 @@ Base = declarative_base()
 
 
 class CreatedMixin:
-    created_utc = Column(DateTime(timezone=True), default= lambda: datetime.utcnow())
+    """Mixin to add created datetime to model"""
+
+    created_utc = Column(DateTime(timezone=True), default=lambda: datetime.utcnow())
 
 
 # TODO add sql mixin for created_utc
@@ -38,7 +41,7 @@ class StatisticSQL(Base, CreatedMixin):
     forecast = relationship("ForecastSQL", back_populates="statistics")
 
 
-class ForecastSQL(Base,CreatedMixin):
+class ForecastSQL(Base, CreatedMixin):
     """Forecast SQL model"""
 
     __tablename__ = "forecast"

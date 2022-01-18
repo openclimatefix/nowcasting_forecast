@@ -1,10 +1,12 @@
-from nowcasting_forecast.database.models import ForecastSQL, StatisticSQL
-from sqlalchemy.orm.session import Session
-from sqlalchemy.orm import joinedload, subqueryload, contains_eager
-from typing import List, Union, Optional
-from datetime import datetime
-
+""" Read databa functions """
 import logging
+from datetime import datetime
+from typing import List, Optional, Union
+
+from sqlalchemy.orm import contains_eager, joinedload, subqueryload
+from sqlalchemy.orm.session import Session
+
+from nowcasting_forecast.database.models import ForecastSQL, StatisticSQL
 
 logger = logging.getLogger(__name__)
 
@@ -16,11 +18,27 @@ def get_forecast(
     target_datetime_utc: Optional[datetime] = None,
     statistic_names: Optional[Union[List[str], str]] = None,
 ) -> List[ForecastSQL]:
+    """
+    Read forecasts
+
+    :param session: database session
+    :param gsp_id: optional to gsp id, to filter query on
+    :param t0_datetime_utc: optional to filter query on t0_datetime_utc
+    :param target_datetime_utc: optional to filter query on target_datetime_utc
+    :param statistic_names: optional to filter query on the statistical name. If None is given then all are returned.
+    :param session: database session
+
+    return: List of forecasts objects from database
+    """
 
     if statistic_names is None:
         statistic_names = "all"
 
-    distinct_columns = [ForecastSQL.gsp_id, ForecastSQL.t0_datetime_utc, ForecastSQL.target_datetime_utc]
+    distinct_columns = [
+        ForecastSQL.gsp_id,
+        ForecastSQL.t0_datetime_utc,
+        ForecastSQL.target_datetime_utc,
+    ]
     order_by_cols = distinct_columns + [ForecastSQL.created_utc.desc()]
 
     # start main query
