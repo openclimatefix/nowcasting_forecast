@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from typing import List, Optional, Union
 
-from sqlalchemy.orm import contains_eager, joinedload, subqueryload
+from sqlalchemy.orm import contains_eager
 from sqlalchemy.orm.session import Session
 
 from nowcasting_forecast.database.models import ForecastSQL, StatisticSQL
@@ -25,7 +25,8 @@ def get_forecast(
     :param gsp_id: optional to gsp id, to filter query on
     :param t0_datetime_utc: optional to filter query on t0_datetime_utc
     :param target_datetime_utc: optional to filter query on target_datetime_utc
-    :param statistic_names: optional to filter query on the statistical name. If None is given then all are returned.
+    :param statistic_names: optional to filter query on the statistical name.
+        If None is given then all are returned.
     :param session: database session
 
     return: List of forecasts objects from database

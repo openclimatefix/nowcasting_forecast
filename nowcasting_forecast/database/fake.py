@@ -1,12 +1,9 @@
 """ Functions used to make fake forecasts"""
-import tempfile
 from datetime import datetime, timedelta
 from typing import List, Optional
 
 import numpy as np
-import pytest
 
-from nowcasting_forecast.database.models import Base, ForecastSQL, StatisticSQL
 from nowcasting_forecast.database.save import save
 from nowcasting_forecast.models import Forecast, Statistic
 
