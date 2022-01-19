@@ -19,7 +19,5 @@ def test_read_forecast_one(db_session, forecast_sql):
     # query
     forecasts: List[ForecastSQL] = db_session.query(ForecastSQL).all()
     assert len(forecasts) == 1
-    assert forecast_sql == forecasts[0]
-    assert len(forecasts[0].statistics) == 2
-    assert forecast_sql.statistics[0] in forecasts[0].statistics
-    assert forecast_sql.statistics[1] in forecasts[0].statistics
+    assert forecast_sql[0] == forecasts[0]
+    assert len(forecasts[0].forecast_values) == 2

@@ -5,8 +5,8 @@ import click
 import numpy as np
 
 from nowcasting_forecast.database.connection import DatabaseConnection
+from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.save import save
-from nowcasting_forecast.models import Forecast, Statistic
 
 N_GSP = 338
 
@@ -74,18 +74,7 @@ def make_dummy_forecasts():
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
 
     # make fake reuslts
-    forecasts = []
-    for i in range(N_GSP):
-        for horizon in [0, 30, 60, 90]:
-            s = Statistic(name="yhat", value=np.random.uniform(0, 1000))
-            f = Forecast(
-                t0_datetime_utc=t0_datetime_utc,
-                target_datetime_utc=t0_datetime_utc + timedelta(minutes=horizon),
-                gsp_id=i,
-                statistics=[s],
-            )
-
-            forecasts.append(f)
+    forecasts = make_fake_forecasts(gsp_ids=range(N_GSP), t0_datetime_utc=t0_datetime_utc)
 
     return forecasts
 

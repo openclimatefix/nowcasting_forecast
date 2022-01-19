@@ -28,8 +28,9 @@ class DatabaseConnection:
         try:
             Base.metadata.create_all(self.engine)
         except Exception as e:
-            logger.debug(f'Try to run "create all" on database, but failed. '
-                         f'Will pass this anyway {e}')
+            logger.debug(
+                f'Try to run "create all" on database, but failed. ' f"Will pass this anyway {e}"
+            )
 
         self.Session = sessionmaker(bind=self.engine)
 

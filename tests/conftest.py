@@ -1,10 +1,14 @@
 import tempfile
 from datetime import datetime
+from typing import List
 
+import numpy as np
 import pytest
+from sqlalchemy import event
 
 from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.models import Base, ForecastSQL, StatisticSQL
+from nowcasting_forecast.database.fake import make_fake_forecasts
+from nowcasting_forecast.database.models import Base, ForecastSQL, ForecastValueSQL
 from nowcasting_forecast.models import Forecast, Statistic
 
 
@@ -12,35 +16,24 @@ from nowcasting_forecast.models import Forecast, Statistic
 def forecast_sql(db_session):
 
     # create
-    f = ForecastSQL(
-        t0_datetime_utc=datetime(2022, 1, 1), target_datetime_utc=datetime(2022, 1, 1), gsp_id=1
-    )
-
-    s0 = StatisticSQL(name="yhat", value=50.0, forecast=f)
-    s1 = StatisticSQL(name="p10", value=10.0, forecast=f)
+    f = make_fake_forecasts(gsp_ids=[1])
 
     # add
-    db_session.add(f)
+    db_session.add_all(f)
 
     return f
 
 
 @pytest.fixture
-def forecasts():
+def forecasts(db_session) -> List[ForecastSQL]:
 
     # create
+    f = make_fake_forecasts(gsp_ids=list(range(0, 10)))
 
-    s0 = Statistic(name="yhat", value=50.0)
-    s1 = Statistic(name="p10", value=10.0)
+    # add
+    db_session.add_all(f)
 
-    f = Forecast(
-        t0_datetime_utc=datetime(2022, 1, 1),
-        target_datetime_utc=datetime(2022, 1, 1),
-        gsp_id=1,
-        statistics=[s0, s1],
-    )
-
-    return [f]
+    return f
 
 
 @pytest.fixture
