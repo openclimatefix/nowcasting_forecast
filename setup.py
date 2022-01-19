@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     version="0.0.11",
     license="MIT",
-    description="Live forecast for the OCF owcasting project",
+    description="Live forecast for the OCF nowcasting project",
     author="Peter Dudfield",
     author_email="peter@openclimatefix.org",
     company="Open Climate Fix Ltd",
