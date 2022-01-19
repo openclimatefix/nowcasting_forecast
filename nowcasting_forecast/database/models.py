@@ -77,6 +77,7 @@ class Location(EnhancedBaseModel):
     rm_mode = True
 
     def to_orm(self) -> LocationSQL:
+        """Change model to LocationSQL"""
         return LocationSQL(
             label=self.label,
             gsp_id=self.gsp_id,
@@ -113,6 +114,7 @@ class ForecastValue(EnhancedBaseModel):
     _normalize_target_time = validator("target_time", allow_reuse=True)(datetime_must_have_timezone)
 
     def to_orm(self) -> ForecastValueSQL:
+        """Change model to ForecastValueSQL"""
         return ForecastValueSQL(
             target_time=self.target_time,
             expected_power_generation_megawatts=self.expected_power_generation_megawatts,
@@ -149,6 +151,7 @@ class InputDataLastUpdated(EnhancedBaseModel):
     _normalize_satellite = validator("satellite", allow_reuse=True)(datetime_must_have_timezone)
 
     def to_orm(self) -> InputDataLastUpdatedSQL:
+        """Change model to InputDataLastUpdatedSQL"""
         return InputDataLastUpdatedSQL(
             gsp=self.gsp,
             nwp=self.nwp,
@@ -198,6 +201,7 @@ class Forecast(EnhancedBaseModel):
     )
 
     def to_orm(self) -> ForecastSQL:
+        """Change model to ForecastSQL"""
         return ForecastSQL(
             forecast_creation_time=self.forecast_creation_time,
             location=self.location.to_orm(),
