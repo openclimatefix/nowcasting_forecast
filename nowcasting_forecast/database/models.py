@@ -45,6 +45,7 @@ class EnhancedBaseModel(BaseModel):
         allow_population_by_field_name = True
         orm_mode = True
 
+
 ########
 # 2. Location
 ########
@@ -84,6 +85,7 @@ class Location(EnhancedBaseModel):
             region_name=self.region_name,
         )
 
+
 ########
 # 3. ForecastValue
 ########
@@ -119,6 +121,7 @@ class ForecastValue(EnhancedBaseModel):
             target_time=self.target_time,
             expected_power_generation_megawatts=self.expected_power_generation_megawatts,
         )
+
 
 ########
 # 4. Input data status
@@ -161,6 +164,7 @@ class InputDataLastUpdated(EnhancedBaseModel):
             pv=self.pv,
             satellite=self.satellite,
         )
+
 
 ########
 # 4. Forecasts
