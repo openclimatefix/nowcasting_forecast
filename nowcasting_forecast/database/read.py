@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.orm.session import Session
 
-from nowcasting_forecast.database.models import ForecastSQL, StatisticSQL
+from nowcasting_forecast.database.models import ForecastSQL, ForecastValueSQL
 
 logger = logging.getLogger(__name__)
 
@@ -35,18 +35,18 @@ def get_forecast(
     if statistic_names is None:
         statistic_names = "all"
 
-    distinct_columns = [
-        ForecastSQL.gsp_id,
-        ForecastSQL.t0_datetime_utc,
-        ForecastSQL.target_datetime_utc,
-    ]
-    order_by_cols = distinct_columns + [ForecastSQL.created_utc.desc()]
+    # distinct_columns = [
+    #     ForecastSQL.gsp_id,
+    #     ForecastSQL.t0_datetime_utc,
+    #     ForecastSQL.target_datetime_utc,
+    # ]
+    # order_by_cols = distinct_columns + [ForecastSQL.created_utc.desc()]
 
     # start main query
     query = session.query(ForecastSQL)
 
     # select distinct on columns, so only lates forecast is read
-    query = query.distinct(*distinct_columns)
+    # query = query.distinct(*distinct_columns)
 
     # filter on gsp_id
     if gsp_id is not None:
@@ -62,16 +62,16 @@ def get_forecast(
 
     if statistic_names != "all":
         # join with statistic table. We use outer join so that ....
-        query = query.outerjoin(StatisticSQL)
+        query = query.outerjoin(ForecastValueSQL)
 
         # only select statistics that we want
-        query = query.filter(StatisticSQL.name.in_(statistic_names))
+        query = query.filter(ForecastValueSQL.name.in_(statistic_names))
 
         # this makes sure the child table of statistics is filtered as we want it
         query = query.options(contains_eager(ForecastSQL.statistics))
 
     # order, this makes sure only the most recent forecast is collected
-    query = query.order_by(*order_by_cols)
+    # query = query.order_by(*order_by_cols)
 
     # get all results
     forecasts = query.all()

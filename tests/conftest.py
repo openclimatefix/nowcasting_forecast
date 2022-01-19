@@ -6,23 +6,19 @@ import pytest
 from sqlalchemy import event
 
 from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.models import Base, ForecastSQL, StatisticSQL
+from nowcasting_forecast.database.models import Base, ForecastSQL, ForecastValueSQL
 from nowcasting_forecast.models import Forecast, Statistic
+from nowcasting_forecast.database.fake import make_fake_forecasts
 
 
 @pytest.fixture
 def forecast_sql(db_session):
 
     # create
-    f = ForecastSQL(
-        t0_datetime_utc=datetime(2022, 1, 1), target_datetime_utc=datetime(2022, 1, 1), gsp_id=1
-    )
-
-    s0 = StatisticSQL(name="yhat", value=50.0, forecast=f)
-    s1 = StatisticSQL(name="p10", value=10.0, forecast=f)
+    f = make_fake_forecasts(gsp_ids=[1])
 
     # add
-    db_session.add(f)
+    db_session.add_all(f)
 
     return f
 
