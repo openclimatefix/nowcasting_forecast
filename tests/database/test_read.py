@@ -6,6 +6,7 @@ from nowcasting_forecast.database.read import (
     get_forecast_values,
     get_latest_forecast,
 )
+from nowcasting_forecast.database.models import Forecast
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,8 @@ def test_get_forecast(db_session, forecasts):
 
     assert forecast_read.location.gsp_id == forecasts[0].location.gsp_id
     assert forecast_read.forecast_values[0] == forecasts[0].forecast_values[0]
+
+    _ = Forecast.from_orm(forecast_read)
 
 
 def test_read_gsp_id(db_session, forecasts):

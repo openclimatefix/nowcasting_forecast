@@ -1,6 +1,6 @@
 """ Sqlalchemy models for the database"""
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field, validator
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
@@ -47,10 +47,10 @@ class Location(EnhancedBaseModel):
     """Location that the forecast is for"""
 
     label: str = Field(..., description="")
-    gsp_id: int = Field(..., description="")
-    gsp_name: str = Field(None, description="")
-    gsp_group: str = Field(None, description="")
-    region_name: str = Field(None, description="")
+    gsp_id: Optional[int] = Field(None, description="The Grid Supply Point (GSP) id")
+    gsp_name: Optional[str] = Field(None, description="The GSP name")
+    gsp_group: Optional[str] = Field(None, description="The GSP group name")
+    region_name: Optional[str] = Field(None, description="The GSP region name")
 
     rm_mode = True
 
@@ -105,11 +105,12 @@ class InputDataLastUpdatedSQL(Base, CreatedMixin):
     __tablename__ = "input_data_last_updated"
 
     id = Column(Integer, primary_key=True)
-    gsp = Column(DateTime)
-    nwp = Column(DateTime)
-    pv = Column(DateTime)
-    satellite = Column(DateTime)
-
+    gsp: datetime = Field(..., description="The time when the input GSP data was last updated")
+    nwp: datetime = Field(..., description="The time when the input NWP data was last updated")
+    pv: datetime = Field(..., description="The time when the input PV data was last updated")
+    satellite: datetime = Field(
+        ..., description="The time when the input satellite data was last updated"
+    )
     forecast = relationship("ForecastSQL", back_populates="input_data_last_updated")
 
 
@@ -186,3 +187,12 @@ class Forecast(EnhancedBaseModel):
             input_data_last_updated=self.input_data_last_updated.to_orm(),
             forecast_values=[forecast_value.to_orm() for forecast_value in self.forecast_values],
         )
+
+
+class ManyForecasts(EnhancedBaseModel):
+    """Many Forecasts"""
+
+    forecasts: List[Forecast] = Field(
+        ...,
+        description="List of forecasts for different GSPs",
+    )
