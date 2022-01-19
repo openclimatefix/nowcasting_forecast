@@ -4,8 +4,7 @@ from datetime import datetime, timezone
 import pytest
 
 # Used constants
-from nowcasting_forecast.database.utils import (convert_to_camelcase,
-                                                datetime_must_have_timezone)
+from nowcasting_forecast.database.utils import convert_to_camelcase, datetime_must_have_timezone
 
 
 def test_datetime_must_have_timezone():
