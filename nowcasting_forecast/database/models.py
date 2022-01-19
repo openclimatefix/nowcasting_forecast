@@ -1,4 +1,20 @@
-""" Sqlalchemy models for the database"""
+""" Pydantic and Sqlalchemy models for the database
+
+The following class are made
+1. Reusable classes
+2. Location objects, where the forecast is for
+3. ForecastValue objects, specific values of a forecast and time
+4. Input data status, shows when the data was collected
+5. Forecasts, a forecast that is made for one gsp, for several time steps into the future
+
+Current these models have a primary index of 'id'.
+This keeps things very simple at the start.
+But there can be multiple forecasts for similar values.
+
+Later on it would be good to add a forecast latest table, where the latest forecast can be read.
+The primary keys could be 'gsp_id' and 'target_datetime_utc'.
+"""
+
 from datetime import datetime
 from typing import List, Optional
 
@@ -11,7 +27,9 @@ from nowcasting_forecast.database.utils import (convert_to_camelcase,
 
 Base = declarative_base()
 
-
+########
+# 1. Reusable classes
+########
 class CreatedMixin:
     """Mixin to add created datetime to model"""
 
@@ -28,7 +46,9 @@ class EnhancedBaseModel(BaseModel):
         allow_population_by_field_name = True
         orm_mode = True
 
-
+########
+# 2. Location
+########
 class LocationSQL(Base):
     """Location that the forecast is for"""
 
@@ -65,7 +85,9 @@ class Location(EnhancedBaseModel):
             region_name=self.region_name,
         )
 
-
+########
+# 3. ForecastValue
+########
 class ForecastValueSQL(Base, CreatedMixin):
     """One Forecast of generation at one timestamp"""
 
@@ -99,7 +121,9 @@ class ForecastValue(EnhancedBaseModel):
             expected_power_generation_megawatts=self.expected_power_generation_megawatts,
         )
 
-
+########
+# 4. Input data status
+########
 class InputDataLastUpdatedSQL(Base, CreatedMixin):
     """Information about the input data that was used to create the forecast"""
 
@@ -139,7 +163,9 @@ class InputDataLastUpdated(EnhancedBaseModel):
             satellite=self.satellite,
         )
 
-
+########
+# 4. Forecasts
+########
 class ForecastSQL(Base, CreatedMixin):
     """Forecast SQL model"""
 

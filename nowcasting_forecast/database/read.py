@@ -1,4 +1,9 @@
-""" Read databa functions """
+""" Read database functions
+
+1. Get the latest forecast
+2. get the latest forecasts for all gsp ids
+3. get all forecast values
+"""
 import logging
 from typing import List, Optional
 

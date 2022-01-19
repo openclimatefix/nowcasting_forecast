@@ -3,4 +3,3 @@ sqlalchemy
 psycopg2-binary
 numpy
 click
-freezegun
