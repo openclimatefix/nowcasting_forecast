@@ -1,7 +1,5 @@
 import logging
 
-from freezegun import freeze_time
-
 from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.read import (get_all_gsp_ids_latest_forecast,
                                                get_forecast_values,
