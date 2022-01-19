@@ -1,16 +1,12 @@
 """ Sqlalchemy models for the database"""
-from datetime import datetime
-
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_base, relationship
-from pydantic_sqlalchemy import sqlalchemy_to_pydantic
-from pydantic import BaseModel, Field, validator
-
 from datetime import datetime, timedelta
+from typing import List
 
 import numpy as np
-
-from typing import List
+from pydantic import BaseModel, Field, validator
+from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 

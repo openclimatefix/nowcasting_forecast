@@ -4,13 +4,13 @@ from typing import List, Optional
 
 import numpy as np
 
-from nowcasting_forecast.database.save import save
 from nowcasting_forecast.database.models import (
     ForecastSQL,
-    LocationSQL,
-    InputDataLastUpdatedSQL,
     ForecastValueSQL,
+    InputDataLastUpdatedSQL,
+    LocationSQL,
 )
+from nowcasting_forecast.database.save import save
 
 
 def make_fake_location(gsp_id: int) -> LocationSQL:
@@ -27,7 +27,8 @@ def make_fake_input_data_last_updated() -> InputDataLastUpdatedSQL:
 
 def make_fake_forecast_value(target_time) -> ForecastValueSQL:
 
-    return ForecastValueSQL(target_time=target_time, expected_power_generation_megawatts=np.random.random()
+    return ForecastValueSQL(
+        target_time=target_time, expected_power_generation_megawatts=np.random.random()
     )
 
 
@@ -61,6 +62,3 @@ def make_fake_forecasts(gsp_ids: List[int]) -> List[ForecastSQL]:
         forecasts.append(make_fake_forecast(gsp_id=gsp_id))
 
     return forecasts
-
-
-

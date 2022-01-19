@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def test_read(db_session):
 
-    forecasts = make_fake_forecasts(gsp_ids=range(0,10))
+    forecasts = make_fake_forecasts(gsp_ids=range(0, 10))
     db_session.add_all(forecasts)
 
     forecasts_read = get_forecast(session=db_session)
