@@ -6,8 +6,7 @@ from pydantic import BaseModel, Field, validator
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
-from nowcasting_forecast.database.utils import (convert_to_camelcase,
-                                                datetime_must_have_timezone)
+from nowcasting_forecast.database.utils import convert_to_camelcase, datetime_must_have_timezone
 
 Base = declarative_base()
 

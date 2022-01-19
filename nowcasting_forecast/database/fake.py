@@ -4,9 +4,12 @@ from typing import List, Optional
 
 import numpy as np
 
-from nowcasting_forecast.database.models import (ForecastSQL, ForecastValueSQL,
-                                                 InputDataLastUpdatedSQL,
-                                                 LocationSQL)
+from nowcasting_forecast.database.models import (
+    ForecastSQL,
+    ForecastValueSQL,
+    InputDataLastUpdatedSQL,
+    LocationSQL,
+)
 
 
 def make_fake_location(gsp_id: int) -> LocationSQL:

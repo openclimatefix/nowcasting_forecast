@@ -8,8 +8,7 @@ from sqlalchemy import event
 
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
-from nowcasting_forecast.database.models import (Base, ForecastSQL,
-                                                 ForecastValueSQL)
+from nowcasting_forecast.database.models import Base, ForecastSQL, ForecastValueSQL
 from nowcasting_forecast.models import Forecast, Statistic
 
 
