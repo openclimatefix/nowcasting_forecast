@@ -1,12 +1,12 @@
 import logging
 
 from nowcasting_forecast.database.fake import make_fake_forecasts
+from nowcasting_forecast.database.models import Forecast
 from nowcasting_forecast.database.read import (
     get_all_gsp_ids_latest_forecast,
     get_forecast_values,
     get_latest_forecast,
 )
-from nowcasting_forecast.database.models import Forecast
 
 logger = logging.getLogger(__name__)
 
