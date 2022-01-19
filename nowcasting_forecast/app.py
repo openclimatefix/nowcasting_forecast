@@ -74,7 +74,7 @@ def make_dummy_forecasts():
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
 
     # make fake reuslts
-    forecasts = make_fake_forecasts(gsp_ids=range(N_GSP),t0_datetime_utc=t0_datetime_utc)
+    forecasts = make_fake_forecasts(gsp_ids=range(N_GSP), t0_datetime_utc=t0_datetime_utc)
 
     return forecasts
 
