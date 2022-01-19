@@ -26,6 +26,7 @@ from nowcasting_forecast.database.utils import convert_to_camelcase, datetime_mu
 
 Base = declarative_base()
 
+
 ########
 # 1. Reusable classes
 ########
