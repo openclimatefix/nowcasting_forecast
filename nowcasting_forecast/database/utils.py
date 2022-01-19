@@ -1,3 +1,4 @@
+""" Utils functions for models """
 from datetime import datetime
 
 
