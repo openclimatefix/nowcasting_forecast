@@ -1,23 +1,12 @@
 """ Sqlalchemy models for the database"""
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List
 
-import numpy as np
 from pydantic import BaseModel, Field, validator
-from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
-
-# Current these models have a primary index of 'id'.
-# This keeps things very simple at the start.
-# But there can be multiple forecasts for similar values.
-
-# Later on it would be good to add a forecast latest table, where the latest forecast can be read.
-# The primary keys could be 'gsp_id' and 'target_datetime_utc'.
-
-# sqlalchemy models
 
 
 def datetime_must_have_timezone(cls, v: datetime):
