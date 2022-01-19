@@ -1,14 +1,21 @@
 from datetime import datetime, timezone
 
 from nowcasting_forecast.database.fake import (
-    make_fake_forecast, make_fake_forecast_value,
-    make_fake_input_data_last_updated, make_fake_location)
-from nowcasting_forecast.database.models import (Forecast, ForecastSQL,
-                                                 ForecastValue,
-                                                 ForecastValueSQL,
-                                                 InputDataLastUpdated,
-                                                 InputDataLastUpdatedSQL,
-                                                 Location, LocationSQL)
+    make_fake_forecast,
+    make_fake_forecast_value,
+    make_fake_input_data_last_updated,
+    make_fake_location,
+)
+from nowcasting_forecast.database.models import (
+    Forecast,
+    ForecastSQL,
+    ForecastValue,
+    ForecastValueSQL,
+    InputDataLastUpdated,
+    InputDataLastUpdatedSQL,
+    Location,
+    LocationSQL,
+)
 
 
 def test_make_fake_location():

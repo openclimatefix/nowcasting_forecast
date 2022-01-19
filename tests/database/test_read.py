@@ -1,7 +1,6 @@
 import logging
 
-from nowcasting_forecast.database.read import (get_forecast_values,
-                                               get_latest_forecast)
+from nowcasting_forecast.database.read import get_forecast_values, get_latest_forecast
 
 logger = logging.getLogger(__name__)
 

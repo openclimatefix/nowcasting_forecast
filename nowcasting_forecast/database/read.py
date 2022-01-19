@@ -4,8 +4,7 @@ from typing import List, Optional
 
 from sqlalchemy.orm.session import Session
 
-from nowcasting_forecast.database.models import (ForecastSQL, ForecastValueSQL,
-                                                 LocationSQL)
+from nowcasting_forecast.database.models import ForecastSQL, ForecastValueSQL, LocationSQL
 
 logger = logging.getLogger(__name__)
 
