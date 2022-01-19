@@ -3,8 +3,7 @@ from typing import List
 
 from sqlalchemy.orm.session import Session
 
-from nowcasting_forecast.database.models import ForecastSQL, ForecastValueSQL
-from nowcasting_forecast.models import Forecast
+from nowcasting_forecast.database.models import ForecastSQL
 
 
 def save(forecasts: List[ForecastSQL], session: Session):
