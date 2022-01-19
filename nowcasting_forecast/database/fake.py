@@ -4,12 +4,9 @@ from typing import List, Optional
 
 import numpy as np
 
-from nowcasting_forecast.database.models import (
-    ForecastSQL,
-    ForecastValueSQL,
-    InputDataLastUpdatedSQL,
-    LocationSQL,
-)
+from nowcasting_forecast.database.models import (ForecastSQL, ForecastValueSQL,
+                                                 InputDataLastUpdatedSQL,
+                                                 LocationSQL)
 
 
 def make_fake_location(gsp_id: int) -> LocationSQL:
@@ -46,7 +43,7 @@ def make_fake_forecast(gsp_id: int, t0_datetime_utc: Optional[datetime] = None) 
         forecast_values.append(f)
 
     forecast = ForecastSQL(
-        forecast_creation_time=datetime(2022, 1, 1, tzinfo=timezone.utc),
+        forecast_creation_time=t0_datetime_utc,
         location=location,
         input_data_last_updated=input_data_last_updated,
         forecast_values=forecast_values,

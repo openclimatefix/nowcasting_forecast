@@ -1,5 +1,6 @@
 import tempfile
 from datetime import datetime
+from typing import List
 
 import numpy as np
 import pytest
@@ -7,7 +8,8 @@ from sqlalchemy import event
 
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
-from nowcasting_forecast.database.models import Base, ForecastSQL, ForecastValueSQL
+from nowcasting_forecast.database.models import (Base, ForecastSQL,
+                                                 ForecastValueSQL)
 from nowcasting_forecast.models import Forecast, Statistic
 
 
@@ -16,6 +18,18 @@ def forecast_sql(db_session):
 
     # create
     f = make_fake_forecasts(gsp_ids=[1])
+
+    # add
+    db_session.add_all(f)
+
+    return f
+
+
+@pytest.fixture
+def forecasts(db_session) -> List[ForecastSQL]:
+
+    # create
+    f = make_fake_forecasts(gsp_ids=list(range(0, 10)))
 
     # add
     db_session.add_all(f)
