@@ -14,4 +14,4 @@ def test_fake(db_connection: DatabaseConnection):
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
-        assert len(forecasts) == 338+ 1 # 338 gsp + national
+        assert len(forecasts) == 338 + 1  # 338 gsp + national
