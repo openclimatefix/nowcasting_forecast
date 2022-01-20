@@ -10,7 +10,7 @@ from typing import List, Optional
 from sqlalchemy import desc, func
 from sqlalchemy.orm.session import Session
 
-from nowcasting_forecast.database.models import ForecastSQL, ForecastValueSQL, LocationSQL
+from nowcasting_forecast.database.models import ForecastSQL, ForecastValueSQL, LocationSQL, national_gb_label
 
 logger = logging.getLogger(__name__)
 
@@ -115,3 +115,33 @@ def get_forecast_values(
     forecasts = query.all()
 
     return forecasts
+
+
+def get_latest_national_forecast(
+    session: Session,
+) -> ForecastSQL:
+    """
+    Get forecast values
+
+    :param session: database session
+    :param gsp_id: optional to gsp id, to filter query on
+        If None is given then all are returned.
+
+    return: List of forecasts values objects from database
+
+    """
+
+    # start main query
+    query = session.query(ForecastSQL)
+
+    # filter on gsp_id
+    query = query.join(LocationSQL)
+    query = query.filter(LocationSQL.label == national_gb_label)
+
+    # order, so latest is at the top
+    query = query.order_by(ForecastSQL.created_utc.desc())
+
+    # get first results
+    forecast = query.first()
+
+    return forecast

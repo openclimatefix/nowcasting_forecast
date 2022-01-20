@@ -9,6 +9,7 @@ from nowcasting_forecast.database.models import (
     ForecastValueSQL,
     InputDataLastUpdatedSQL,
     LocationSQL,
+    national_gb_label
 )
 
 
@@ -64,3 +65,27 @@ def make_fake_forecasts(
         forecasts.append(make_fake_forecast(gsp_id=gsp_id, t0_datetime_utc=t0_datetime_utc))
 
     return forecasts
+
+
+def make_fake_national_forecast(t0_datetime_utc: Optional[datetime] = None) -> ForecastSQL:
+    """Make national fake forecast"""
+    location =  LocationSQL(label=national_gb_label)
+    input_data_last_updated = make_fake_input_data_last_updated()
+
+    if t0_datetime_utc is None:
+        t0_datetime_utc = datetime(2022, 1, 1, tzinfo=timezone.utc)
+
+    # create
+    forecast_values = []
+    for target_datetime_utc in [t0_datetime_utc, t0_datetime_utc + timedelta(minutes=30)]:
+        f = make_fake_forecast_value(target_time=target_datetime_utc)
+        forecast_values.append(f)
+
+    forecast = ForecastSQL(
+        forecast_creation_time=t0_datetime_utc,
+        location=location,
+        input_data_last_updated=input_data_last_updated,
+        forecast_values=forecast_values,
+    )
+
+    return forecast

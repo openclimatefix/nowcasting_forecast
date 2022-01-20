@@ -5,6 +5,7 @@ from nowcasting_forecast.database.fake import (
     make_fake_forecast_value,
     make_fake_input_data_last_updated,
     make_fake_location,
+    make_fake_national_forecast,
 )
 from nowcasting_forecast.database.models import (
     Forecast,
@@ -41,5 +42,11 @@ def test_make_fake_forecast_value():
 
 def test_make_fake_forecast():
     forecast_sql: ForecastSQL = make_fake_forecast(gsp_id=1)
+    forecast = Forecast.from_orm(forecast_sql)
+    _ = Forecast.to_orm(forecast)
+
+
+def test_make_national_fake_forecast():
+    forecast_sql: ForecastSQL = make_fake_national_forecast()
     forecast = Forecast.from_orm(forecast_sql)
     _ = Forecast.to_orm(forecast)

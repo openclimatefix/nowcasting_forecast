@@ -1,11 +1,12 @@
 import logging
 
-from nowcasting_forecast.database.fake import make_fake_forecasts
+from nowcasting_forecast.database.fake import make_fake_forecasts, make_fake_national_forecast
 from nowcasting_forecast.database.models import Forecast, ForecastValue
 from nowcasting_forecast.database.read import (
     get_all_gsp_ids_latest_forecast,
     get_forecast_values,
     get_latest_forecast,
+    get_latest_national_forecast
 )
 
 logger = logging.getLogger(__name__)
@@ -59,3 +60,15 @@ def test_get_all_gsp_ids_latest_forecast(db_session):
     forecast_values_read = get_all_gsp_ids_latest_forecast(session=db_session)
     assert len(forecast_values_read) == 2
     assert forecast_values_read[0] == f2[0]
+
+
+def test_get_national_latest_forecast(db_session):
+
+    f1 = make_fake_national_forecast()
+    db_session.add(f1)
+
+    f2 = make_fake_national_forecast()
+    db_session.add(f2)
+
+    forecast_values_read = get_latest_national_forecast(session=db_session)
+    assert forecast_values_read == f2
