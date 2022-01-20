@@ -13,11 +13,14 @@ def test_datetime_must_have_timezone():
     time_now = datetime.now(timezone.utc)
 
     # check functions works
-    datetime_must_have_timezone(None, time_now)
+    new_time_now = datetime_must_have_timezone(None, time_now)
+    assert new_time_now == time_now
 
-    with pytest.raises(ValueError):
-        time_now = datetime.now()
-        datetime_must_have_timezone(None, time_now)
+    # check functions adds timezone
+    time_now = datetime.now()
+    time_now = datetime_must_have_timezone(None, time_now)
+    assert new_time_now != time_now
+    assert new_time_now.tzinfo == timezone.utc
 
 
 def test_convert_to_camelcase():

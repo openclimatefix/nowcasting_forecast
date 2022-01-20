@@ -2,7 +2,7 @@ from click.testing import CliRunner
 
 from nowcasting_forecast.app import run
 from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.models import ForecastSQL
+from nowcasting_forecast.database.models import ForecastSQL, Forecast
 
 
 def test_fake(db_connection: DatabaseConnection):
@@ -13,4 +13,5 @@ def test_fake(db_connection: DatabaseConnection):
 
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
+        _ = Forecast.from_orm(forecasts[0])
         assert len(forecasts) == 338
