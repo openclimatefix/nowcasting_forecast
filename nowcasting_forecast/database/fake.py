@@ -9,7 +9,7 @@ from nowcasting_forecast.database.models import (
     ForecastValueSQL,
     InputDataLastUpdatedSQL,
     LocationSQL,
-    national_gb_label
+    national_gb_label,
 )
 
 
@@ -69,7 +69,7 @@ def make_fake_forecasts(
 
 def make_fake_national_forecast(t0_datetime_utc: Optional[datetime] = None) -> ForecastSQL:
     """Make national fake forecast"""
-    location =  LocationSQL(label=national_gb_label)
+    location = LocationSQL(label=national_gb_label)
     input_data_last_updated = make_fake_input_data_last_updated()
 
     if t0_datetime_utc is None:

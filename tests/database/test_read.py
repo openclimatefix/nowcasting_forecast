@@ -6,7 +6,7 @@ from nowcasting_forecast.database.read import (
     get_all_gsp_ids_latest_forecast,
     get_forecast_values,
     get_latest_forecast,
-    get_latest_national_forecast
+    get_latest_national_forecast,
 )
 
 logger = logging.getLogger(__name__)
