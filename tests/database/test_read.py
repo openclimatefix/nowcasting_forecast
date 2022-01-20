@@ -1,7 +1,7 @@
 import logging
 
 from nowcasting_forecast.database.fake import make_fake_forecasts
-from nowcasting_forecast.database.models import Forecast
+from nowcasting_forecast.database.models import Forecast, ForecastValue
 from nowcasting_forecast.database.read import (
     get_all_gsp_ids_latest_forecast,
     get_forecast_values,
@@ -40,6 +40,9 @@ def test_get_forecast_values_gsp_id(db_session, forecasts):
     forecast_values_read = get_forecast_values(
         session=db_session, gsp_id=forecasts[0].location.gsp_id
     )
+
+    _ = ForecastValue.from_orm(forecast_values_read[0])
+
     assert len(forecast_values_read) == 2
 
     assert forecast_values_read[0] == forecasts[0].forecast_values[0]

@@ -96,7 +96,7 @@ class ForecastValueSQL(Base, CreatedMixin):
     __tablename__ = "forecast_value"
 
     id = Column(Integer, primary_key=True)
-    target_time = Column(DateTime)
+    target_time = Column(DateTime(timezone=True))
     expected_power_generation_megawatts = Column(Float)
 
     forecast_id = Column(Integer, ForeignKey("forecast.id"))
@@ -133,12 +133,11 @@ class InputDataLastUpdatedSQL(Base, CreatedMixin):
     __tablename__ = "input_data_last_updated"
 
     id = Column(Integer, primary_key=True)
-    gsp: datetime = Field(..., description="The time when the input GSP data was last updated")
-    nwp: datetime = Field(..., description="The time when the input NWP data was last updated")
-    pv: datetime = Field(..., description="The time when the input PV data was last updated")
-    satellite: datetime = Field(
-        ..., description="The time when the input satellite data was last updated"
-    )
+    gsp = Column(DateTime(timezone=True))
+    nwp = Column(DateTime(timezone=True))
+    pv = Column(DateTime(timezone=True))
+    satellite = Column(DateTime(timezone=True))
+
     forecast = relationship("ForecastSQL", back_populates="input_data_last_updated")
 
 
@@ -176,7 +175,7 @@ class ForecastSQL(Base, CreatedMixin):
     __tablename__ = "forecast"
 
     id = Column(Integer, primary_key=True)
-    forecast_creation_time = Column(DateTime)
+    forecast_creation_time = Column(DateTime(timezone=True))
 
     # many (forecasts) to one (location)
     location = relationship("LocationSQL", back_populates="forecast")
