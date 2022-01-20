@@ -27,6 +27,9 @@ from nowcasting_forecast.database.utils import convert_to_camelcase, datetime_mu
 Base = declarative_base()
 
 
+national_gb_label = "National-GB"
+
+
 ########
 # 1. Reusable classes
 ########
