@@ -2,7 +2,7 @@ from click.testing import CliRunner
 
 from nowcasting_forecast.app import run
 from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.models import ForecastSQL, Forecast
+from nowcasting_forecast.database.models import Forecast, ForecastSQL
 
 
 def test_fake(db_connection: DatabaseConnection):
