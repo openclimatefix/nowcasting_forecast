@@ -5,7 +5,7 @@ import click
 import numpy as np
 
 from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.fake import make_fake_forecasts
+from nowcasting_forecast.database.fake import make_fake_forecasts, make_fake_national_forecast
 from nowcasting_forecast.database.save import save
 
 N_GSP = 338
@@ -73,8 +73,11 @@ def make_dummy_forecasts():
     # time now rounded down by 30 mins
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
 
-    # make fake reuslts
-    forecasts = make_fake_forecasts(gsp_ids=range(N_GSP), t0_datetime_utc=t0_datetime_utc)
+    # make gsp fake results
+    forecasts = make_fake_forecasts(gsp_ids=list(range(N_GSP)), t0_datetime_utc=t0_datetime_utc)
+
+    # add national forecast
+    forecasts.append(make_fake_national_forecast(t0_datetime_utc=t0_datetime_utc))
 
     return forecasts
 
