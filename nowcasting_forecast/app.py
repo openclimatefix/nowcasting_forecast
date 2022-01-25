@@ -4,8 +4,10 @@ from datetime import datetime
 import click
 
 from nowcasting_forecast.database.connection import DatabaseConnection
+from nowcasting_forecast.batch import make_batches
 from nowcasting_forecast.database.fake import make_fake_forecasts, make_fake_national_forecast
 from nowcasting_forecast.database.save import save
+from nowcasting_forecast.models.nwp_solar_simple import nwp_irradence_simple_run_all_batches
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
 N_GSP = 338
@@ -36,9 +38,12 @@ def run(db_url: str, fake: bool = False):
     if fake:
         forecasts = make_dummy_forecasts()
     else:
-        # 1. load data
-        # 2. Make data into examples
-        raise Exception("Not implemented yet")
+        
+        # make batches 
+        make_batches()
+        
+        # make forecasts
+        forecasts = nwp_irradence_simple_run_all_batches()
 
     connection = DatabaseConnection(url=db_url)
     with connection.get_session() as session:

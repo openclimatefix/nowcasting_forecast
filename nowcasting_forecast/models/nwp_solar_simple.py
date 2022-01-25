@@ -1,20 +1,111 @@
 """ Simple model to take NWP irradence and make solar """
 import numpy as np
+import os
 from nowcasting_dataset.dataset.batch import Batch
+from nowcasting_dataset.config.load import load_yaml_configuration
+import nowcasting_forecast
+from datetime import datetime, timezone
+from nowcasting_forecast.dataloader import BatchDataLoader
+from typing import List, Optional, Union
+from nowcasting_forecast.database.models import (
+    Forecast,
+    ForecastSQL,
+    ForecastValue,
+    InputDataLastUpdated,
+    Location,
+)
+from nowcasting_forecast.database.fake import make_fake_input_data_last_updated, make_fake_location, make_fake_national_forecast
+from nowcasting_forecast.utils import floor_30_minutes_dt
+import logging
+
+logger = logging.getLogger(__name__)
+
+def nwp_irradence_simple_run_all_batches(
+    configuration_file: Optional[str] = None, n_batches: int = 11
+) -> List[ForecastSQL]:
+
+    # time now rounded down by 30 mins
+    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
+
+    # make confgiruation
+    if configuration_file is None:
+        configuration_file = os.path.join(
+            os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v0.yaml"
+        )
+    configuration = load_yaml_configuration(filename=configuration_file)
+
+    # make dataloader
+    dataloader = iter(BatchDataLoader(n_batches=n_batches, configuration=configuration))
+
+    # loop over batch
+    forecasts = []
+    for i in range(n_batches):
+        logger.debug(f'Running batch {i} into model')
+        
+        batch= next(dataloader)
+        forecasts = forecasts + nwp_irradence_simple_run_one_batch(batch=batch)
+        
+    # select first 338 forecast
+    if len(forecasts) > 338:
+        forecasts = forecasts[0:338]
+
+    # convert to sql objects
+    forecasts_sql = [f.to_orm() for f in forecasts]
+    
+    # add national forecast # TODO
+    forecasts_sql.append(make_fake_national_forecast(t0_datetime_utc=t0_datetime_utc))
+
+    return forecasts_sql
 
 
-def nwp_irradence_simple(batch: Batch) -> np.array:
+def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Forecast]:
+
+    # make sure its a Batch object
+    if type(batch) == dict:
+        batch = Batch(**batch)
+
+    # run model
+    irradence_mean = nwp_irradence_simple(batch)
+
+    # set up forecasts fields
+    forecast_creation_time = datetime.now(timezone.utc)
+
+    # TODO
+    input_data_last_updated = make_fake_input_data_last_updated()
+
+    forecasts = []
+    for i in range(batch.metadata.batch_size):
+
+        # TODO
+        location = Location(gsp_id=1, label=f"fake")
+
+        forecast_value = ForecastValue(
+            target_time=batch.metadata.t0_datetime_utc[i],
+            expected_power_generation_megawatts=irradence_mean,
+        )
+
+        forecasts.append(
+            Forecast(
+                location=location,
+                forecast_creation_time=forecast_creation_time,
+                forecast_values=[forecast_value],
+                input_data_last_updated=input_data_last_updated,
+            )
+        )
+
+    return forecasts
+
+
+def nwp_irradence_simple(batch: Batch) -> float:
 
     nwp = batch.nwp
 
     # take solar irradence
-    print(nwp)
-    print(nwp.channels)
-    nwp = nwp.sel(channels=["dlwrf"])
+    # print(nwp)
+    # nwp = nwp.sel(channels=["dlwrf"])
 
     # take mean across all dims excpet mean
-    print(nwp)
-    irradence_mean = nwp.mean(axis=[1, 2, 3])
+    irradence_mean = nwp.data.mean()
 
     # scale irradence to roughly mw
     irradence_mean = irradence_mean / 100

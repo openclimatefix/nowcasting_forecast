@@ -15,3 +15,14 @@ def test_fake(db_connection: DatabaseConnection):
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
         assert len(forecasts) == 338 + 1  # 338 gsp + national
+
+def test_not_fake(db_connection: DatabaseConnection):
+
+    runner = CliRunner()
+    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "false"])
+    assert response.exit_code == 0
+
+    with db_connection.get_session() as session:
+        forecasts = session.query(ForecastSQL).all()
+        _ = Forecast.from_orm(forecasts[0])
+        assert len(forecasts) == 338 + 1  # 338 gsp + national

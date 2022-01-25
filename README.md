@@ -9,4 +9,4 @@ Rough idea of this project
 3. Run thorugh ML model
 4. Save model to database
 
-![Drag Racing](diagram.png)
+![Models](diagram.png)

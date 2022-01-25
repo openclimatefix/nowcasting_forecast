@@ -6,7 +6,7 @@ input_data:
   default_history_minutes: 30
   #---------------------- GSP -------------------
   gsp:
-    gsp_zarr_path: ./test.zarr
+    gsp_zarr_path: ./nowcasting_forecast # this is not needed
     history_minutes: 90
     metadata_only: True
     log_level: "INFO"
@@ -14,10 +14,10 @@ input_data:
   #---------------------- NWP -------------------
   nwp:
     nwp_channels:
-      - dlwrf
+      - dswrf
     nwp_image_size_pixels: 64
-    #    nwp_zarr_path: s3://nowcasting-nwp-development/data/latest.netcdf
-    nwp_zarr_path: ./../MetOfficeAMD/latest.netcdf
+    nwp_zarr_path: s3://nowcasting-nwp-development/data/latest.netcdf
+#    nwp_zarr_path: ./../MetOfficeAMD/latest.netcdf
     forecast_minutes: 0
     history_minutes: 0
 
