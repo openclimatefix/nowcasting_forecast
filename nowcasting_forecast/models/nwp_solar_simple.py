@@ -85,7 +85,7 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch], batch_idx: int
 
         # TODO make proper location
         gsp_id = i + batch_idx * batch.metadata.batch_size
-        location = Location(gsp_id=gsp_id, label=f"GSP_{gsp_id}_ffff")
+        location = Location(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
 
         # add timezone
         target_time = batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
