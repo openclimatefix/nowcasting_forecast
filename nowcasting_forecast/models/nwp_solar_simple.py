@@ -1,12 +1,19 @@
 """ Simple model to take NWP irradence and make solar """
-import numpy as np
+import logging
 import os
-from nowcasting_dataset.dataset.batch import Batch
-from nowcasting_dataset.config.load import load_yaml_configuration
-import nowcasting_forecast
 from datetime import datetime, timezone
-from nowcasting_forecast.dataloader import BatchDataLoader
 from typing import List, Optional, Union
+
+import numpy as np
+from nowcasting_dataset.config.load import load_yaml_configuration
+from nowcasting_dataset.dataset.batch import Batch
+
+import nowcasting_forecast
+from nowcasting_forecast.database.fake import (
+    make_fake_input_data_last_updated,
+    make_fake_location,
+    make_fake_national_forecast,
+)
 from nowcasting_forecast.database.models import (
     Forecast,
     ForecastSQL,
@@ -14,11 +21,11 @@ from nowcasting_forecast.database.models import (
     InputDataLastUpdated,
     Location,
 )
-from nowcasting_forecast.database.fake import make_fake_input_data_last_updated, make_fake_location, make_fake_national_forecast
+from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
-import logging
 
 logger = logging.getLogger(__name__)
+
 
 def nwp_irradence_simple_run_all_batches(
     configuration_file: Optional[str] = None, n_batches: int = 11
@@ -41,18 +48,18 @@ def nwp_irradence_simple_run_all_batches(
     # loop over batch
     forecasts = []
     for i in range(n_batches):
-        logger.debug(f'Running batch {i} into model')
-        
-        batch= next(dataloader)
+        logger.debug(f"Running batch {i} into model")
+
+        batch = next(dataloader)
         forecasts = forecasts + nwp_irradence_simple_run_one_batch(batch=batch)
-        
+
     # select first 338 forecast
     if len(forecasts) > 338:
         forecasts = forecasts[0:338]
 
     # convert to sql objects
     forecasts_sql = [f.to_orm() for f in forecasts]
-    
+
     # add national forecast # TODO
     forecasts_sql.append(make_fake_national_forecast(t0_datetime_utc=t0_datetime_utc))
 

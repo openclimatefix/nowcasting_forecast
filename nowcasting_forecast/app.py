@@ -3,8 +3,8 @@ from datetime import datetime
 
 import click
 
-from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.batch import make_batches
+from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts, make_fake_national_forecast
 from nowcasting_forecast.database.save import save
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradence_simple_run_all_batches
@@ -38,10 +38,10 @@ def run(db_url: str, fake: bool = False):
     if fake:
         forecasts = make_dummy_forecasts()
     else:
-        
-        # make batches 
+
+        # make batches
         make_batches()
-        
+
         # make forecasts
         forecasts = nwp_irradence_simple_run_all_batches()
 

@@ -4,8 +4,8 @@ import os
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
-
 from nowcasting_dataset.config.model import Configuration
+
 # from nowcasting_dataset.consts import (
 #     DEFAULT_REQUIRED_KEYS,
 #     GSP_DATETIME_INDEX,
@@ -22,7 +22,7 @@ from nowcasting_dataset.dataset.batch import Batch, Example
 logger = logging.getLogger(__name__)
 
 
-class BatchDataLoader():
+class BatchDataLoader:
     """
     Loads batches
     """
@@ -42,7 +42,7 @@ class BatchDataLoader():
         self.n_batches = n_batches
         self.configuration = configuration
 
-        self.src_path = os.path.join(configuration.output_data.filepath,'live')
+        self.src_path = os.path.join(configuration.output_data.filepath, "live")
 
         logger.info(f"Setting up BatchDataLoader for {self.src_path}")
 
@@ -70,7 +70,7 @@ class BatchDataLoader():
         batch: Batch = Batch.load_netcdf(
             self.src_path,
             batch_idx=batch_idx,
-            data_sources_names=['nwp'],
+            data_sources_names=["nwp"],
         )
 
         batch: dict = batch.dict()

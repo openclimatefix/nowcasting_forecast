@@ -7,7 +7,8 @@ from nowcasting_forecast.utils import floor_30_minutes_dt
 
 
 def make_batches(
-    config_filename: str = "nowcasting_forecast/config/mvp_v0.yaml", t0_datetime_utc: datetime = None
+    config_filename: str = "nowcasting_forecast/config/mvp_v0.yaml",
+    t0_datetime_utc: datetime = None,
 ):
     """Make batches from config file"""
 
