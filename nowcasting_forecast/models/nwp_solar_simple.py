@@ -4,21 +4,18 @@ import os
 from datetime import datetime, timezone
 from typing import List, Optional, Union
 
-import numpy as np
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 
 import nowcasting_forecast
 from nowcasting_forecast.database.fake import (
     make_fake_input_data_last_updated,
-    make_fake_location,
     make_fake_national_forecast,
 )
 from nowcasting_forecast.database.models import (
     Forecast,
     ForecastSQL,
     ForecastValue,
-    InputDataLastUpdated,
     Location,
 )
 from nowcasting_forecast.dataloader import BatchDataLoader
@@ -86,7 +83,7 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Foreca
     for i in range(batch.metadata.batch_size):
 
         # TODO
-        location = Location(gsp_id=1, label=f"fake")
+        location = Location(gsp_id=1, label="fake")
 
         forecast_value = ForecastValue(
             target_time=batch.metadata.t0_datetime_utc[i],

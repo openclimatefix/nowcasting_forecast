@@ -1,5 +1,5 @@
 """ Using ManagerLive to make batches """
-from datetime import datetime, timezone
+from datetime import datetime
 
 from nowcasting_dataset.manager.manager_live import ManagerLive
 
