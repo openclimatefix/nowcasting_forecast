@@ -16,8 +16,8 @@ def test_get_forecast(db_session, forecasts):
 
     forecast_read = get_latest_forecast(session=db_session)
 
-    assert forecast_read.location.gsp_id == forecasts[0].location.gsp_id
-    assert forecast_read.forecast_values[0] == forecasts[0].forecast_values[0]
+    assert forecast_read.location.gsp_id == forecasts[-1].location.gsp_id
+    assert forecast_read.forecast_values[0] == forecasts[-1].forecast_values[0]
 
     _ = Forecast.from_orm(forecast_read)
 

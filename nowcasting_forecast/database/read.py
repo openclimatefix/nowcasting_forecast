@@ -37,19 +37,23 @@ def get_latest_forecast(
 
     # start main query
     query = session.query(ForecastSQL)
+    order_by_items = []
 
     # filter on gsp_id
     if gsp_id is not None:
         query = query.join(LocationSQL)
         query = query.filter(LocationSQL.gsp_id == gsp_id)
+        order_by_items.append(LocationSQL.gsp_id)
+        
+    order_by_items.append(ForecastSQL.created_utc.desc())
 
     # this make the newest ones comes to the top
-    query.order_by(ForecastSQL.created_utc.desc())
+    query = query.order_by(*order_by_items)
 
     # get all results
     forecasts = query.first()
 
-    logger.debug(f"Found forecasts for {gsp_id}")
+    logger.debug(f"Found forecasts for gsp id: {gsp_id}")
 
     return forecasts
 

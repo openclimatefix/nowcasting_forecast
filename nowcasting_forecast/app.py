@@ -34,19 +34,21 @@ def run(db_url: str, fake: bool = False):
 
     There is an option to make fake forecasts
     """
-
-    if fake:
-        forecasts = make_dummy_forecasts()
-    else:
-
-        # make batches
-        make_batches()
-
-        # make forecasts
-        forecasts = nwp_irradence_simple_run_all_batches()
-
+    
     connection = DatabaseConnection(url=db_url)
     with connection.get_session() as session:
+
+        if fake:
+            forecasts = make_dummy_forecasts()
+        else:
+    
+            # make batches
+            make_batches()
+    
+            # make forecasts
+            forecasts = nwp_irradence_simple_run_all_batches()
+
+        # save forecasts
         save(forecasts=forecasts, session=session)
 
 
