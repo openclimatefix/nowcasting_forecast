@@ -16,6 +16,7 @@ def test_fake(db_connection: DatabaseConnection):
         _ = Forecast.from_orm(forecasts[0])
         assert len(forecasts) == 338 + 1  # 338 gsp + national
 
+
 def test_not_fake(db_connection: DatabaseConnection):
 
     runner = CliRunner()

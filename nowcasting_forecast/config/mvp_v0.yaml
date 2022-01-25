@@ -17,7 +17,7 @@ input_data:
       - dswrf
     nwp_image_size_pixels: 64
     nwp_zarr_path: s3://nowcasting-nwp-development/data/latest.netcdf
-#    nwp_zarr_path: ./../MetOfficeAMD/latest.netcdf
+    #    nwp_zarr_path: ./../MetOfficeAMD/latest.netcdf
     forecast_minutes: 0
     history_minutes: 0
 

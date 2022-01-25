@@ -4,10 +4,9 @@ from typing import List
 
 import numpy as np
 import pytest
-from sqlalchemy import event
-
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.dataset.batch import Batch
+from sqlalchemy import event
 
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
@@ -62,19 +61,18 @@ def db_session(db_connection):
 
 @pytest.fixture()
 def configuration():
-    
+
     configuration = Configuration()
     configuration.input_data = configuration.input_data.set_all_to_defaults()
     configuration.process.batch_size = 4
     configuration.input_data.nwp.nwp_channels = ["dlwrf"]
-    
+
     return configuration
-    
+
 
 @pytest.fixture()
 def batch(configuration):
 
     batch = Batch.fake(configuration=configuration)
-    
-    return batch
 
+    return batch
