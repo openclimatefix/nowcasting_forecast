@@ -12,12 +12,7 @@ from nowcasting_forecast.database.fake import (
     make_fake_input_data_last_updated,
     make_fake_national_forecast,
 )
-from nowcasting_forecast.database.models import (
-    Forecast,
-    ForecastSQL,
-    ForecastValue,
-    Location,
-)
+from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
