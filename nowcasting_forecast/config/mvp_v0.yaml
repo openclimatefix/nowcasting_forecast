@@ -1,6 +1,6 @@
 general:
   description: Config for producing batches on for live forecasts.
-  name: on_premises
+  name: mvp_v0
 input_data:
   default_forecast_minutes: 30
   default_history_minutes: 30

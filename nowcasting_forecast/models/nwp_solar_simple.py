@@ -98,7 +98,10 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Foreca
 
 
 def nwp_irradence_simple(batch: Batch) -> float:
-    """Predictions for one batch"""
+    """Predictions for one batch
+
+    Just to take the mean NWP data across the batch
+    """
     nwp = batch.nwp
 
     # take solar irradence # TODO
@@ -106,6 +109,7 @@ def nwp_irradence_simple(batch: Batch) -> float:
     # nwp.data = nwp.data.sel(channels_index=["dlwrf"])
 
     # take mean across all dims excpet mean
+    # TODO take mean for each example
     irradence_mean = nwp.data.mean()
 
     # scale irradence to roughly mw
