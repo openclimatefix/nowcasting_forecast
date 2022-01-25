@@ -2,6 +2,9 @@ FROM python:3.9-slim
 
 ARG TESTING=0
 
+# make sure it doesnt fail if the docker file doesnt know the git commit
+ARG GIT_PYTHON_REFRESH=quiet
+
 #RUN apt-get -qq update \
 #    && apt-get -qq install -y --no-install-recommends \
 #        libpq-dev \
