@@ -17,7 +17,7 @@ def make_batches(
 
     # load config
     manager = ManagerLive()
-    manager.load_yaml_configuration(config_filename)
+    manager.load_yaml_configuration(config_filename, set_git=False)
 
     # make location file
     manager.initialize_data_sources(names_of_selected_data_sources=["gsp", "nwp"])
