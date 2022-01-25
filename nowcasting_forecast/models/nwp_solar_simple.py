@@ -52,7 +52,7 @@ def nwp_irradence_simple_run_all_batches(
     # convert to sql objects
     forecasts_sql = [f.to_orm() for f in forecasts]
 
-    # add national forecast # TODO
+    # add national forecast # TODO make this from the forecast
     forecasts_sql.append(make_fake_national_forecast(t0_datetime_utc=t0_datetime_utc))
 
     return forecasts_sql
@@ -71,13 +71,13 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Foreca
     # set up forecasts fields
     forecast_creation_time = datetime.now(timezone.utc)
 
-    # TODO
+    # TODO make input data from actual data
     input_data_last_updated = make_fake_input_data_last_updated()
 
     forecasts = []
     for i in range(batch.metadata.batch_size):
 
-        # TODO
+        # TODO make proper location
         location = Location(gsp_id=1, label="fake")
 
         forecast_value = ForecastValue(
