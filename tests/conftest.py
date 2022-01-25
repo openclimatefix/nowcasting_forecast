@@ -11,7 +11,6 @@ from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.models import Base, ForecastSQL, ForecastValueSQL
 
 
-
 @pytest.fixture
 def forecast_sql(db_session):
 
