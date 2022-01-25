@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 def nwp_irradence_simple_run_all_batches(
     configuration_file: Optional[str] = None, n_batches: int = 11
 ) -> List[ForecastSQL]:
+    """ Run model for all batches """
 
     # time now rounded down by 30 mins
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
@@ -59,7 +60,8 @@ def nwp_irradence_simple_run_all_batches(
 
 
 def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Forecast]:
-
+    """ Run model for one batch """
+    
     # make sure its a Batch object
     if type(batch) == dict:
         batch = Batch(**batch)
@@ -97,12 +99,12 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Foreca
 
 
 def nwp_irradence_simple(batch: Batch) -> float:
-
+    """ Predictions for one batch """
     nwp = batch.nwp
 
-    # take solar irradence
+    # take solar irradence # TODO
     # print(nwp)
-    # nwp = nwp.sel(channels=["dlwrf"])
+    # nwp.data = nwp.data.sel(channels_index=["dlwrf"])
 
     # take mean across all dims excpet mean
     irradence_mean = nwp.data.mean()
