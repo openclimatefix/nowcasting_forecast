@@ -14,4 +14,4 @@ def test_nwp_irradence_simple(batch):
 
 def test_nwp_irradence_simple_run_one_batch(batch):
 
-    f = nwp_irradence_simple_run_one_batch(batch=batch)
+    f = nwp_irradence_simple_run_one_batch(batch=batch, batch_idx=0)

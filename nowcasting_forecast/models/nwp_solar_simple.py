@@ -26,12 +26,14 @@ def nwp_irradence_simple_run_all_batches(
 
     # time now rounded down by 30 mins
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
+    logger.info(f'Making forecasts for {t0_datetime_utc=}')
 
     # make confgiruation
     if configuration_file is None:
         configuration_file = os.path.join(
             os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v0.yaml"
         )
+    logger.debug(f'Loading configuration {configuration_file}')
     configuration = load_yaml_configuration(filename=configuration_file)
 
     # make dataloader
@@ -43,7 +45,7 @@ def nwp_irradence_simple_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         batch = next(dataloader)
-        forecasts = forecasts + nwp_irradence_simple_run_one_batch(batch=batch)
+        forecasts = forecasts + nwp_irradence_simple_run_one_batch(batch=batch, batch_idx=i)
 
     # select first 338 forecast
     if len(forecasts) > 338:
@@ -58,7 +60,7 @@ def nwp_irradence_simple_run_all_batches(
     return forecasts_sql
 
 
-def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Forecast]:
+def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch], batch_idx:int) -> List[Forecast]:
     """Run model for one batch"""
 
     # make sure its a Batch object
@@ -78,7 +80,8 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch]) -> List[Foreca
     for i in range(batch.metadata.batch_size):
 
         # TODO make proper location
-        location = Location(gsp_id=1, label="fake")
+        gsp_id = i + batch_idx*batch.metadata.batch_size
+        location = Location(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
 
         forecast_value = ForecastValue(
             target_time=batch.metadata.t0_datetime_utc[i],
