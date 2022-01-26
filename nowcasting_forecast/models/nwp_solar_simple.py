@@ -66,7 +66,9 @@ def nwp_irradiance_simple_run_all_batches(
     return forecasts_sql
 
 
-def nwp_irradiance_simple_run_one_batch(batch: Union[dict, Batch], batch_idx: int) -> List[Forecast]:
+def nwp_irradiance_simple_run_one_batch(
+    batch: Union[dict, Batch], batch_idx: int
+) -> List[Forecast]:
     """Run model for one batch"""
 
     # make sure its a Batch object
