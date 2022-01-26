@@ -43,7 +43,8 @@ def test_make_fake_forecast_value():
 def test_make_fake_forecast():
     forecast_sql: ForecastSQL = make_fake_forecast(gsp_id=1)
     forecast = Forecast.from_orm(forecast_sql)
-    _ = Forecast.to_orm(forecast)
+    forecast_sql = Forecast.to_orm(forecast)
+    _ = Forecast.from_orm(forecast_sql)
 
 
 def test_make_national_fake_forecast():

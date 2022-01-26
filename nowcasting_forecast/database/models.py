@@ -219,6 +219,7 @@ class Forecast(EnhancedBaseModel):
     def to_orm(self) -> ForecastSQL:
         """Change model to ForecastSQL"""
         return ForecastSQL(
+            model_name=self.model_name,
             forecast_creation_time=self.forecast_creation_time,
             location=self.location.to_orm(),
             input_data_last_updated=self.input_data_last_updated.to_orm(),
