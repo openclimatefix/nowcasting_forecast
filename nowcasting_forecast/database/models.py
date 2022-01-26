@@ -181,6 +181,7 @@ class ForecastSQL(Base, CreatedMixin):
 
     id = Column(Integer, primary_key=True)
     forecast_creation_time = Column(DateTime(timezone=True))
+    model_name = Column(String)
 
     # many (forecasts) to one (location)
     location = relationship("LocationSQL", back_populates="forecast")
@@ -198,6 +199,7 @@ class Forecast(EnhancedBaseModel):
     """A single Forecast"""
 
     location: Location = Field(..., description="The location object for this forecaster")
+    model_name: str = Field(..., description="The name of the model that made this forecast")
     forecast_creation_time: datetime = Field(
         ..., description="The time when the forecaster was made"
     )
