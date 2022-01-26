@@ -1,10 +1,10 @@
 """ Simple model to take NWP irradence and make solar """
 import logging
 import os
-import xarray as xr
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Union
 
+import xarray as xr
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 
@@ -95,13 +95,16 @@ def nwp_irradiance_simple_run_one_batch(
         forecast_values = []
         for t_index in irradiance_mean.time_index:
             # add timezone
-            target_time = batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc) \
-                          + timedelta(minutes=30)
+            target_time = batch.metadata.t0_datetime_utc[i].replace(
+                tzinfo=timezone.utc
+            ) + timedelta(minutes=30)
 
-            forecast_values.append(ForecastValue(
-                target_time=target_time,
-                expected_power_generation_megawatts=irradiance_mean[i, t_index],
-            ))
+            forecast_values.append(
+                ForecastValue(
+                    target_time=target_time,
+                    expected_power_generation_megawatts=irradiance_mean[i, t_index],
+                )
+            )
 
         forecasts.append(
             Forecast(
@@ -131,7 +134,7 @@ def nwp_irradiance_simple(batch: Batch) -> xr.DataArray:
 
     # take mean across all dims excpet mean
     # TODO take mean for each example
-    irradence_mean = nwp.data.mean(axis=(2,3))
+    irradence_mean = nwp.data.mean(axis=(2, 3))
 
     # scale irradence to roughly mw
     irradence_mean = irradence_mean / 100
