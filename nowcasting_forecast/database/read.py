@@ -44,7 +44,7 @@ def get_latest_forecast(
         query = query.join(LocationSQL)
         query = query.filter(LocationSQL.gsp_id == gsp_id)
         order_by_items.append(LocationSQL.gsp_id)
-        
+
     order_by_items.append(ForecastSQL.created_utc.desc())
 
     # this make the newest ones comes to the top
