@@ -19,7 +19,7 @@ from nowcasting_forecast.utils import floor_30_minutes_dt
 logger = logging.getLogger(__name__)
 
 
-def nwp_irradence_simple_run_all_batches(
+def nwp_irradiance_simple_run_all_batches(
     configuration_file: Optional[str] = None, n_batches: int = 11
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
@@ -45,7 +45,7 @@ def nwp_irradence_simple_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         batch = next(dataloader)
-        forecasts = forecasts + nwp_irradence_simple_run_one_batch(batch=batch, batch_idx=i)
+        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=i)
 
     # select first 338 forecast
     if len(forecasts) > 338:
@@ -66,7 +66,7 @@ def nwp_irradence_simple_run_all_batches(
     return forecasts_sql
 
 
-def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch], batch_idx: int) -> List[Forecast]:
+def nwp_irradiance_simple_run_one_batch(batch: Union[dict, Batch], batch_idx: int) -> List[Forecast]:
     """Run model for one batch"""
 
     # make sure its a Batch object
@@ -74,7 +74,7 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch], batch_idx: int
         batch = Batch(**batch)
 
     # run model
-    irradence_mean = nwp_irradence_simple(batch)
+    irradence_mean = nwp_irradiance_simple(batch)
 
     # set up forecasts fields
     forecast_creation_time = datetime.now(tz=timezone.utc)
@@ -110,7 +110,7 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch], batch_idx: int
     return forecasts
 
 
-def nwp_irradence_simple(batch: Batch) -> float:
+def nwp_irradiance_simple(batch: Batch) -> float:
     """Predictions for one batch
 
     Just to take the mean NWP data across the batch
