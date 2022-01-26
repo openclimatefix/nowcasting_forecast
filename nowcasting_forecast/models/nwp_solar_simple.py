@@ -1,7 +1,8 @@
 """ Simple model to take NWP irradence and make solar """
 import logging
 import os
-from datetime import datetime, timezone
+import xarray as xr
+from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Union
 
 from nowcasting_dataset.config.load import load_yaml_configuration
@@ -75,14 +76,14 @@ def nwp_irradiance_simple_run_one_batch(
     if type(batch) == dict:
         batch = Batch(**batch)
 
-    # run model
-    irradence_mean = nwp_irradiance_simple(batch)
-
     # set up forecasts fields
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
     # TODO make input data from actual data
     input_data_last_updated = make_fake_input_data_last_updated()
+
+    # run model
+    irradiance_mean = nwp_irradiance_simple(batch)
 
     forecasts = []
     for i in range(batch.metadata.batch_size):
@@ -91,20 +92,23 @@ def nwp_irradiance_simple_run_one_batch(
         gsp_id = i + batch_idx * batch.metadata.batch_size
         location = Location(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
 
-        # add timezone
-        target_time = batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
+        forecast_values = []
+        for t_index in irradiance_mean.time_index:
+            # add timezone
+            target_time = batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc) \
+                          + timedelta(minutes=30)
 
-        forecast_value = ForecastValue(
-            target_time=target_time,
-            expected_power_generation_megawatts=irradence_mean,
-        )
+            forecast_values.append(ForecastValue(
+                target_time=target_time,
+                expected_power_generation_megawatts=irradiance_mean[i, t_index],
+            ))
 
         forecasts.append(
             Forecast(
                 model_name="mvp_irradence_v0",
                 location=location,
                 forecast_creation_time=forecast_creation_time,
-                forecast_values=[forecast_value],
+                forecast_values=forecast_values,
                 input_data_last_updated=input_data_last_updated,
             )
         )
@@ -112,10 +116,12 @@ def nwp_irradiance_simple_run_one_batch(
     return forecasts
 
 
-def nwp_irradiance_simple(batch: Batch) -> float:
+def nwp_irradiance_simple(batch: Batch) -> xr.DataArray:
     """Predictions for one batch
 
     Just to take the mean NWP data across the batch
+
+    Returns a data array of nwp irradiance with dimensions for examples and time.
     """
     nwp = batch.nwp
 
@@ -125,7 +131,7 @@ def nwp_irradiance_simple(batch: Batch) -> float:
 
     # take mean across all dims excpet mean
     # TODO take mean for each example
-    irradence_mean = nwp.data.mean()
+    irradence_mean = nwp.data.mean(axis=(2,3))
 
     # scale irradence to roughly mw
     irradence_mean = irradence_mean / 100
