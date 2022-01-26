@@ -49,8 +49,10 @@ def nwp_irradence_simple_run_all_batches(
 
     # select first 338 forecast
     if len(forecasts) > 338:
-        logger.debug('There are more than 338 forecasts, so just taking the first 338. '
-                     'This can happen due to rounding up the examples to fit in batches')
+        logger.debug(
+            "There are more than 338 forecasts, so just taking the first 338. "
+            "This can happen due to rounding up the examples to fit in batches"
+        )
         forecasts = forecasts[0:338]
 
     # convert to sql objects

@@ -30,6 +30,7 @@ Base = declarative_base()
 national_gb_label = "National-GB"
 # TODO #3 Add forecast latest table, this make it easy to load the latest forecast
 
+
 ########
 # 1. Reusable classes
 ########

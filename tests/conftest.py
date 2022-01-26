@@ -1,18 +1,16 @@
 import tempfile
-from datetime import datetime
 from typing import List
 
-import numpy as np
 import pytest
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.dataset.batch import Batch
-from sqlalchemy import event
 
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
-from nowcasting_forecast.database.models import Base, ForecastSQL, ForecastValueSQL
+from nowcasting_forecast.database.models import Base, ForecastSQL
 
 # TODO #4 add test postgres database, might need to do this with docker-composer
+
 
 @pytest.fixture
 def forecast_sql(db_session):
