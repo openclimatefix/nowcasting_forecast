@@ -47,7 +47,7 @@ def make_fake_forecast(gsp_id: int, t0_datetime_utc: Optional[datetime] = None) 
         forecast_values.append(f)
 
     forecast = ForecastSQL(
-        model_name='fake',
+        model_name="fake",
         forecast_creation_time=t0_datetime_utc,
         location=location,
         input_data_last_updated=input_data_last_updated,
@@ -83,7 +83,7 @@ def make_fake_national_forecast(t0_datetime_utc: Optional[datetime] = None) -> F
         forecast_values.append(f)
 
     forecast = ForecastSQL(
-        model_name='fake',
+        model_name="fake",
         forecast_creation_time=t0_datetime_utc,
         location=location,
         input_data_last_updated=input_data_last_updated,

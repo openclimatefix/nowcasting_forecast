@@ -99,7 +99,7 @@ def nwp_irradence_simple_run_one_batch(batch: Union[dict, Batch], batch_idx: int
 
         forecasts.append(
             Forecast(
-                model_name='mvp_irradence_v0',
+                model_name="mvp_irradence_v0",
                 location=location,
                 forecast_creation_time=forecast_creation_time,
                 forecast_values=[forecast_value],
