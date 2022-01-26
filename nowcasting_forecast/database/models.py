@@ -28,7 +28,7 @@ Base = declarative_base()
 
 
 national_gb_label = "National-GB"
-
+# TODO #3 Add forecast latest table, this make it easy to load the latest forecast
 
 ########
 # 1. Reusable classes
@@ -172,6 +172,7 @@ class InputDataLastUpdated(EnhancedBaseModel):
 ########
 # 4. Forecasts
 ########
+# TODO add model_name to forecast, or add model table #13
 class ForecastSQL(Base, CreatedMixin):
     """Forecast SQL model"""
 

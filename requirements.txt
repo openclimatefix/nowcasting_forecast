@@ -3,5 +3,5 @@ sqlalchemy
 psycopg2-binary
 numpy
 click
-nowcasting_dataset
+nowcasting_dataset #14 add version, #12 reduce docker size
 s3fs
