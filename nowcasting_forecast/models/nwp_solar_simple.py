@@ -97,7 +97,7 @@ def nwp_irradiance_simple_run_one_batch(
             # add timezone
             target_time = batch.metadata.t0_datetime_utc[i].replace(
                 tzinfo=timezone.utc
-            ) + timedelta(minutes=30)
+            ) + timedelta(minutes=30) * t_index.values
 
             forecast_values.append(
                 ForecastValue(

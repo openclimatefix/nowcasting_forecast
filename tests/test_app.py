@@ -29,3 +29,4 @@ def test_not_fake(db_connection: DatabaseConnection):
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
         assert len(forecasts) == 338 + 1  # 338 gsp + national
+        assert len(forecasts[0].forecast_values) > 1

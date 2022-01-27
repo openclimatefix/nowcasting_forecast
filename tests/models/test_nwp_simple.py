@@ -19,6 +19,9 @@ def test_nwp_irradiance_simple_run_one_batch(batch):
 
     f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0)
 
+    # make sure the target times are different
+    assert f[0].forecast_values[0].target_time != f[0].forecast_values[1].target_time
+
 
 def test_nwp_irradiance_simple_run_all_batches(batch, configuration):
 
