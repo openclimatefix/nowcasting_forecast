@@ -1,16 +1,20 @@
 import pandas as pd
+import logging
 
 from nowcasting_forecast.database.models import Forecast, ForecastValue, Location, national_gb_label
 from typing import List
 from nowcasting_forecast import N_GSP
 
 
-def make_national_forecast(forecasts: List[Forecast]):
+logger = logging.getLogger(__name__)
+
+
+def make_national_forecast(forecasts: List[Forecast], n_gsps:int = N_GSP):
     """This takes a list of forecast and adds up all teh forecast values
 
     Note that a different method to do this, would be to do this in the database
     """
-    assert len(forecasts) == N_GSP
+    assert len(forecasts) == n_gsps, f'The number of forecast was only {len(forecasts)}, it should be {n_gsps}'
     # TODO check gsps are unique
 
     location = Location(label=national_gb_label)
@@ -39,8 +43,11 @@ def make_national_forecast(forecasts: List[Forecast]):
 
     # group by target time
     forecast_values = forecast_values.groupby(["target_time"]).sum()
-    assert (forecast_values["count"] == N_GSP).all() # could do this with 'is_unique'
     forecast_values.reset_index(inplace=True)
+    if (forecast_values["count"] != n_gsps).all():
+        m = f'The should should be {n_gsps}, but instead it is {forecast_values["count"]}'
+        logger.debug(m)
+        raise Exception(m)
 
     # change back to ForecastValue
     forecast_values = [

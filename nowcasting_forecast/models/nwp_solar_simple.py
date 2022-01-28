@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def nwp_irradiance_simple_run_all_batches(
-    configuration_file: Optional[str] = None, n_batches: int = 11
+    configuration_file: Optional[str] = None, n_batches: int = 11, add_national_forecast: bool = True, n_gsps: int = N_GSP
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
@@ -60,8 +60,9 @@ def nwp_irradiance_simple_run_all_batches(
     # convert to sql objects
     forecasts_sql = [f.to_orm() for f in forecasts]
 
-    # add national forecast
-    forecasts_sql.append(make_national_forecast(forecasts=forecasts))
+    if add_national_forecast:
+        # add national forecast
+        forecasts_sql.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps))
 
     logger.info(f"Made {len(forecasts_sql)} forecasts")
 
