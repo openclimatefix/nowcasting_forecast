@@ -17,3 +17,4 @@ def convert_to_camelcase(snake_str: str) -> str:
     """Converts a given snake_case string into camelCase"""
     first, *others = snake_str.split("_")
     return "".join([first.lower(), *map(str.title, others)])
+
