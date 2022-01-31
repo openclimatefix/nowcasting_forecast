@@ -2,6 +2,7 @@
 import logging
 from typing import List
 
+import numpy as np
 import pandas as pd
 
 from nowcasting_forecast import N_GSP
@@ -18,11 +19,12 @@ def make_national_forecast(forecasts: List[Forecast], n_gsps: int = N_GSP):
     assert (
         len(forecasts) == n_gsps
     ), f"The number of forecast was only {len(forecasts)}, it should be {n_gsps}"
-    # TODO check gsps are unique
+
+    # check the gsp ids are unique
+    gsps = [f.location.gsp_id for f in forecasts]
+    assert len(np.unique(gsps)) == n_gsps, f'Found non unique GSP ids'
 
     location = Location(label=national_gb_label)
-
-    # forecast_national = forecasts[0]
 
     # make pandas dataframe of all the forecast values with a gsp id
     forecast_values_flat = []
