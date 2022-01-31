@@ -1,3 +1,4 @@
+""" Make national forecasts """
 import logging
 from typing import List
 
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def make_national_forecast(forecasts: List[Forecast], n_gsps: int = N_GSP):
-    """This takes a list of forecast and adds up all teh forecast values
+    """This takes a list of forecast and adds up all the forecast values
 
     Note that a different method to do this, would be to do this in the database
     """
