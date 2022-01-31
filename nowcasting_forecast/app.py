@@ -45,7 +45,7 @@ def run(db_url: str, fake: bool = False):
             make_batches()
 
             # make forecasts
-            forecasts = nwp_irradiance_simple_run_all_batches()
+            forecasts = nwp_irradiance_simple_run_all_batches(session=session)
 
         # save forecasts
         save(forecasts=forecasts, session=session)
