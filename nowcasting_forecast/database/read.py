@@ -60,14 +60,11 @@ def get_latest_forecast(
 
 def get_all_gsp_ids_latest_forecast(
     session: Session,
-    gsp_id: Optional[int] = None,
 ) -> List[ForecastSQL]:
     """
     Read forecasts
 
     :param session: database session
-    :param gsp_id: optional to gsp id, to filter query on
-        If None is given then all are returned.
 
     return: List of forecasts objects from database
     """
@@ -90,8 +87,6 @@ def get_all_gsp_ids_latest_forecast(
     query = query.order_by(LocationSQL.gsp_id)
 
     forecasts = query.all()
-
-    logger.debug(f"Found forecasts for {gsp_id}")
 
     return forecasts
 
