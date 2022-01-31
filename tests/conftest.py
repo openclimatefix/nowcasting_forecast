@@ -51,7 +51,7 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
 @pytest.fixture
 def db_connection():
 
-    url = os.getenv('DB_URL')
+    url = os.getenv("DB_URL")
 
     connection = DatabaseConnection(url=url)
     Base.metadata.create_all(connection.engine)
