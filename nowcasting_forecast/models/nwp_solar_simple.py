@@ -9,10 +9,8 @@ from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 
 import nowcasting_forecast
-from nowcasting_forecast.database.fake import (
-    make_fake_input_data_last_updated,
-)
 from nowcasting_forecast import N_GSP
+from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
 from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location
 from nowcasting_forecast.database.national import make_national_forecast
 from nowcasting_forecast.dataloader import BatchDataLoader
@@ -22,7 +20,10 @@ logger = logging.getLogger(__name__)
 
 
 def nwp_irradiance_simple_run_all_batches(
-    configuration_file: Optional[str] = None, n_batches: int = 11, add_national_forecast: bool = True, n_gsps: int = N_GSP
+    configuration_file: Optional[str] = None,
+    n_batches: int = 11,
+    add_national_forecast: bool = True,
+    n_gsps: int = N_GSP,
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
@@ -97,9 +98,10 @@ def nwp_irradiance_simple_run_one_batch(
         forecast_values = []
         for t_index in irradiance_mean.time_index:
             # add timezone
-            target_time = batch.metadata.t0_datetime_utc[i].replace(
-                tzinfo=timezone.utc
-            ) + timedelta(minutes=30) * t_index.values
+            target_time = (
+                batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
+                + timedelta(minutes=30) * t_index.values
+            )
 
             forecast_values.append(
                 ForecastValue(

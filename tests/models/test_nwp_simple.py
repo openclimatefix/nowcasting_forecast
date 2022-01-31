@@ -1,9 +1,9 @@
 import os
 import tempfile
 
-from nowcasting_forecast import N_GSP
 from nowcasting_dataset.config.save import save_yaml_configuration
 
+from nowcasting_forecast import N_GSP
 from nowcasting_forecast.models.nwp_solar_simple import (
     nwp_irradiance_simple,
     nwp_irradiance_simple_run_all_batches,
@@ -53,7 +53,10 @@ def test_nwp_irradiance_simple_run_all_batches_and_national(batch, configuration
         save_yaml_configuration(configuration=configuration)
 
         f = nwp_irradiance_simple_run_all_batches(
-            n_batches=1, configuration_file=configuration_file, add_national_forecast=True, n_gsps=n_gsps
+            n_batches=1,
+            configuration_file=configuration_file,
+            add_national_forecast=True,
+            n_gsps=n_gsps,
         )
 
         assert len(f) == n_gsps + 1
