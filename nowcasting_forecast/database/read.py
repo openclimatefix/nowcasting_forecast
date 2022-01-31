@@ -60,14 +60,11 @@ def get_latest_forecast(
 
 def get_all_gsp_ids_latest_forecast(
     session: Session,
-    gsp_id: Optional[int] = None,
 ) -> List[ForecastSQL]:
     """
     Read forecasts
 
     :param session: database session
-    :param gsp_id: optional to gsp id, to filter query on
-        If None is given then all are returned.
 
     return: List of forecasts objects from database
     """
@@ -90,8 +87,6 @@ def get_all_gsp_ids_latest_forecast(
     query = query.order_by(LocationSQL.gsp_id)
 
     forecasts = query.all()
-
-    logger.debug(f"Found forecasts for {gsp_id}")
 
     return forecasts
 
@@ -154,3 +149,35 @@ def get_latest_national_forecast(
     forecast = query.first()
 
     return forecast
+
+
+def get_location(session: Session, gsp_id: int) -> LocationSQL:
+    """
+    Get location object from gsp id
+
+    :param session: database session
+    :param gsp_id: gsp id of the location
+
+    return: List of forecasts values objects from database
+
+    """
+
+    # start main query
+    query = session.query(ForecastValueSQL)
+
+    # filter on gsp_id
+    query = query.filter(LocationSQL.gsp_id == gsp_id)
+
+    # get all results
+    locations = query.all()
+
+    if len(locations) == 0:
+        logger.debug(f"Location for gsp_id {gsp_id} does not exist so going to add it")
+
+        location = LocationSQL(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
+        session.add(location)
+
+    else:
+        location = locations[0]
+
+    return location

@@ -10,12 +10,14 @@ from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from nowcasting_dataset.dataset.batch import Batch
 from nowcasting_dataset.geospatial import lat_lon_to_osgb
+from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
 from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location
 from nowcasting_forecast.database.national import make_national_forecast
+from nowcasting_forecast.database.read import get_location
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
@@ -23,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def nwp_irradiance_simple_run_all_batches(
+    session: Session,
     configuration_file: Optional[str] = None,
     n_batches: int = 11,
     add_national_forecast: bool = True,
@@ -34,7 +37,7 @@ def nwp_irradiance_simple_run_all_batches(
     t0_datetime_utc = floor_30_minutes_dt(datetime.now(timezone.utc))
     logger.info(f"Making forecasts for {t0_datetime_utc=}")
 
-    # make confgiruation
+    # make configuration
     if configuration_file is None:
         configuration_file = os.path.join(
             os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v0.yaml"
@@ -51,7 +54,9 @@ def nwp_irradiance_simple_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         batch = next(dataloader)
-        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=i)
+        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(
+            batch=batch, batch_idx=i, session=session
+        )
 
     # select first 338 forecast
     if len(forecasts) > N_GSP:
@@ -74,7 +79,7 @@ def nwp_irradiance_simple_run_all_batches(
 
 
 def nwp_irradiance_simple_run_one_batch(
-    batch: Union[dict, Batch], batch_idx: int
+    batch: Union[dict, Batch], batch_idx: int, session: Session
 ) -> List[Forecast]:
     """Run model for one batch"""
 
@@ -113,7 +118,7 @@ def nwp_irradiance_simple_run_one_batch(
         ]
         gsp_ids = metadata.loc[meta_data_index].gsp_id.values
 
-        location = Location(gsp_id=gsp_ids[0], label=f"GSP_{gsp_ids[0]}")
+        location = Location.from_orm(get_location(gsp_id=gsp_ids[0], session=session))
 
         forecast_values = []
         for t_index in irradiance_mean.time_index:
@@ -156,8 +161,8 @@ def nwp_irradiance_simple(batch: Batch) -> xr.DataArray:
     # print(nwp)
     # nwp.data = nwp.data.sel(channels_index=["dlwrf"])
 
-    # take mean across all dims excpet mean
-    # TODO take mean for each example
+    # take mean across all x and y dims
+
     irradence_mean = nwp.data.mean(axis=(2, 3))
 
     # scale irradence to roughly mw
