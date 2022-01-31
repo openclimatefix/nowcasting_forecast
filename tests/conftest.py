@@ -5,6 +5,7 @@ import pytest
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.dataset.batch import Batch
 
+from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.models import Base, ForecastSQL
@@ -29,6 +30,18 @@ def forecasts(db_session) -> List[ForecastSQL]:
 
     # create
     f = make_fake_forecasts(gsp_ids=list(range(0, 10)))
+
+    # add
+    db_session.add_all(f)
+
+    return f
+
+
+@pytest.fixture
+def forecasts_all(db_session) -> List[ForecastSQL]:
+
+    # create
+    f = make_fake_forecasts(gsp_ids=list(range(0, N_GSP)))
 
     # add
     db_session.add_all(f)
@@ -72,6 +85,6 @@ def configuration():
 @pytest.fixture()
 def batch(configuration):
 
-    batch = Batch.fake(configuration=configuration)
+    batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
 
     return batch

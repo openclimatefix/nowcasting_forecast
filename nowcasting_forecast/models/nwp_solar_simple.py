@@ -9,11 +9,10 @@ from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 
 import nowcasting_forecast
-from nowcasting_forecast.database.fake import (
-    make_fake_input_data_last_updated,
-    make_fake_national_forecast,
-)
+from nowcasting_forecast import N_GSP
+from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
 from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location
+from nowcasting_forecast.database.national import make_national_forecast
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
@@ -21,7 +20,10 @@ logger = logging.getLogger(__name__)
 
 
 def nwp_irradiance_simple_run_all_batches(
-    configuration_file: Optional[str] = None, n_batches: int = 11
+    configuration_file: Optional[str] = None,
+    n_batches: int = 11,
+    add_national_forecast: bool = True,
+    n_gsps: int = N_GSP,
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
@@ -49,18 +51,19 @@ def nwp_irradiance_simple_run_all_batches(
         forecasts = forecasts + nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=i)
 
     # select first 338 forecast
-    if len(forecasts) > 338:
+    if len(forecasts) > N_GSP:
         logger.debug(
-            "There are more than 338 forecasts, so just taking the first 338. "
+            f"There are more than {N_GSP} forecasts, so just taking the first {N_GSP}. "
             "This can happen due to rounding up the examples to fit in batches"
         )
-        forecasts = forecasts[0:338]
+        forecasts = forecasts[0:N_GSP]
 
     # convert to sql objects
     forecasts_sql = [f.to_orm() for f in forecasts]
 
-    # add national forecast # TODO make this from the forecast
-    forecasts_sql.append(make_fake_national_forecast(t0_datetime_utc=t0_datetime_utc))
+    if add_national_forecast:
+        # add national forecast
+        forecasts_sql.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps))
 
     logger.info(f"Made {len(forecasts_sql)} forecasts")
 
@@ -95,9 +98,10 @@ def nwp_irradiance_simple_run_one_batch(
         forecast_values = []
         for t_index in irradiance_mean.time_index:
             # add timezone
-            target_time = batch.metadata.t0_datetime_utc[i].replace(
-                tzinfo=timezone.utc
-            ) + timedelta(minutes=30) * t_index.values
+            target_time = (
+                batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
+                + timedelta(minutes=30) * t_index.values
+            )
 
             forecast_values.append(
                 ForecastValue(
