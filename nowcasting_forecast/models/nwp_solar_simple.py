@@ -5,12 +5,15 @@ from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Union
 
 import xarray as xr
+import numpy as np
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
+from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
+from nowcasting_dataset.geospatial import lat_lon_to_osgb
 from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location
 from nowcasting_forecast.database.national import make_national_forecast
 from nowcasting_forecast.dataloader import BatchDataLoader
@@ -85,15 +88,30 @@ def nwp_irradiance_simple_run_one_batch(
     # TODO make input data from actual data
     input_data_last_updated = make_fake_input_data_last_updated()
 
+    # get gsp metadata
+    # load metadata
+    metadata = get_gsp_metadata_from_eso()
+    metadata.set_index("gsp_id", drop=False, inplace=True)
+
+    # make location x,y in osgb
+    metadata["location_x"], metadata["location_y"] = lat_lon_to_osgb(
+        lat=metadata["centroid_lat"], lon=metadata["centroid_lon"]
+    )
+
     # run model
     irradiance_mean = nwp_irradiance_simple(batch)
 
     forecasts = []
     for i in range(batch.metadata.batch_size):
 
-        # TODO make proper location
-        gsp_id = i + batch_idx * batch.metadata.batch_size
-        location = Location(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
+        # get gsp id from eso metadata
+        meta_data_index = metadata.index[
+            np.isclose(metadata.location_x, batch.metadata.x_center_osgb[i], rtol=1e-05, atol=1e-05)
+            & np.isclose(metadata.location_y, batch.metadata.y_center_osgb[i], rtol=1e-05, atol=1e-05)
+        ]
+        gsp_ids = metadata.loc[meta_data_index].gsp_id.values
+
+        location = Location(gsp_id=gsp_ids[0], label=f"GSP_{gsp_ids[0]}")
 
         forecast_values = []
         for t_index in irradiance_mean.time_index:
