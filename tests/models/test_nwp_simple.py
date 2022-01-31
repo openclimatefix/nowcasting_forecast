@@ -16,15 +16,15 @@ def test_nwp_irradiance_simple(batch):
     _ = nwp_irradiance_simple(batch=batch)
 
 
-def test_nwp_irradiance_simple_run_one_batch(batch):
+def test_nwp_irradiance_simple_run_one_batch(batch, db_session):
 
-    f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0)
+    f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0, session=db_session)
 
     # make sure the target times are different
     assert f[0].forecast_values[0].target_time != f[0].forecast_values[1].target_time
 
 
-def test_nwp_irradiance_simple_run_all_batches(batch, configuration):
+def test_nwp_irradiance_simple_run_all_batches(batch, configuration, db_session):
 
     with tempfile.TemporaryDirectory() as tempdir:
         batch.save_netcdf(batch_i=0, path=os.path.join(tempdir, "live"))
@@ -34,13 +34,16 @@ def test_nwp_irradiance_simple_run_all_batches(batch, configuration):
         save_yaml_configuration(configuration=configuration)
 
         f = nwp_irradiance_simple_run_all_batches(
-            n_batches=1, configuration_file=configuration_file, add_national_forecast=False
+            n_batches=1,
+            configuration_file=configuration_file,
+            add_national_forecast=False,
+            session=db_session,
         )
 
         assert len(f) == 4
 
 
-def test_nwp_irradiance_simple_run_all_batches_and_national(batch, configuration):
+def test_nwp_irradiance_simple_run_all_batches_and_national(batch, configuration, db_session):
 
     n_gsps = configuration.process.batch_size
 
@@ -53,6 +56,7 @@ def test_nwp_irradiance_simple_run_all_batches_and_national(batch, configuration
         save_yaml_configuration(configuration=configuration)
 
         f = nwp_irradiance_simple_run_all_batches(
+            session=db_session,
             n_batches=1,
             configuration_file=configuration_file,
             add_national_forecast=True,

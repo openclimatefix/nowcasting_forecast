@@ -7,12 +7,14 @@ from typing import List, Optional, Union
 import xarray as xr
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
+from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
 from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location
 from nowcasting_forecast.database.national import make_national_forecast
+from nowcasting_forecast.database.read import get_location
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
@@ -20,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def nwp_irradiance_simple_run_all_batches(
+    session: Session,
     configuration_file: Optional[str] = None,
     n_batches: int = 11,
     add_national_forecast: bool = True,
@@ -48,7 +51,9 @@ def nwp_irradiance_simple_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         batch = next(dataloader)
-        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=i)
+        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(
+            batch=batch, batch_idx=i, session=session
+        )
 
     # select first 338 forecast
     if len(forecasts) > N_GSP:
@@ -71,7 +76,7 @@ def nwp_irradiance_simple_run_all_batches(
 
 
 def nwp_irradiance_simple_run_one_batch(
-    batch: Union[dict, Batch], batch_idx: int
+    batch: Union[dict, Batch], batch_idx: int, session: Session
 ) -> List[Forecast]:
     """Run model for one batch"""
 
@@ -93,7 +98,7 @@ def nwp_irradiance_simple_run_one_batch(
 
         # TODO make proper location
         gsp_id = i + batch_idx * batch.metadata.batch_size
-        location = Location(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
+        location = Location.from_orm(get_location(gsp_id=gsp_id, session=session))
 
         forecast_values = []
         for t_index in irradiance_mean.time_index:
