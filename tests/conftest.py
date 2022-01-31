@@ -1,3 +1,4 @@
+import os
 import tempfile
 from typing import List
 
@@ -49,15 +50,29 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
     return f
 
 
+# @pytest.fixture
+# def db_connection():
+#
+#     url = os.getenv('DB_URL')
+#
+#     with tempfile.NamedTemporaryFile(suffix="db") as tmp:
+#         url = f"sqlite:///{tmp.name}.db"
+#
+#         connection = DatabaseConnection(url=url)
+#         Base.metadata.create_all(connection.engine)
+#
+#         yield connection
+
 @pytest.fixture
 def db_connection():
 
-    with tempfile.NamedTemporaryFile(suffix="db") as tmp:
-        url = f"sqlite:///{tmp.name}.db"
-        connection = DatabaseConnection(url=url)
-        Base.metadata.create_all(connection.engine)
+    url = os.getenv('DB_URL')
 
-        yield connection
+    connection = DatabaseConnection(url=url)
+    Base.metadata.create_all(connection.engine)
+
+    yield connection
+
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -67,7 +82,6 @@ def db_session(db_connection):
     with db_connection.get_session() as s:
         s.begin()
         yield s
-
         s.rollback()
 
 

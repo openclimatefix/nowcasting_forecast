@@ -70,21 +70,21 @@ def get_all_gsp_ids_latest_forecast(
     """
 
     # start sub query query
-    sub_query = session.query(ForecastSQL.id, ForecastSQL.created_utc, LocationSQL.gsp_id)
-    sub_query = sub_query.join(LocationSQL)
-    sub_query = sub_query.order_by(LocationSQL.gsp_id, desc(ForecastSQL.created_utc))
-    sub_query = sub_query.group_by(LocationSQL.gsp_id)
-    sub_query = sub_query.having(func.max(ForecastSQL.created_utc))
-
-    # get all results
-    sub = sub_query.subquery()
-    logger.info(sub_query.all())
+    # sub_query = session.query(ForecastSQL.id, ForecastSQL.created_utc, LocationSQL.gsp_id)
+    # sub_query = sub_query.join(LocationSQL)
+    # sub_query = sub_query.order_by(LocationSQL.gsp_id, desc(ForecastSQL.created_utc))
+    # sub_query = sub_query.group_by(LocationSQL.gsp_id)
+    # # sub_query = sub_query.having(func.max(ForecastSQL.created_utc))
+    #
+    # # get all results
+    # sub = sub_query.subquery()
+    # logger.info(sub_query.all())
 
     # start main query
     query = session.query(ForecastSQL)
+    query = query.distinct(LocationSQL.gsp_id)
     query = query.join(LocationSQL)
-    query = query.join(sub, sub.c.id == ForecastSQL.id)
-    query = query.order_by(LocationSQL.gsp_id)
+    query = query.order_by(LocationSQL.gsp_id, desc(ForecastSQL.created_utc))
 
     forecasts = query.all()
 
@@ -163,7 +163,7 @@ def get_location(session: Session, gsp_id: int) -> LocationSQL:
     """
 
     # start main query
-    query = session.query(ForecastValueSQL)
+    query = session.query(LocationSQL)
 
     # filter on gsp_id
     query = query.filter(LocationSQL.gsp_id == gsp_id)
@@ -176,6 +176,7 @@ def get_location(session: Session, gsp_id: int) -> LocationSQL:
 
         location = LocationSQL(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
         session.add(location)
+        session.commit()
 
     else:
         location = locations[0]
