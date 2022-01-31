@@ -4,16 +4,16 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Union
 
-import xarray as xr
 import numpy as np
+import xarray as xr
 from nowcasting_dataset.config.load import load_yaml_configuration
+from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from nowcasting_dataset.dataset.batch import Batch
+from nowcasting_dataset.geospatial import lat_lon_to_osgb
 
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
-from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
-from nowcasting_dataset.geospatial import lat_lon_to_osgb
 from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location
 from nowcasting_forecast.database.national import make_national_forecast
 from nowcasting_forecast.dataloader import BatchDataLoader
@@ -107,7 +107,9 @@ def nwp_irradiance_simple_run_one_batch(
         # get gsp id from eso metadata
         meta_data_index = metadata.index[
             np.isclose(metadata.location_x, batch.metadata.x_center_osgb[i], rtol=1e-05, atol=1e-05)
-            & np.isclose(metadata.location_y, batch.metadata.y_center_osgb[i], rtol=1e-05, atol=1e-05)
+            & np.isclose(
+                metadata.location_y, batch.metadata.y_center_osgb[i], rtol=1e-05, atol=1e-05
+            )
         ]
         gsp_ids = metadata.loc[meta_data_index].gsp_id.values
 
