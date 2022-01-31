@@ -6,7 +6,13 @@ import numpy as np
 import pandas as pd
 
 from nowcasting_forecast import N_GSP
-from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, Location, national_gb_label
+from nowcasting_forecast.database.models import (
+    Forecast,
+    ForecastSQL,
+    ForecastValue,
+    Location,
+    national_gb_label,
+)
 
 logger = logging.getLogger(__name__)
 
