@@ -156,7 +156,7 @@ def get_latest_national_forecast(
     return forecast
 
 
-def get_location(session:Session, gsp_id:int) -> LocationSQL:
+def get_location(session: Session, gsp_id: int) -> LocationSQL:
     """
     Get location object from gsp id
 
@@ -177,7 +177,7 @@ def get_location(session:Session, gsp_id:int) -> LocationSQL:
     locations = query.all()
 
     if len(locations) == 0:
-        logger.debug(f'Location for gsp_id {gsp_id} does not exist so going to add it')
+        logger.debug(f"Location for gsp_id {gsp_id} does not exist so going to add it")
 
         location = LocationSQL(gsp_id=gsp_id, label=f"GSP_{gsp_id}")
         session.add(location)
@@ -186,5 +186,3 @@ def get_location(session:Session, gsp_id:int) -> LocationSQL:
         location = locations[0]
 
     return location
-
-

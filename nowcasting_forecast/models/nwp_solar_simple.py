@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def nwp_irradiance_simple_run_all_batches(
-    session:Session,
+    session: Session,
     configuration_file: Optional[str] = None,
     n_batches: int = 11,
     add_national_forecast: bool = True,
@@ -51,7 +51,9 @@ def nwp_irradiance_simple_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         batch = next(dataloader)
-        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=i, session=session)
+        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(
+            batch=batch, batch_idx=i, session=session
+        )
 
     # select first 338 forecast
     if len(forecasts) > N_GSP:
@@ -74,7 +76,7 @@ def nwp_irradiance_simple_run_all_batches(
 
 
 def nwp_irradiance_simple_run_one_batch(
-    batch: Union[dict, Batch], batch_idx: int, session:Session
+    batch: Union[dict, Batch], batch_idx: int, session: Session
 ) -> List[Forecast]:
     """Run model for one batch"""
 
