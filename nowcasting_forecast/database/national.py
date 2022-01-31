@@ -6,12 +6,18 @@ import numpy as np
 import pandas as pd
 
 from nowcasting_forecast import N_GSP
-from nowcasting_forecast.database.models import Forecast, ForecastValue, Location, national_gb_label
+from nowcasting_forecast.database.models import (
+    Forecast,
+    ForecastSQL,
+    ForecastValue,
+    Location,
+    national_gb_label,
+)
 
 logger = logging.getLogger(__name__)
 
 
-def make_national_forecast(forecasts: List[Forecast], n_gsps: int = N_GSP):
+def make_national_forecast(forecasts: List[Forecast], n_gsps: int = N_GSP) -> ForecastSQL:
     """This takes a list of forecast and adds up all the forecast values
 
     Note that a different method to do this, would be to do this in the database
@@ -65,4 +71,4 @@ def make_national_forecast(forecasts: List[Forecast], n_gsps: int = N_GSP):
         model_name=forecasts[0].model_name,
         input_data_last_updated=forecasts[0].input_data_last_updated,
         forecast_creation_time=forecasts[0].forecast_creation_time,
-    )
+    ).to_orm()
