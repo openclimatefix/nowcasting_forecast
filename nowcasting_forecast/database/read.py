@@ -65,7 +65,7 @@ def get_all_gsp_ids_latest_forecast(
     Read forecasts
 
     :param session: database session
-    
+
     return: List of forecasts objects from database
     """
 
