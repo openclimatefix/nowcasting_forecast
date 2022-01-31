@@ -85,6 +85,6 @@ def configuration():
 @pytest.fixture()
 def batch(configuration):
 
-    batch = Batch.fake(configuration=configuration, temporally_align_batches=True)
+    batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
 
     return batch
