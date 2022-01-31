@@ -4,9 +4,12 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Union
 
+import numpy as np
 import xarray as xr
 from nowcasting_dataset.config.load import load_yaml_configuration
+from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from nowcasting_dataset.dataset.batch import Batch
+from nowcasting_dataset.geospatial import lat_lon_to_osgb
 from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
@@ -34,7 +37,7 @@ def nwp_irradiance_simple_run_all_batches(
     t0_datetime_utc = floor_30_minutes_dt(datetime.now(timezone.utc))
     logger.info(f"Making forecasts for {t0_datetime_utc=}")
 
-    # make confgiruation
+    # make configuration
     if configuration_file is None:
         configuration_file = os.path.join(
             os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v0.yaml"
@@ -90,15 +93,32 @@ def nwp_irradiance_simple_run_one_batch(
     # TODO make input data from actual data
     input_data_last_updated = make_fake_input_data_last_updated()
 
+    # get gsp metadata
+    # load metadata
+    metadata = get_gsp_metadata_from_eso()
+    metadata.set_index("gsp_id", drop=False, inplace=True)
+
+    # make location x,y in osgb
+    metadata["location_x"], metadata["location_y"] = lat_lon_to_osgb(
+        lat=metadata["centroid_lat"], lon=metadata["centroid_lon"]
+    )
+
     # run model
     irradiance_mean = nwp_irradiance_simple(batch)
 
     forecasts = []
     for i in range(batch.metadata.batch_size):
 
-        # TODO make proper location
-        gsp_id = i + batch_idx * batch.metadata.batch_size
-        location = Location.from_orm(get_location(gsp_id=gsp_id, session=session))
+        # get gsp id from eso metadata
+        meta_data_index = metadata.index[
+            np.isclose(metadata.location_x, batch.metadata.x_center_osgb[i], rtol=1e-05, atol=1e-05)
+            & np.isclose(
+                metadata.location_y, batch.metadata.y_center_osgb[i], rtol=1e-05, atol=1e-05
+            )
+        ]
+        gsp_ids = metadata.loc[meta_data_index].gsp_id.values
+
+        location = Location.from_orm(get_location(gsp_id=gsp_ids[0], session=session))
 
         forecast_values = []
         for t_index in irradiance_mean.time_index:
@@ -141,8 +161,8 @@ def nwp_irradiance_simple(batch: Batch) -> xr.DataArray:
     # print(nwp)
     # nwp.data = nwp.data.sel(channels_index=["dlwrf"])
 
-    # take mean across all dims excpet mean
-    # TODO take mean for each example
+    # take mean across all x and y dims
+
     irradence_mean = nwp.data.mean(axis=(2, 3))
 
     # scale irradence to roughly mw
