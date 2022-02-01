@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: "0 12 * * 1"
 
-
 jobs:
   push_to_registry:
     name: Build docker file for testing
