@@ -17,7 +17,12 @@ jobs:
 
       - name: Run tests inside the container
         run: docker-compose -f test-docker-compose.yml run forecast
-        
+
+      - name: Copy coverage
+        run: |
+          # copy file
+          mv ./tests/.coverage .
+
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@v2
         with:

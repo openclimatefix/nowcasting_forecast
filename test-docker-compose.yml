@@ -22,6 +22,7 @@ services:
       - LOG_LEVEL=DEBUG
     command: >
       bash -c "pytest --cov=./nowcasting_forecast
+      && coverage report -m
       && cp .coverage ./tests/"
     depends_on:
       - "postgres"
