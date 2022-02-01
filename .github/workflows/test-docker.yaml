@@ -1,5 +1,8 @@
 name: Test Docker image
-on: [push]
+on:
+  push:
+  schedule:
+    - cron: "0 12 * * 1"
 
 jobs:
   push_to_registry:
@@ -8,7 +11,20 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+
       - name: Build Docker image
-        run: docker build -t nowcasting_forecast --build-arg TESTING=1 -f infrastructure/docker/Dockerfile .
+        run: docker-compose -f test-docker-compose.yml build
+
       - name: Run tests inside the container
-        run: docker run -e GIT_PYTHON_REFRESH=quiet nowcasting_forecast pytest
+        run: docker-compose -f test-docker-compose.yml run forecast
+
+      - name: Copy coverage
+        run: |
+          # copy file
+          mv ./tests/.coverage .
+          mv ./tests/coverage.xml .
+
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true

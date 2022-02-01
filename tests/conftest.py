@@ -1,3 +1,4 @@
+import os
 import tempfile
 from typing import List
 
@@ -9,8 +10,6 @@ from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.models import Base, ForecastSQL
-
-# TODO #4 add test postgres database, might need to do this with docker-composer
 
 
 @pytest.fixture
@@ -52,12 +51,14 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
 @pytest.fixture
 def db_connection():
 
-    with tempfile.NamedTemporaryFile(suffix="db") as tmp:
-        url = f"sqlite:///{tmp.name}.db"
-        connection = DatabaseConnection(url=url)
-        Base.metadata.create_all(connection.engine)
+    url = os.getenv("DB_URL")
 
-        yield connection
+    connection = DatabaseConnection(url=url)
+    Base.metadata.create_all(connection.engine)
+
+    yield connection
+
+    Base.metadata.drop_all(connection.engine)
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -67,7 +68,6 @@ def db_session(db_connection):
     with db_connection.get_session() as s:
         s.begin()
         yield s
-
         s.rollback()
 
 

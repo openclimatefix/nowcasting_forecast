@@ -29,6 +29,6 @@ WORKDIR /app
 # install library
 RUN pip install -e .
 
-RUN if [ "$TESTING" = 1 ]; then pip install pytest; fi
+RUN if [ "$TESTING" = 1 ]; then pip install pytest pytest-cov coverage; fi
 
 CMD ["python", "-u","nowcasting_forecast/app.py"]

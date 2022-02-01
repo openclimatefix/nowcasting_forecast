@@ -118,7 +118,9 @@ def nwp_irradiance_simple_run_one_batch(
         ]
         gsp_ids = metadata.loc[meta_data_index].gsp_id.values
 
-        location = Location.from_orm(get_location(gsp_id=gsp_ids[0], session=session))
+        location = get_location(gsp_id=gsp_ids[0], session=session)
+        logger.debug(location)
+        location = Location.from_orm(location)
 
         forecast_values = []
         for t_index in irradiance_mean.time_index:
