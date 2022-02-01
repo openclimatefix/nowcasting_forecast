@@ -1,5 +1,9 @@
 name: Test Docker image
-on: [push]
+on:
+  push:
+  schedule:
+    - cron: "0 12 * * 1"
+
 
 jobs:
   push_to_registry:
