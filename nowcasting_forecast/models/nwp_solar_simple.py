@@ -99,7 +99,10 @@ def nwp_irradiance_simple_run_one_batch(
     forecasts = []
     for i in range(batch.metadata.batch_size):
 
-        gsp_id = batch.metadata.id
+        # gsp_id = batch.metadata.id
+        # fix for the moment, just to get it working until
+        # https://github.com/openclimatefix/nowcasting_dataset/pull/599
+        gsp_id = i + batch_idx * batch.metadata.batch_size
 
         location = get_location(gsp_id=gsp_id, session=session)
         logger.debug(location)
