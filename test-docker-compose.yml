@@ -12,15 +12,19 @@ services:
 
   forecast:
     build:
-      context: ../
+      context: .
       dockerfile: infrastructure/docker/Dockerfile
+      args:
+        TESTING: 1
     environment:
       - DB_URL=postgresql://postgres:postgres@postgres:5432/postgres
       - GIT_PYTHON_REFRESH=quiet
       - LOG_LEVEL=DEBUG
-    command: ["pytest", "-s", "tests", "--log-level=DEBUG"]
+    command: >
+      bash -c "pytest --cov=./nowcasting_forecast
+      && cp .coverage ./tests/"
     depends_on:
       - "postgres"
     volumes:
-      - ./:/app/tests
-      - ../nowcasting_forecast/:/app/nowcasting_forecast
+      - ./tests/:/app/tests
+      - ./nowcasting_forecast/:/app/nowcasting_forecast
