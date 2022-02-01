@@ -111,11 +111,23 @@ def nwp_irradiance_simple_run_one_batch(
 
         # get gsp id from eso metadata
         meta_data_index = metadata.index[
-            np.isclose(metadata.location_x, batch.metadata.x_center_osgb[i], rtol=1e-05, atol=1e-05)
+            np.isclose(
+                metadata.location_x.round(), batch.metadata.x_center_osgb[i], rtol=1e-05, atol=1e-05
+            )
             & np.isclose(
-                metadata.location_y, batch.metadata.y_center_osgb[i], rtol=1e-05, atol=1e-05
+                metadata.location_y.round(), batch.metadata.y_center_osgb[i], rtol=1e-05, atol=1e-05
             )
         ]
+
+        if len(meta_data_index) == 0:
+            raise Exception(
+                "Could not find GSP location at"
+                f"{batch.metadata.x_center_osgb[i]=}"
+                f"{batch.metadata.y_center_osgb[i]=} in"
+                f"{metadata.location_x=}, "
+                f"{metadata.location_y=}"
+            )
+
         gsp_ids = metadata.loc[meta_data_index].gsp_id.values
 
         location = get_location(gsp_id=gsp_ids[0], session=session)
