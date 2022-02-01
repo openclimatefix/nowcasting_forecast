@@ -15,7 +15,13 @@ from sqlalchemy.orm.session import Session
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
-from nowcasting_forecast.database.models import Forecast, ForecastSQL, ForecastValue, InputDataLastUpdatedSQL, Location
+from nowcasting_forecast.database.models import (
+    Forecast,
+    ForecastSQL,
+    ForecastValue,
+    InputDataLastUpdatedSQL,
+    Location,
+)
 from nowcasting_forecast.database.national import make_national_forecast
 from nowcasting_forecast.database.read import get_location
 from nowcasting_forecast.dataloader import BatchDataLoader
@@ -57,7 +63,10 @@ def nwp_irradiance_simple_run_all_batches(
 
         batch = next(dataloader)
         forecasts = forecasts + nwp_irradiance_simple_run_one_batch(
-            batch=batch, batch_idx=i, session=session, input_data_last_updated=input_data_last_updated
+            batch=batch,
+            batch_idx=i,
+            session=session,
+            input_data_last_updated=input_data_last_updated,
         )
 
     # select first 338 forecast
@@ -78,7 +87,7 @@ def nwp_irradiance_simple_run_all_batches(
         except Exception as e:
             logger.error(e)
             # TODO remove this
-            logger.error('Did not add national forecast, carry on for the moment')
+            logger.error("Did not add national forecast, carry on for the moment")
 
     logger.info(f"Made {len(forecasts_sql)} forecasts")
 
@@ -86,7 +95,10 @@ def nwp_irradiance_simple_run_all_batches(
 
 
 def nwp_irradiance_simple_run_one_batch(
-    batch: Union[dict, Batch], batch_idx: int, session: Session, input_data_last_updated: Optional[InputDataLastUpdatedSQL] = None
+    batch: Union[dict, Batch],
+    batch_idx: int,
+    session: Session,
+    input_data_last_updated: Optional[InputDataLastUpdatedSQL] = None,
 ) -> List[Forecast]:
     """Run model for one batch"""
 
@@ -97,7 +109,7 @@ def nwp_irradiance_simple_run_one_batch(
     # set up forecasts fields
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
-    if  input_data_last_updated is None:
+    if input_data_last_updated is None:
         # TODO make input data from actual data
         input_data_last_updated = make_fake_input_data_last_updated()
 
