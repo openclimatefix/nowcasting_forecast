@@ -23,6 +23,9 @@ jobs:
           # copy file
           mv ./tests/.coverage .
 
+          # install coverage
+          pip install coverage
+
           # run report
           coverage report -m
       - name: "Upload coverage to Codecov"
