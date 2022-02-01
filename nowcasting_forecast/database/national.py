@@ -2,7 +2,6 @@
 import logging
 from typing import List
 
-import numpy as np
 import pandas as pd
 
 from nowcasting_forecast import N_GSP

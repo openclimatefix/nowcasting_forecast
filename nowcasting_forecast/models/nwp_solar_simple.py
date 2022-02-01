@@ -4,12 +4,9 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Union
 
-import numpy as np
 import xarray as xr
 from nowcasting_dataset.config.load import load_yaml_configuration
-from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from nowcasting_dataset.dataset.batch import Batch
-from nowcasting_dataset.geospatial import lat_lon_to_osgb
 from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
