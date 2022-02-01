@@ -27,8 +27,10 @@ def make_national_forecast(forecasts: List[Forecast], n_gsps: int = N_GSP) -> Fo
     ), f"The number of forecast was only {len(forecasts)}, it should be {n_gsps}"
 
     # check the gsp ids are unique
-    gsps = [f.location.gsp_id for f in forecasts]
-    assert len(np.unique(gsps)) == n_gsps, "Found non unique GSP ids"
+    gsps = [int(f.location.gsp_id) for f in forecasts]
+    seen = set()
+    dupes = [x for x in gsps if x in seen or seen.add(x)]
+    assert len(seen) == n_gsps, f"Found non unique GSP ids {dupes}"
 
     location = Location(label=national_gb_label)
 

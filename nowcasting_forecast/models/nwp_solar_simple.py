@@ -93,40 +93,15 @@ def nwp_irradiance_simple_run_one_batch(
     # TODO make input data from actual data
     input_data_last_updated = make_fake_input_data_last_updated()
 
-    # get gsp metadata
-    # load metadata
-    metadata = get_gsp_metadata_from_eso()
-    metadata.set_index("gsp_id", drop=False, inplace=True)
-
-    # make location x,y in osgb
-    metadata["location_x"], metadata["location_y"] = lat_lon_to_osgb(
-        lat=metadata["centroid_lat"], lon=metadata["centroid_lon"]
-    )
-
     # run model
     irradiance_mean = nwp_irradiance_simple(batch)
 
     forecasts = []
     for i in range(batch.metadata.batch_size):
 
-        # get gsp id from eso metadata
-        meta_data_index = metadata.index[
-            np.isclose(metadata.location_x.round(), batch.metadata.x_center_osgb[i], rtol=1e-05, atol=1e-05)
-            & np.isclose(
-                metadata.location_y.round(), batch.metadata.y_center_osgb[i], rtol=1e-05, atol=1e-05
-            )
-        ]
+        gsp_id = batch.metadata.id
 
-        if len(meta_data_index) == 0:
-            raise Exception('Could not find GSP location at'
-                            f'{batch.metadata.x_center_osgb[i]=}'
-                            f'{batch.metadata.y_center_osgb[i]=} in'
-                            f'{metadata.location_x=}, '
-                            f'{metadata.location_y=}')
-
-        gsp_ids = metadata.loc[meta_data_index].gsp_id.values
-
-        location = get_location(gsp_id=gsp_ids[0], session=session)
+        location = get_location(gsp_id=gsp_id, session=session)
         logger.debug(location)
         location = Location.from_orm(location)
 
