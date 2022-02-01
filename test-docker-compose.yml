@@ -23,6 +23,7 @@ services:
     command: >
       bash -c "pytest --cov=./nowcasting_forecast
       && coverage report -m
+      && ls -a tests
       && cp .coverage ./tests/"
     depends_on:
       - "postgres"
