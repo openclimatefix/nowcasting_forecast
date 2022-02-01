@@ -71,7 +71,12 @@ def nwp_irradiance_simple_run_all_batches(
 
     if add_national_forecast:
         # add national forecast
-        forecasts_sql.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps))
+        try:
+            forecasts_sql.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps))
+        except Exception as e:
+            logger.error(e)
+            # TODO remove this
+            logger.error('Did not add national forecast, carry on for the moment')
 
     logger.info(f"Made {len(forecasts_sql)} forecasts")
 
