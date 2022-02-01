@@ -23,7 +23,6 @@ jobs:
           # copy file
           mv ./tests/.coverage .
           mv ./tests/coverage.xml .
-          ls -a
 
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@v2
