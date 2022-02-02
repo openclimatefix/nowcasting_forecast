@@ -7,12 +7,18 @@ this_directory = Path(__file__).parent
 install_requires = (this_directory / "requirements.txt").read_text().splitlines()
 long_description = (this_directory / "README.md").read_text()
 #
-# version = open("nowcasting_utils/version.py").readlines()[-1].split()[-1].strip("\"'")
+
+with open("nowcasting_forecast/__init__.py") as f:
+    for line in f:
+        if line.startswith("__version__"):
+            print(line)
+            _, _, version = line.replace("'", "").split()
+
 
 setup(
     name="nowcasting_forecast",
     packages=find_packages(),
-    version="0.0.42",
+    version=version,
     license="MIT",
     description="Live forecast for the OCF nowcasting project",
     author="Peter Dudfield",

@@ -35,6 +35,8 @@ def nwp_irradiance_simple_run_all_batches(
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
+    logger.info("Running nwp_irradiance_simple model")
+
     # time now rounded down by 30 mins
     t0_datetime_utc = floor_30_minutes_dt(datetime.now(timezone.utc))
     logger.info(f"Making forecasts for {t0_datetime_utc=}")
@@ -168,6 +170,6 @@ def nwp_irradiance_simple(batch: Batch) -> xr.DataArray:
     irradence_mean = nwp.data.mean(axis=(2, 3))
 
     # scale irradence to roughly mw
-    irradence_mean = irradence_mean / 100
+    irradence_mean = irradence_mean / 10
 
     return irradence_mean
