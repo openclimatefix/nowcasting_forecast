@@ -3,7 +3,7 @@ from click.testing import CliRunner
 
 from nowcasting_forecast.app import run
 from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.models import Forecast, ForecastSQL
+from nowcasting_forecast.database.models import Forecast, ForecastSQL, LocationSQL
 
 
 def test_fake(db_connection: DatabaseConnection):
@@ -17,6 +17,8 @@ def test_fake(db_connection: DatabaseConnection):
         _ = Forecast.from_orm(forecasts[0])
         assert len(forecasts) == 338 + 1  # 338 gsp + national
 
+        locations = session.query(LocationSQL).all()
+        assert len(locations) == 388 + 1
 
 @pytest.mark.skip("Skip for now #11")
 def test_not_fake(db_connection: DatabaseConnection):

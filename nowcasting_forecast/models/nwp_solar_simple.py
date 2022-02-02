@@ -15,7 +15,7 @@ from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
 from nowcasting_forecast.database.models import (
     Forecast,
     ForecastSQL,
-    ForecastValue,
+    ForecastValueSQL,
     InputDataLastUpdatedSQL,
     Location,
 )
@@ -74,21 +74,21 @@ def nwp_irradiance_simple_run_all_batches(
         )
         forecasts = forecasts[0:N_GSP]
 
-    # convert to sql objects
-    forecasts_sql = [f.to_orm() for f in forecasts]
+    # convert to pydantic objects, for validation
+    _ = [Forecast.from_orm(f) for f in forecasts]
 
     if add_national_forecast:
         # add national forecast
         try:
-            forecasts_sql.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps))
+            forecasts.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps))
         except Exception as e:
             logger.error(e)
             # TODO remove this
             logger.error("Did not add national forecast, carry on for the moment")
 
-    logger.info(f"Made {len(forecasts_sql)} forecasts")
+    logger.info(f"Made {len(forecasts)} forecasts")
 
-    return forecasts_sql
+    return forecasts
 
 
 def nwp_irradiance_simple_run_one_batch(
@@ -96,7 +96,7 @@ def nwp_irradiance_simple_run_one_batch(
     batch_idx: int,
     session: Session,
     input_data_last_updated: Optional[InputDataLastUpdatedSQL] = None,
-) -> List[Forecast]:
+) -> List[ForecastSQL]:
     """Run model for one batch"""
 
     # make sure its a Batch object
@@ -122,8 +122,6 @@ def nwp_irradiance_simple_run_one_batch(
         gsp_id = i + batch_idx * batch.metadata.batch_size
 
         location = get_location(gsp_id=gsp_id, session=session)
-        logger.debug(location)
-        location = Location.from_orm(location)
 
         forecast_values = []
         for t_index in irradiance_mean.time_index:
@@ -134,14 +132,14 @@ def nwp_irradiance_simple_run_one_batch(
             )
 
             forecast_values.append(
-                ForecastValue(
+                ForecastValueSQL(
                     target_time=target_time,
                     expected_power_generation_megawatts=irradiance_mean[i, t_index],
                 )
             )
 
         forecasts.append(
-            Forecast(
+            ForecastSQL(
                 model_name="mvp_irradence_v0",
                 location=location,
                 forecast_creation_time=forecast_creation_time,
