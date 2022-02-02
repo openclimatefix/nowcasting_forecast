@@ -19,7 +19,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, validator
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Index
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
 from nowcasting_forecast.database.utils import convert_to_camelcase, datetime_must_have_timezone
@@ -106,7 +106,7 @@ class ForecastValueSQL(Base, CreatedMixin):
     forecast_id = Column(Integer, ForeignKey("forecast.id"), index=True)
     forecast = relationship("ForecastSQL", back_populates="forecast_values")
 
-    Index('index_forecast_value', CreatedMixin.created_utc.desc())
+    Index("index_forecast_value", CreatedMixin.created_utc.desc())
 
 
 class ForecastValue(EnhancedBaseModel):
@@ -146,7 +146,7 @@ class InputDataLastUpdatedSQL(Base, CreatedMixin):
 
     forecast = relationship("ForecastSQL", back_populates="input_data_last_updated")
 
-    Index('index_input_data', CreatedMixin.created_utc.desc())
+    Index("index_input_data", CreatedMixin.created_utc.desc())
 
 
 class InputDataLastUpdated(EnhancedBaseModel):
@@ -196,9 +196,11 @@ class ForecastSQL(Base, CreatedMixin):
 
     # many (forecasts) to one (input_data_last_updated)
     input_data_last_updated = relationship("InputDataLastUpdatedSQL", back_populates="forecast")
-    input_data_last_updated_id = Column(Integer, ForeignKey("input_data_last_updated.id"), index=True)
+    input_data_last_updated_id = Column(
+        Integer, ForeignKey("input_data_last_updated.id"), index=True
+    )
 
-    Index('index_forecast', CreatedMixin.created_utc.desc())
+    Index("index_forecast", CreatedMixin.created_utc.desc())
 
 
 class Forecast(EnhancedBaseModel):

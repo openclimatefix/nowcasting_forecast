@@ -12,7 +12,7 @@ with open("nowcasting_forecast/__init__.py") as f:
     for line in f:
         if line.startswith("__version__"):
             _, _, version = line.replace("'", "").split()
-            version = version.replace('"','')
+            version = version.replace('"', "")
 
 
 setup(
