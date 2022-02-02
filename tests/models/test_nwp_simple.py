@@ -4,6 +4,7 @@ import tempfile
 from nowcasting_dataset.config.save import save_yaml_configuration
 
 from nowcasting_forecast import N_GSP
+from nowcasting_forecast.database.models import InputDataLastUpdatedSQL, LocationSQL
 from nowcasting_forecast.models.nwp_solar_simple import (
     nwp_irradiance_simple,
     nwp_irradiance_simple_run_all_batches,
@@ -22,6 +23,20 @@ def test_nwp_irradiance_simple_run_one_batch(batch, db_session):
 
     # make sure the target times are different
     assert f[0].forecast_values[0].target_time != f[0].forecast_values[1].target_time
+
+
+def test_nwp_irradiance_simple_check_locations(batch, db_session):
+
+    f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0, session=db_session)
+    db_session.add_all(f)
+    db_session.commit()
+
+    f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0, session=db_session)
+    db_session.add_all(f)
+    db_session.commit()
+
+    assert len(db_session.query(LocationSQL).all()) == batch.metadata.batch_size
+    assert len(db_session.query(InputDataLastUpdatedSQL).all()) == 2
 
 
 def test_nwp_irradiance_simple_run_all_batches(batch, configuration, db_session):
