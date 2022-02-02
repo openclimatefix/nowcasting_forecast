@@ -35,7 +35,7 @@ def nwp_irradiance_simple_run_all_batches(
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
-    logger.info('Running nwp_irradiance_simple model')
+    logger.info("Running nwp_irradiance_simple model")
 
     # time now rounded down by 30 mins
     t0_datetime_utc = floor_30_minutes_dt(datetime.now(timezone.utc))

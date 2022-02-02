@@ -8,11 +8,11 @@ install_requires = (this_directory / "requirements.txt").read_text().splitlines(
 long_description = (this_directory / "README.md").read_text()
 #
 
-with open('nowcasting_forecast/__init__.py') as f:
+with open("nowcasting_forecast/__init__.py") as f:
     for line in f:
-        if line.startswith('__version__'):
+        if line.startswith("__version__"):
             print(line)
-            _, _, version = line.replace("'", '').split()
+            _, _, version = line.replace("'", "").split()
 
 
 setup(
