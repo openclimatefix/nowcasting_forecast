@@ -117,10 +117,8 @@ def nwp_irradiance_simple_run_one_batch(
     forecasts = []
     for i in range(batch.metadata.batch_size):
 
-        # gsp_id = batch.metadata.id
-        # fix for the moment, just to get it working until
-        # https://github.com/openclimatefix/nowcasting_dataset/pull/599
-        gsp_id = i + batch_idx * batch.metadata.batch_size
+        # get id from location
+        gsp_id = batch.metadata.space_time_locations[i].id
 
         location = get_location(gsp_id=gsp_id, session=session)
 
@@ -128,7 +126,7 @@ def nwp_irradiance_simple_run_one_batch(
         for t_index in irradiance_mean.time_index:
             # add timezone
             target_time = (
-                batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
+                batch.metadata.space_time_locations[i].t0_datetime_utc.replace(tzinfo=timezone.utc)
                 + timedelta(minutes=30) * t_index.values
             )
 
