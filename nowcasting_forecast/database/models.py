@@ -19,7 +19,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, validator
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Index
 from sqlalchemy.orm import declarative_base, relationship
 
 from nowcasting_forecast.database.utils import convert_to_camelcase, datetime_must_have_timezone
@@ -73,7 +73,7 @@ class Location(EnhancedBaseModel):
     """Location that the forecast is for"""
 
     label: str = Field(..., description="")
-    gsp_id: Optional[int] = Field(None, description="The Grid Supply Point (GSP) id")
+    gsp_id: Optional[int] = Field(None, description="The Grid Supply Point (GSP) id", index=True)
     gsp_name: Optional[str] = Field(None, description="The GSP name")
     gsp_group: Optional[str] = Field(None, description="The GSP group name")
     region_name: Optional[str] = Field(None, description="The GSP region name")
@@ -105,6 +105,8 @@ class ForecastValueSQL(Base, CreatedMixin):
 
     forecast_id = Column(Integer, ForeignKey("forecast.id"))
     forecast = relationship("ForecastSQL", back_populates="forecast_values")
+
+    Index('index_forecast_value', CreatedMixin.created_utc.desc())
 
 
 class ForecastValue(EnhancedBaseModel):
@@ -143,6 +145,8 @@ class InputDataLastUpdatedSQL(Base, CreatedMixin):
     satellite = Column(DateTime(timezone=True))
 
     forecast = relationship("ForecastSQL", back_populates="input_data_last_updated")
+
+    Index('index_input_data', CreatedMixin.created_utc.desc())
 
 
 class InputDataLastUpdated(EnhancedBaseModel):
@@ -193,6 +197,8 @@ class ForecastSQL(Base, CreatedMixin):
     # many (forecasts) to one (input_data_last_updated)
     input_data_last_updated = relationship("InputDataLastUpdatedSQL", back_populates="forecast")
     input_data_last_updated_id = Column(Integer, ForeignKey("input_data_last_updated.id"))
+
+    Index('index_forecast', CreatedMixin.created_utc.desc())
 
 
 class Forecast(EnhancedBaseModel):
