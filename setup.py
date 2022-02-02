@@ -11,8 +11,8 @@ long_description = (this_directory / "README.md").read_text()
 with open("nowcasting_forecast/__init__.py") as f:
     for line in f:
         if line.startswith("__version__"):
-            print(line)
             _, _, version = line.replace("'", "").split()
+            version = version.replace('"','')
 
 
 setup(
