@@ -135,7 +135,9 @@ def nwp_irradiance_simple_run_one_batch(
             forecast_values.append(
                 ForecastValueSQL(
                     target_time=target_time,
-                    expected_power_generation_megawatts=float(irradiance_mean[i, t_index].values[0]),
+                    expected_power_generation_megawatts=float(
+                        irradiance_mean[i, t_index].values[0]
+                    ),
                 )
             )
 
