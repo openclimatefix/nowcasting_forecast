@@ -39,7 +39,9 @@ def make_national_forecast(forecasts: List[Forecast], n_gsps: int = N_GSP) -> Fo
 
         gsp_id = forecast.location.gsp_id
 
-        one_gsp = pd.DataFrame([ForecastValue.from_orm(value).dict() for value in forecast.forecast_values])
+        one_gsp = pd.DataFrame(
+            [ForecastValue.from_orm(value).dict() for value in forecast.forecast_values]
+        )
         one_gsp["gps_id"] = gsp_id
         # this is a data frame with the follow columns
         # - gps_id

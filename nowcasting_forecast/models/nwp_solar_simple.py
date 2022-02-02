@@ -17,7 +17,6 @@ from nowcasting_forecast.database.models import (
     ForecastSQL,
     ForecastValueSQL,
     InputDataLastUpdatedSQL,
-    Location,
 )
 from nowcasting_forecast.database.national import make_national_forecast
 from nowcasting_forecast.database.read import get_location
