@@ -18,7 +18,8 @@ def test_fake(db_connection: DatabaseConnection):
         assert len(forecasts) == 338 + 1  # 338 gsp + national
 
         locations = session.query(LocationSQL).all()
-        assert len(locations) == 388 + 1
+        assert len(locations) == 338 + 1
+
 
 @pytest.mark.skip("Skip for now #11")
 def test_not_fake(db_connection: DatabaseConnection):
