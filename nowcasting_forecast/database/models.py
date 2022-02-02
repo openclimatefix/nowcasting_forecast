@@ -103,7 +103,7 @@ class ForecastValueSQL(Base, CreatedMixin):
     target_time = Column(DateTime(timezone=True))
     expected_power_generation_megawatts = Column(Float)
 
-    forecast_id = Column(Integer, ForeignKey("forecast.id"))
+    forecast_id = Column(Integer, ForeignKey("forecast.id"), index=True)
     forecast = relationship("ForecastSQL", back_populates="forecast_values")
 
     Index('index_forecast_value', CreatedMixin.created_utc.desc())
@@ -189,14 +189,14 @@ class ForecastSQL(Base, CreatedMixin):
 
     # many (forecasts) to one (location)
     location = relationship("LocationSQL", back_populates="forecast")
-    location_id = Column(Integer, ForeignKey("location.id"))
+    location_id = Column(Integer, ForeignKey("location.id"), index=True)
 
     # one (forecasts) to many (forecast_value)
     forecast_values = relationship("ForecastValueSQL", back_populates="forecast")
 
     # many (forecasts) to one (input_data_last_updated)
     input_data_last_updated = relationship("InputDataLastUpdatedSQL", back_populates="forecast")
-    input_data_last_updated_id = Column(Integer, ForeignKey("input_data_last_updated.id"))
+    input_data_last_updated_id = Column(Integer, ForeignKey("input_data_last_updated.id"), index=True)
 
     Index('index_forecast', CreatedMixin.created_utc.desc())
 
