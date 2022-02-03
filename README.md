@@ -4,8 +4,8 @@
 
 Making live forecasts for the nowcasting project.
 The aim is to produce Grid Supply Point (GSP) Solar generation Forecasts.
-This is done by loading live PV results, Numerical Weather Predictions (NWPs) and Satellite images, 
-and running this data through various different ML models. 
+This is done by loading live PV results, Numerical Weather Predictions (NWPs) and Satellite images,
+and running this data through various different ML models.
 
 You can run the application locally by:
 ```bash
