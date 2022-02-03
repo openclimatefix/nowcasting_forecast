@@ -7,7 +7,7 @@ The aim is to produce Grid Supply Point (GSP) Solar generation Forecasts.
 This is done by loading live PV results, Numerical Weather Predictions (NWPs) and Satellite images, 
 and running this data through various different ML models. 
 
-You can run the application localy by:
+You can run the application locally by:
 ```bash
 python nowcasting_forecast/app.py --db-url='sqlite:///test.db'
 ```
@@ -50,7 +50,7 @@ The app has three main steps
 `dataloader.py` is used to load the batched data in an efficient way. This is current a stripped down version of this [dataloader](https://github.com/openclimatefix/nowcasting_dataloader).
 
 The `config` directory contains configurations that are used to load different data sources.
-The configuration is by `batch.py` to convert large amounts of data into batched data, which is then ready for ML models.
+The configuration is used by `batch.py` to convert large amounts of data into batched data, which is then ready for ML models.
 
 The `database` directory contains database models and functions to interact with the database. See [below](#data-model) for more information
 
@@ -60,7 +60,7 @@ The `model` directory contains ml models to make forecasts. See [below](#models)
 ### Models
 
 #### v0
-This model is a simple model that uses NWP solar irradiance data to prediction solar generation.
+This model is a simple model that uses NWP solar irradiance data to predict solar generation.
 ⚠️ This model takes the average solar irradiance and divides by 10, which will not produce a very accurate forecast.
 The main purpose of this model is to test the data pipeline.
 
@@ -84,7 +84,7 @@ Future: The data model could be moved, to be a more modular solution.
 
 #### models.py
 All models are in `nowcasting_forecast.database.models.py`.
-The diagram below shows how the different table are connected.
+The diagram below shows how the different tables are connected.
 
 ![Models](diagram.png)
 
@@ -100,7 +100,7 @@ db_connection = DatabaseConnection(url='sqlite:///test.db')
 # make sessions
 with db_connection.get_session() as session:
 
-    # do domething with the database
+    # do something with the database
     pass
 ```
 
