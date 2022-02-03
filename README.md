@@ -2,8 +2,8 @@
 
 [![codecov](https://codecov.io/gh/openclimatefix/nowcasting_forecast/branch/main/graph/badge.svg?token=J9281APVDM)](https://codecov.io/gh/openclimatefix/nowcasting_forecast)
 
-Making live forecasts for the nowcasting project. 
-The aim is to produce Grid Supply Point (GSP) Solar generation Forecasts. 
+Making live forecasts for the nowcasting project.
+The aim is to produce Grid Supply Point (GSP) Solar generation Forecasts.
 This is done by using live PV results, Numerical Weather Predictions (NWPs) and Satellite images.
 
 You can run the application localy by:
@@ -46,10 +46,10 @@ The app has three main steps
 
 `batch.py` is used to load the data and create batches of data. This uses mainly used [ManagerLive](https://github.com/openclimatefix/nowcasting_dataset/blob/main/nowcasting_dataset/manager/manager_live.py#L29)
 
-`dataloader.py` is used to load the batched data in an efficient way. This is current a stripped down version of this [dataloader](https://github.com/openclimatefix/nowcasting_dataloader). 
+`dataloader.py` is used to load the batched data in an efficient way. This is current a stripped down version of this [dataloader](https://github.com/openclimatefix/nowcasting_dataloader).
 
-The `config` directory contains configurations that are used to load different data sources. 
-The configuration is by `batch.py` to convert large amounts of data into batched data, which is then ready for ML models. 
+The `config` directory contains configurations that are used to load different data sources.
+The configuration is by `batch.py` to convert large amounts of data into batched data, which is then ready for ML models.
 
 The `database` directory contains database models and functions to interact with the database. See [below](#data-model) for more information
 
@@ -59,9 +59,9 @@ The `model` directory contains ml models to make forecasts. See [below](#models)
 ### Models
 
 #### v0
-This model is a simple model that uses NWP solar irradiance data to prediction solar generation. 
-⚠️ This model takes the average solar irradiance and divides by 10, which will not produce a very accurate forecast. 
-The main purpose of this model is to test the data pipeline. 
+This model is a simple model that uses NWP solar irradiance data to prediction solar generation.
+⚠️ This model takes the average solar irradiance and divides by 10, which will not produce a very accurate forecast.
+The main purpose of this model is to test the data pipeline.
 
 The model performs the following steps:
 1. Creates a data loader
@@ -74,12 +74,12 @@ The model performs the following steps:
 
 ### Data model
 
-The data model has been made using `sqlalchemy` with a mirrored model in `pydantic`. 
+The data model has been made using `sqlalchemy` with a mirrored model in `pydantic`.
 
-⚠️ Database tables are currently made automatically, 
+⚠️ Database tables are currently made automatically,
 but in the future there should be a migration process
 
-Future: The data model could be moved, to be a more modular solution. 
+Future: The data model could be moved, to be a more modular solution.
 
 #### models.py
 All models are in `nowcasting_forecast.database.models.py`.
@@ -103,7 +103,7 @@ with db_connection.get_session() as session:
 
 #### 👓 read.py
 
-`nowcasting_forecast.database.read.py` contains functions to read the database. 
+`nowcasting_forecast.database.read.py` contains functions to read the database.
 The idea is that these are easy to use functions that query the database in an efficient and easy way.
 
  - get_latest_forecast: Get the latest `Forecast` for a specific GSP.
@@ -133,7 +133,7 @@ with db_connection.get_session() as session:
 #### fake.py
 `nowcasting_forecast.database.fake.py`
 
-Functions used to make fake model data. 
+Functions used to make fake model data.
 
 
 ## 🩺 Testing
@@ -143,7 +143,7 @@ Tests are run by using the following command
 docker-compose -f test-docker-compose.yml run forecast
 ```
 
-These sets up `postgres` in a docker container and runs the tests in another docker container. 
+These sets up `postgres` in a docker container and runs the tests in another docker container.
 This slightly more complicated testing framework (compared to running `pytest`) is needed some queries can not be fully tested on a `sqlite` database
 
 ## 🛠️ infrastructure
@@ -155,7 +155,7 @@ This slightly more complicated testing framework (compared to running `pytest`) 
 
 The docker file is in the folder `infrastructure/docker/`
 
-The version is bumped automatically for any push to `main`. 
+The version is bumped automatically for any push to `main`.
 
 
 
