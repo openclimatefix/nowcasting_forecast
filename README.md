@@ -98,6 +98,8 @@ db_connection = DatabaseConnection(url='sqlite:///test.db')
 
 # make sessions
 with db_connection.get_session() as session:
+    
+    # do domething with the database
     pass
 ```
 
@@ -144,7 +146,8 @@ docker-compose -f test-docker-compose.yml run forecast
 ```
 
 These sets up `postgres` in a docker container and runs the tests in another docker container. 
-This slightly more complicated testing framework (compared to running `pytest`) is needed some queries can not be fully tested on a `sqlite` database
+This slightly more complicated testing framework is needed (compared to running `pytest`) 
+as some queries can not be fully tested on a `sqlite` database
 
 ## 🛠️ infrastructure
 
