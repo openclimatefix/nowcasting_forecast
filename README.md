@@ -37,7 +37,7 @@ The following shows the main files
 ### ☀️ nowcasting_forecast
 
 `app.py` is the main entry point for running the forecast module. It contains the following arguments:
-- --db-url: the database urls that the forecasts will be saved too
+- --db-url: the database url that the forecasts will be saved too
 - --fake: Create fake forecast, mainly used for testing
 
 The app has three main steps
