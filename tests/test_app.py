@@ -31,7 +31,7 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset):
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
-        os.environ["NWP_ZARR_PATH"] = nwp_path
+        os.environ["NWP_PATH"] = nwp_path
 
         runner = CliRunner()
         response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "false"])

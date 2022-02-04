@@ -33,8 +33,8 @@ def make_batches(
         manager.config.output_data.filepath = Path(temporary_dir)
 
     # over write nwp zarr path
-    if os.getenv("NWP_ZARR_PATH") is not None:
-        manager.config.input_data.nwp.nwp_zarr_path = os.getenv("NWP_ZARR_PATH")
+    if os.getenv("NWP_PATH") is not None:
+        manager.config.input_data.nwp.nwp_zarr_path = os.getenv("NWP_PATH")
         logger.debug(f"WIll be opening nwp file: {manager.config.input_data.nwp.nwp_zarr_path}")
 
     # make location file

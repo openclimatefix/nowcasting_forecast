@@ -10,6 +10,6 @@ def test_make_batches(nwp_data):
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
-        os.environ["NWP_ZARR_PATH"] = nwp_path
+        os.environ["NWP_PATH"] = nwp_path
 
         make_batches()
