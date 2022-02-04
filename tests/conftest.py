@@ -13,7 +13,6 @@ from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.models import Base, ForecastSQL
-
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
 
