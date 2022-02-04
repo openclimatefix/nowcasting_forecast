@@ -2,9 +2,8 @@
 import logging
 import os
 from datetime import datetime
-
-from typing import Optional
 from pathlib import Path
+from typing import Optional
 
 from nowcasting_dataset.manager.manager_live import ManagerLive
 
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 def make_batches(
     config_filename: str = "nowcasting_forecast/config/mvp_v0.yaml",
     t0_datetime_utc: datetime = None,
-    temporary_dir: Optional[str] = None
+    temporary_dir: Optional[str] = None,
 ):
     """Make batches from config file"""
 
@@ -34,9 +33,9 @@ def make_batches(
         manager.config.output_data.filepath = Path(temporary_dir)
 
     # over write nwp zarr path
-    if os.getenv('NWP_ZARR_PATH') is not None:
-        manager.config.input_data.nwp.nwp_zarr_path = os.getenv('NWP_ZARR_PATH')
-        logger.debug(f'WIll be opening nwp file: {manager.config.input_data.nwp.nwp_zarr_path}')
+    if os.getenv("NWP_ZARR_PATH") is not None:
+        manager.config.input_data.nwp.nwp_zarr_path = os.getenv("NWP_ZARR_PATH")
+        logger.debug(f"WIll be opening nwp file: {manager.config.input_data.nwp.nwp_zarr_path}")
 
     # make location file
     manager.initialize_data_sources(names_of_selected_data_sources=["gsp", "nwp"])

@@ -1,20 +1,19 @@
 import os
 import tempfile
+from datetime import datetime, timedelta
 from typing import List
 
-import xarray as xr
 import numpy as np
-from datetime import datetime, timedelta
-
 import pytest
+import xarray as xr
 from nowcasting_dataset.config.model import Configuration
+from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_osgb
 from nowcasting_dataset.dataset.batch import Batch
 
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.models import Base, ForecastSQL
-from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_osgb
 
 
 @pytest.fixture
