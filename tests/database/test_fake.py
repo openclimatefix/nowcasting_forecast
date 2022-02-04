@@ -41,7 +41,7 @@ def test_make_fake_forecast_value():
 
 
 def test_make_fake_forecast(db_session):
-    forecast_sql: ForecastSQL = make_fake_forecast(gsp_id=1,session=db_session)
+    forecast_sql: ForecastSQL = make_fake_forecast(gsp_id=1, session=db_session)
     forecast = Forecast.from_orm(forecast_sql)
     forecast_sql = Forecast.to_orm(forecast)
     _ = Forecast.from_orm(forecast_sql)

@@ -56,7 +56,7 @@ def test_get_all_gsp_ids_latest_forecast(db_session):
 
     assert len(db_session.query(LocationSQL).all()) == 2
 
-    f2 = make_fake_forecasts(gsp_ids=[1, 2],session=db_session)
+    f2 = make_fake_forecasts(gsp_ids=[1, 2], session=db_session)
     db_session.add_all(f2)
 
     assert len(db_session.query(LocationSQL).all()) == 2
