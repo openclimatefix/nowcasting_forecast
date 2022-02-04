@@ -3,8 +3,10 @@ import logging
 import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Union
+from pathlib import Path
 
 import xarray as xr
+import numpy as np
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 from sqlalchemy.orm.session import Session
@@ -32,6 +34,7 @@ def nwp_irradiance_simple_run_all_batches(
     n_batches: int = 11,
     add_national_forecast: bool = True,
     n_gsps: int = N_GSP,
+    batches_dir: Optional[str] = None,
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
@@ -49,6 +52,9 @@ def nwp_irradiance_simple_run_all_batches(
     logger.debug(f"Loading configuration {configuration_file}")
     configuration = load_yaml_configuration(filename=configuration_file)
 
+    if batches_dir is not None:
+        configuration.output_data.filepath = Path(batches_dir)
+
     # make dataloader
     dataloader = iter(BatchDataLoader(n_batches=n_batches, configuration=configuration))
 
@@ -59,10 +65,13 @@ def nwp_irradiance_simple_run_all_batches(
     for i in range(n_batches):
         logger.debug(f"Running batch {i} into model")
 
+        # calculate how many examples are needed
+        n_examples = np.min([N_GSP - len(forecasts), configuration.process.batch_size])
+
         batch = next(dataloader)
         forecasts = forecasts + nwp_irradiance_simple_run_one_batch(
             batch=batch,
-            batch_idx=i,
+            n_examples=n_examples,
             session=session,
             input_data_last_updated=input_data_last_updated,
         )
@@ -94,8 +103,8 @@ def nwp_irradiance_simple_run_all_batches(
 
 def nwp_irradiance_simple_run_one_batch(
     batch: Union[dict, Batch],
-    batch_idx: int,
     session: Session,
+    n_examples: Optional[int] = None,
     input_data_last_updated: Optional[InputDataLastUpdatedSQL] = None,
 ) -> List[ForecastSQL]:
     """Run model for one batch"""
@@ -103,6 +112,9 @@ def nwp_irradiance_simple_run_one_batch(
     # make sure its a Batch object
     if type(batch) == dict:
         batch = Batch(**batch)
+
+    if n_examples is None:
+        n_examples = batch.metadata.batch_size
 
     # set up forecasts fields
     forecast_creation_time = datetime.now(tz=timezone.utc)
@@ -116,6 +128,8 @@ def nwp_irradiance_simple_run_one_batch(
 
     forecasts = []
     for i in range(batch.metadata.batch_size):
+        if i >= n_examples:
+            break
 
         # get id from location
         gsp_id = batch.metadata.space_time_locations[i].id

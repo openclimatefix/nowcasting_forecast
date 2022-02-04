@@ -1,5 +1,6 @@
 """ Main Application """
 import logging
+import tempfile
 from datetime import datetime
 
 import click
@@ -46,11 +47,12 @@ def run(db_url: str, fake: bool = False):
             forecasts = make_dummy_forecasts()
         else:
 
-            # make batches
-            make_batches()
+            with tempfile.TemporaryDirectory() as temporary_dir:
+                # make batches
+                make_batches(temporary_dir=temporary_dir)
 
-            # make forecasts
-            forecasts = nwp_irradiance_simple_run_all_batches(session=session)
+                # make forecasts
+                forecasts = nwp_irradiance_simple_run_all_batches(session=session, batches_dir=temporary_dir)
 
         # save forecasts
         save(forecasts=forecasts, session=session)
