@@ -1,5 +1,4 @@
 import os
-import tempfile
 from datetime import datetime, timedelta
 from typing import List
 
@@ -20,7 +19,7 @@ from nowcasting_forecast.database.models import Base, ForecastSQL
 def forecast_sql(db_session):
 
     # create
-    f = make_fake_forecasts(gsp_ids=[1])
+    f = make_fake_forecasts(gsp_ids=[1], session=db_session)
 
     # add
     db_session.add_all(f)
@@ -32,7 +31,7 @@ def forecast_sql(db_session):
 def forecasts(db_session) -> List[ForecastSQL]:
 
     # create
-    f = make_fake_forecasts(gsp_ids=list(range(0, 10)))
+    f = make_fake_forecasts(gsp_ids=list(range(0, 10)), session=db_session)
 
     # add
     db_session.add_all(f)
@@ -44,7 +43,7 @@ def forecasts(db_session) -> List[ForecastSQL]:
 def forecasts_all(db_session) -> List[ForecastSQL]:
 
     # create
-    f = make_fake_forecasts(gsp_ids=list(range(0, N_GSP)))
+    f = make_fake_forecasts(gsp_ids=list(range(0, N_GSP)), session=db_session)
 
     # add
     db_session.add_all(f)
@@ -55,17 +54,14 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
 @pytest.fixture
 def db_connection():
 
-    # url = os.getenv("DB_URL")
-    with tempfile.TemporaryDirectory() as temp_dir:
+    url = os.getenv("DB_URL")
 
-        url = f"sqlite:///{temp_dir}/test.db"
+    connection = DatabaseConnection(url=url)
+    Base.metadata.create_all(connection.engine)
 
-        connection = DatabaseConnection(url=url)
-        Base.metadata.create_all(connection.engine)
+    yield connection
 
-        yield connection
-
-        Base.metadata.drop_all(connection.engine)
+    Base.metadata.drop_all(connection.engine)
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -108,7 +104,7 @@ def nwp_data():
     time_steps = 10
 
     x, y = make_random_image_coords_osgb(
-        size=image_size, x_center_osgb=x_center_osgb, y_center_osgb=y_center_osgb, km_spaceing=2
+        size=image_size, x_center_osgb=x_center_osgb, y_center_osgb=y_center_osgb, km_spacing=2
     )
 
     # time = pd.date_range(start=t0_datetime_utc, freq="30T", periods=10)

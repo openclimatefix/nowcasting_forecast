@@ -3,5 +3,5 @@ sqlalchemy
 psycopg2-binary
 numpy
 click
-nowcasting_dataset==3.1.58
+nowcasting_dataset==3.1.59
 s3fs
