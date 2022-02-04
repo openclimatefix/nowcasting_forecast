@@ -166,5 +166,5 @@ The version is bumped automatically for any push to `main`.
 ## Environmental Variables
 
 - DB_URL: The database url which the forecasts will be saved too
-- NWP_PATH: Override NWP data path. THis is useful when running this locally. 
+- NWP_PATH: Override NWP data path. THis is useful when running this locally.
 - FAKE: Option to make fake/dummy forecasts
