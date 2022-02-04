@@ -2,11 +2,11 @@
 import logging
 import os
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional, Union
 from pathlib import Path
+from typing import List, Optional, Union
 
-import xarray as xr
 import numpy as np
+import xarray as xr
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 from sqlalchemy.orm.session import Session
