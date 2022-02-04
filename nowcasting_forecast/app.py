@@ -1,8 +1,10 @@
 """ Main Application """
 import logging
+import tempfile
 from datetime import datetime
 
 import click
+from sqlalchemy.orm import Session
 
 from nowcasting_forecast import N_GSP, __version__
 from nowcasting_forecast.batch import make_batches
@@ -43,20 +45,23 @@ def run(db_url: str, fake: bool = False):
     with connection.get_session() as session:
 
         if fake:
-            forecasts = make_dummy_forecasts()
+            forecasts = make_dummy_forecasts(session=session)
         else:
 
-            # make batches
-            make_batches()
+            with tempfile.TemporaryDirectory() as temporary_dir:
+                # make batches
+                make_batches(temporary_dir=temporary_dir)
 
-            # make forecasts
-            forecasts = nwp_irradiance_simple_run_all_batches(session=session)
+                # make forecasts
+                forecasts = nwp_irradiance_simple_run_all_batches(
+                    session=session, batches_dir=temporary_dir
+                )
 
         # save forecasts
         save(forecasts=forecasts, session=session)
 
 
-def make_dummy_forecasts():
+def make_dummy_forecasts(session: Session):
     """Make dummy forecasts
 
     Dummy forecasts are made for all gsps and for several forecast horizons
@@ -65,7 +70,9 @@ def make_dummy_forecasts():
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
 
     # make gsp fake results
-    forecasts = make_fake_forecasts(gsp_ids=list(range(N_GSP)), t0_datetime_utc=t0_datetime_utc)
+    forecasts = make_fake_forecasts(
+        gsp_ids=list(range(N_GSP)), t0_datetime_utc=t0_datetime_utc, session=session
+    )
 
     # add national forecast
     forecasts.append(make_fake_national_forecast(t0_datetime_utc=t0_datetime_utc))

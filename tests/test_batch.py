@@ -1,9 +1,15 @@
-import pytest
+import os
+import tempfile
 
 from nowcasting_forecast.batch import make_batches
 
 
-@pytest.mark.skip("Skip for now #11")
-def test_make_batches():
+def test_make_batches(nwp_data):
 
-    make_batches()
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # save nwp data
+        nwp_path = f"{temp_dir}/unittest.netcdf"
+        nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
+        os.environ["NWP_PATH"] = nwp_path
+
+        make_batches()

@@ -19,7 +19,7 @@ def test_nwp_irradiance_simple(batch):
 
 def test_nwp_irradiance_simple_run_one_batch(batch, db_session):
 
-    f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0, session=db_session)
+    f = nwp_irradiance_simple_run_one_batch(batch=batch, session=db_session)
 
     # make sure the target times are different
     assert f[0].forecast_values[0].target_time != f[0].forecast_values[1].target_time
@@ -27,11 +27,11 @@ def test_nwp_irradiance_simple_run_one_batch(batch, db_session):
 
 def test_nwp_irradiance_simple_check_locations(batch, db_session):
 
-    f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0, session=db_session)
+    f = nwp_irradiance_simple_run_one_batch(batch=batch, session=db_session)
     db_session.add_all(f)
     db_session.commit()
 
-    f = nwp_irradiance_simple_run_one_batch(batch=batch, batch_idx=0, session=db_session)
+    f = nwp_irradiance_simple_run_one_batch(batch=batch, session=db_session)
     db_session.add_all(f)
     db_session.commit()
 
