@@ -1,4 +1,4 @@
-import pytest
+
 import os
 import tempfile
 import xarray as xr
@@ -7,7 +7,6 @@ from click.testing import CliRunner
 from nowcasting_forecast.app import run
 from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.models import Forecast, ForecastSQL, LocationSQL
-
 
 
 def test_fake(db_connection: DatabaseConnection):
@@ -25,7 +24,6 @@ def test_fake(db_connection: DatabaseConnection):
         assert len(locations) == 338 + 1
 
 
-@pytest.mark.skip("Skip for now #11")
 def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset):
 
     with tempfile.TemporaryDirectory() as temp_dir:
