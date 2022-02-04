@@ -14,6 +14,8 @@ from nowcasting_forecast.database.connection import DatabaseConnection
 from nowcasting_forecast.database.fake import make_fake_forecasts
 from nowcasting_forecast.database.models import Base, ForecastSQL
 
+from nowcasting_forecast.utils import floor_30_minutes_dt
+
 
 @pytest.fixture
 def forecast_sql(db_session):
@@ -99,7 +101,7 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = datetime(2022, 2, 4, 8)
+    t0_datetime_utc = t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     image_size = 1000
     time_steps = 10
 
