@@ -19,12 +19,6 @@ The following shows the main files
 +-- nowcasting_forecast
 |   +-- config
 |       +-- mvp_v0.yaml
-|   +-- database
-|       +-- connection.py
-|       +-- models.py
-|       +-- national.py
-|       +-- read.py
-|       +-- save.py
 |   +-- models
 |       +-- nwp_solar_simple.py
 |   +-- app.py
@@ -55,89 +49,6 @@ The configuration is used by `batch.py` to convert large amounts of data into ba
 The `database` directory contains database models and functions to interact with the database. See [below](#data-model) for more information
 
 The `model` directory contains ml models to make forecasts. See [below](#models) for more information
-
-
-### Models
-
-#### v0
-This model is a simple model that uses NWP solar irradiance data to predict solar generation.
-⚠️ This model takes the average solar irradiance and divides by 10, which will not produce a very accurate forecast.
-The main purpose of this model is to test the data pipeline.
-
-The model performs the following steps:
-1. Creates a data loader
-2. Run simple model by looping over batches for all GSP
-3. Make national forecast
-
-#### v1
-
- TODO
-
-### Data model
-
-The data model has been made using `sqlalchemy` with a mirrored model in `pydantic`.
-
-⚠️ Database tables are currently made automatically,
-but in the future there should be a migration process
-
-Future: The data model could be moved, to be a more modular solution.
-
-#### models.py
-All models are in `nowcasting_forecast.database.models.py`.
-The diagram below shows how the different tables are connected.
-
-![Models](diagram.png)
-
-#### connection.py
-
-`nowcasting_forecast.database.connection.py` contains a connection class which can be used to make a sqlalchemy session.
-```python
-from nowcasting_forecast.database.connection import DatabaseConnection
-
-# make connection object
-db_connection = DatabaseConnection(url='sqlite:///test.db')
-
-# make sessions
-with db_connection.get_session() as session:
-
-    # do something with the database
-    pass
-```
-
-#### 👓 read.py
-
-`nowcasting_forecast.database.read.py` contains functions to read the database.
-The idea is that these are easy to use functions that query the database in an efficient and easy way.
-
- - get_latest_forecast: Get the latest `Forecast` for a specific GSP.
- - get_all_gsp_ids_latest_forecast: Get the latest `Forecast` for all GSPs.
- - get_forecast_values: Gets the latest `ForecastValue` for a specific GSP
- - get_latest_national_forecast: Returns the latest national forecast
- - get_location: Gets a `Location` object
-
-```python
-from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.read import get_latest_forecast
-
-# make connection object
-db_connection = DatabaseConnection(url='sqlite:///test.db')
-
-# make sessions
-with db_connection.get_session() as session:
-    f = get_latest_forecast(session=session, gsp_id=1)
-```
-
-#### 💾 save.py
-`nowcasting_forecast.database.save.py` has one functions to save a list of `Forecast` to the database
-
-#### 🇬🇧 national.py
-`nowcasting_forecast.database.fake.py` has a useful function for adding up forecasts for all GSPs into a national Forecast.
-
-#### fake.py
-`nowcasting_forecast.database.fake.py`
-
-Functions used to make fake model data.
-
 
 ## 🩺 Testing
 

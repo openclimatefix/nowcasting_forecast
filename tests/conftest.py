@@ -10,9 +10,9 @@ from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_
 from nowcasting_dataset.dataset.batch import Batch
 
 from nowcasting_forecast import N_GSP
-from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.fake import make_fake_forecasts
-from nowcasting_forecast.database.models import Base, ForecastSQL
+from nowcasting_datamodel.connection import DatabaseConnection
+from nowcasting_datamodel.fake import make_fake_forecasts
+from nowcasting_datamodel.models import Base, ForecastSQL
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
 

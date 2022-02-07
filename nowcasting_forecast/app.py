@@ -8,9 +8,9 @@ from sqlalchemy.orm import Session
 
 from nowcasting_forecast import N_GSP, __version__
 from nowcasting_forecast.batch import make_batches
-from nowcasting_forecast.database.connection import DatabaseConnection
-from nowcasting_forecast.database.fake import make_fake_forecasts, make_fake_national_forecast
-from nowcasting_forecast.database.save import save
+from nowcasting_datamodel.connection import DatabaseConnection
+from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_national_forecast
+from nowcasting_datamodel.save import save
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_all_batches
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
