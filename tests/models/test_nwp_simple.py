@@ -3,8 +3,7 @@ import tempfile
 
 from nowcasting_dataset.config.save import save_yaml_configuration
 
-from nowcasting_forecast import N_GSP
-from nowcasting_forecast.database.models import InputDataLastUpdatedSQL, LocationSQL
+from nowcasting_datamodel.models import InputDataLastUpdatedSQL, LocationSQL
 from nowcasting_forecast.models.nwp_solar_simple import (
     nwp_irradiance_simple,
     nwp_irradiance_simple_run_all_batches,
