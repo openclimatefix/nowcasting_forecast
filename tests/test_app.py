@@ -3,10 +3,10 @@ import tempfile
 
 import xarray as xr
 from click.testing import CliRunner
-
-from nowcasting_forecast.app import run
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.models import Forecast, ForecastSQL, LocationSQL
+
+from nowcasting_forecast.app import run
 
 
 def test_fake(db_connection: DatabaseConnection):
