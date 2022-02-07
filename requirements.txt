@@ -4,4 +4,5 @@ psycopg2-binary
 numpy
 click
 nowcasting_dataset==3.1.59
+nowcasting_datamodel==0.0.5
 s3fs

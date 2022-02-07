@@ -7,21 +7,21 @@ from typing import List, Optional, Union
 
 import numpy as np
 import xarray as xr
+from nowcasting_datamodel.fake import make_fake_input_data_last_updated
+from nowcasting_datamodel.models import (
+    Forecast,
+    ForecastSQL,
+    ForecastValueSQL,
+    InputDataLastUpdatedSQL,
+)
+from nowcasting_datamodel.national import make_national_forecast
+from nowcasting_datamodel.read import get_location
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
-from nowcasting_forecast.database.fake import make_fake_input_data_last_updated
-from nowcasting_forecast.database.models import (
-    Forecast,
-    ForecastSQL,
-    ForecastValueSQL,
-    InputDataLastUpdatedSQL,
-)
-from nowcasting_forecast.database.national import make_national_forecast
-from nowcasting_forecast.database.read import get_location
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
