@@ -20,8 +20,6 @@ services:
       - DB_URL=postgresql://postgres:postgres@postgres:5432/postgres
       - GIT_PYTHON_REFRESH=quiet
       - LOG_LEVEL=DEBUG
-      - AWS_ACCESS_KEY_ID=AKIAQDZEISO245VMKFU2
-      - AWS_SECRET_ACCESS_KEY=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
     command: >
       bash -c "pytest --cov=./nowcasting_forecast
       && coverage report -m
