@@ -120,6 +120,7 @@ def nwp_irradiance_simple_run_one_batch(
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
     # get model name
+
     model = get_model(name='nwp_simple', version=nowcasting_forecast.__version__)
 
     if input_data_last_updated is None:
