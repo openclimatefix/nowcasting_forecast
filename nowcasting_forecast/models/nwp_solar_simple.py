@@ -15,7 +15,7 @@ from nowcasting_datamodel.models import (
     InputDataLastUpdatedSQL,
 )
 from nowcasting_datamodel.national import make_national_forecast
-from nowcasting_datamodel.read import get_location
+from nowcasting_datamodel.read import get_location, get_model
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 from sqlalchemy.orm.session import Session
@@ -119,6 +119,9 @@ def nwp_irradiance_simple_run_one_batch(
     # set up forecasts fields
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
+    # get model name
+    model = get_model(name="nwp_simple", version=nowcasting_forecast.__version__, session=session)
+
     if input_data_last_updated is None:
         # TODO make input data from actual data
         input_data_last_updated = make_fake_input_data_last_updated()
@@ -155,7 +158,7 @@ def nwp_irradiance_simple_run_one_batch(
 
         forecasts.append(
             ForecastSQL(
-                model_name="mvp_irradence_v0",
+                model=model,
                 location=location,
                 forecast_creation_time=forecast_creation_time,
                 forecast_values=forecast_values,
