@@ -94,6 +94,16 @@ def batch(configuration):
     return batch
 
 
+@pytest.fixture()
+def batch_nwp(configuration):
+    configuration.input_data.nwp.history_minutes = 30
+    configuration.input_data.nwp.history_minutes = 120
+
+    batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
+
+    return batch
+
+
 @pytest.fixture
 def nwp_data():
 

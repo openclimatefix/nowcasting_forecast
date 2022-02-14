@@ -1,4 +1,12 @@
-""" Simple model to take NWP irradence and make solar """
+""" Run the nwp simple trained model
+
+1. Setup model
+2. load weights from s3/neptune
+3. run model
+4. format predictions
+"""
+
+
 import logging
 import os
 from datetime import datetime, timedelta, timezone
@@ -25,10 +33,13 @@ from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
+from nowcasting_forecast.models.nwp_simple_trained.model import Model
+from nowcasting_forecast.models.nwp_simple_trained.xr_utils import re_order_dims
+
 logger = logging.getLogger(__name__)
 
 
-def nwp_irradiance_simple_run_all_batches(
+def nwp_irradiance_simple_trained_run_all_batches(
     session: Session,
     configuration_file: Optional[str] = None,
     n_batches: int = 11,
@@ -60,6 +71,10 @@ def nwp_irradiance_simple_run_all_batches(
 
     input_data_last_updated = make_fake_input_data_last_updated()
 
+    # model
+    model = Model()
+    model = model.load_model()
+
     # loop over batch
     forecasts = []
     for i in range(n_batches):
@@ -69,11 +84,12 @@ def nwp_irradiance_simple_run_all_batches(
         n_examples = np.min([N_GSP - len(forecasts), configuration.process.batch_size])
 
         batch = next(dataloader)
-        forecasts = forecasts + nwp_irradiance_simple_run_one_batch(
+        forecasts = forecasts + nwp_irradiance_simple_trained_run_one_batch(
             batch=batch,
             n_examples=n_examples,
             session=session,
             input_data_last_updated=input_data_last_updated,
+            pytorch_model=model,
         )
 
     # select first 338 forecast
@@ -101,9 +117,10 @@ def nwp_irradiance_simple_run_all_batches(
     return forecasts
 
 
-def nwp_irradiance_simple_run_one_batch(
+def nwp_irradiance_simple_trained_run_one_batch(
     batch: Union[dict, Batch],
     session: Session,
+    pytorch_model,
     n_examples: Optional[int] = None,
     input_data_last_updated: Optional[InputDataLastUpdatedSQL] = None,
 ) -> List[ForecastSQL]:
@@ -120,14 +137,14 @@ def nwp_irradiance_simple_run_one_batch(
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
     # get model name
-    model = get_model(name='nwp_simple', version=nowcasting_forecast.__version__, session=session)
+    model = get_model(name='nwp_simple_trained', version=nowcasting_forecast.__version__, session=session)
 
     if input_data_last_updated is None:
         # TODO make input data from actual data
         input_data_last_updated = make_fake_input_data_last_updated()
 
     # run model
-    irradiance_mean = nwp_irradiance_simple(batch)
+    predictions = nwp_irradiance_simple_trained(batch, model=pytorch_model)
 
     forecasts = []
     for i in range(batch.metadata.batch_size):
@@ -140,18 +157,18 @@ def nwp_irradiance_simple_run_one_batch(
         location = get_location(gsp_id=gsp_id, session=session)
 
         forecast_values = []
-        for t_index in irradiance_mean.time_index:
+        for t_index in range(len(predictions[0])):
             # add timezone
             target_time = (
                 batch.metadata.space_time_locations[i].t0_datetime_utc.replace(tzinfo=timezone.utc)
-                + timedelta(minutes=30) * t_index.values
+                + timedelta(minutes=30) * t_index
             )
 
             forecast_values.append(
                 ForecastValueSQL(
                     target_time=target_time,
                     expected_power_generation_megawatts=float(
-                        irradiance_mean[i, t_index].values[0]
+                        predictions[i, t_index]
                     ),
                 )
             )
@@ -169,24 +186,34 @@ def nwp_irradiance_simple_run_one_batch(
     return forecasts
 
 
-def nwp_irradiance_simple(batch: Batch) -> xr.DataArray:
+def nwp_irradiance_simple_trained(batch: Batch, model) -> xr.DataArray:
     """Predictions for one batch
 
     Just to take the mean NWP data across the batch
 
     Returns a data array of nwp irradiance with dimensions for examples and time.
     """
+
     nwp = batch.nwp
 
-    # take solar irradence # TODO
-    # print(nwp)
-    # nwp.data = nwp.data.sel(channels_index=["dlwrf"])
 
-    # take mean across all x and y dims
+    nwp = re_order_dims(nwp)
 
-    irradence_mean = nwp.data.mean(axis=(2, 3))
+    # move to torch
+    nwp_batch_ml = nwp.torch.to_tensor(["data", "time", "init_time", "x_osgb", "y_osgb"])
 
-    # scale irradence to roughly mw
-    irradence_mean = irradence_mean / 10
+    nwp = nwp_batch_ml['data']
 
-    return irradence_mean
+    # normalize
+    dswrf_mean = 294.6696933986283
+    dswrf_std = 233.1834250473355
+    nwp = nwp - dswrf_mean
+    nwp = nwp / dswrf_std
+
+    # run model
+    predictions = model(nwp)
+
+    # re-normalize
+    # TODO
+
+    return predictions
