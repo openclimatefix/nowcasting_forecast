@@ -11,8 +11,10 @@ from sqlalchemy.orm import Session
 
 from nowcasting_forecast import N_GSP, __version__
 from nowcasting_forecast.batch import make_batches
+from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
+    nwp_irradiance_simple_trained_run_all_batches,
+)
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_all_batches
-from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import nwp_irradiance_simple_trained_run_all_batches
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
 logger = logging.getLogger(__name__)
@@ -35,12 +37,12 @@ logger = logging.getLogger(__name__)
 )
 @click.option(
     "--model-name",
-    default='nwp_simple_trained',
+    default="nwp_simple_trained",
     envvar="MODEL_NAME",
     help="Select which model to use",
     type=click.STRING,
 )
-def run(db_url: str, fake: bool = False, model_name:str = 'nwp_simple_trained'):
+def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple_trained"):
     """
     Run main app.
 
@@ -56,27 +58,26 @@ def run(db_url: str, fake: bool = False, model_name:str = 'nwp_simple_trained'):
             forecasts = make_dummy_forecasts(session=session)
         else:
 
-            if model_name == 'nwp_simple':
+            if model_name == "nwp_simple":
                 config_filename = "nowcasting_forecast/config/mvp_v0.yaml"
             else:
                 config_filename = "nowcasting_forecast/config/mvp_v1.yaml"
 
-
             with tempfile.TemporaryDirectory() as temporary_dir:
                 # make batches
-                make_batches(temporary_dir=temporary_dir, config_filename = config_filename)
+                make_batches(temporary_dir=temporary_dir, config_filename=config_filename)
 
                 # make forecasts
-                if model_name == 'nwp_simple':
+                if model_name == "nwp_simple":
                     forecasts = nwp_irradiance_simple_run_all_batches(
                         session=session, batches_dir=temporary_dir
                     )
-                elif model_name == 'nwp_simple_trained':
+                elif model_name == "nwp_simple_trained":
                     forecasts = nwp_irradiance_simple_trained_run_all_batches(
                         session=session, batches_dir=temporary_dir
                     )
                 else:
-                    raise NotImplementedError(f'model name {model_name} has not be implemented. ')
+                    raise NotImplementedError(f"model name {model_name} has not be implemented. ")
 
         # save forecasts
         save(forecasts=forecasts, session=session)

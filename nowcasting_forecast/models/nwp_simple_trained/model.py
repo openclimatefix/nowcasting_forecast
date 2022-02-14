@@ -9,12 +9,12 @@ Default parameters are set from the trained model
 import logging
 import os
 from typing import Optional
-from pathy import Pathy
 
 import fsspec
 import numpy as np
 import pytorch_lightning as pl
 import torch.nn.functional as F
+from pathy import Pathy
 from torch import clip, nn
 
 logging.basicConfig()
