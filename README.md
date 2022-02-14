@@ -19,8 +19,12 @@ The following shows the main files
 +-- nowcasting_forecast
 |   +-- config
 |       +-- mvp_v0.yaml
+|       +-- mvp_v1.yaml
 |   +-- models
 |       +-- nwp_solar_simple.py
+|       +-- nwp_solar_simple_trained
+|           +-- model.py
+|           +-- nwp_simple_trained.py
 |   +-- app.py
 |   +-- batch.py
 |   +-- dataloader.py
@@ -49,6 +53,22 @@ The configuration is used by `batch.py` to convert large amounts of data into ba
 The `database` directory contains database models and functions to interact with the database. See [below](#data-model) for more information
 
 The `model` directory contains ml models to make forecasts. See [below](#models) for more information
+
+## Models
+
+### NWP Simple
+
+This takes the average 'dswrf' for each example and then divides this by 10 to give a rough model for MW per GSP
+
+configuration: mvp_v0.yaml
+
+### NWP Simple trained
+
+CNN model of 'dswrf' channel in NWP. 6 CNN layers then 4 fully connected layers.
+
+Training run: https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRED-951/charts
+
+configuration: mvp_v1.yaml
 
 ## 🩺 Testing
 
@@ -79,3 +99,4 @@ The version is bumped automatically for any push to `main`.
 - DB_URL: The database url which the forecasts will be saved too
 - NWP_PATH: Override NWP data path. THis is useful when running this locally.
 - FAKE: Option to make fake/dummy forecasts
+- MODEL_NAME: Optional of 'nwp_simple' or 'nwp_simple_trained'
