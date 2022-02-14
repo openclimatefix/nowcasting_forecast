@@ -1,5 +1,6 @@
 import os
 import tempfile
+import torch
 
 from nowcasting_datamodel.models import InputDataLastUpdatedSQL, LocationSQL
 from nowcasting_dataset.config.save import save_yaml_configuration
@@ -40,9 +41,20 @@ def test_nwp_irradiance_simple_check_locations(batch_nwp, db_session):
     assert len(db_session.query(InputDataLastUpdatedSQL).all()) == 2
 
 
+def save_fake_weights(path) -> str:
+    model = Model()
+    model_nwp_simple_trained_weights = os.path.join(path, "weights.ckpt")
+    torch.save({'state_dict': model.state_dict()}, model_nwp_simple_trained_weights)
+
+    return model_nwp_simple_trained_weights
+
+
 def test_nwp_irradiance_simple_run_all_batches(batch_nwp, configuration, db_session):
 
     with tempfile.TemporaryDirectory() as tempdir:
+
+        model_nwp_simple_trained_weights = save_fake_weights(path=tempdir)
+
         batch_nwp.save_netcdf(batch_i=0, path=os.path.join(tempdir, "live"))
 
         configuration.output_data.filepath = tempdir
@@ -54,6 +66,7 @@ def test_nwp_irradiance_simple_run_all_batches(batch_nwp, configuration, db_sess
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
+            weights_file=model_nwp_simple_trained_weights
         )
 
         assert len(f) == batch_nwp.metadata.batch_size
@@ -64,6 +77,8 @@ def test_nwp_irradiance_simple_run_all_batches_and_national(batch_nwp, configura
     n_gsps = configuration.process.batch_size
 
     with tempfile.TemporaryDirectory() as tempdir:
+
+        model_nwp_simple_trained_weights = save_fake_weights(path=tempdir)
 
         batch_nwp.save_netcdf(batch_i=0, path=os.path.join(tempdir, "live"))
 
@@ -77,6 +92,7 @@ def test_nwp_irradiance_simple_run_all_batches_and_national(batch_nwp, configura
             configuration_file=configuration_file,
             add_national_forecast=True,
             n_gsps=n_gsps,
+            weights_file=model_nwp_simple_trained_weights
         )
 
         assert len(f) == n_gsps + 1

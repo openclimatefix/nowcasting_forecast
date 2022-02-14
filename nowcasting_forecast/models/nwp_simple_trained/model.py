@@ -6,11 +6,13 @@ Default parameters are set from the trained model
 """
 
 
+import os
 import logging
 
 import numpy as np
 import torch.nn.functional as F
 from torch import nn
+from torch import clip
 
 import fsspec
 from typing import Optional
@@ -152,23 +154,28 @@ class Model(pl.LightningModule):
 
         out = out.reshape(nwp_data.shape[0], self.forecast_len)
 
+        out = clip(out, min=0)
+
         return out
 
     def load_model(self, local_filename:Optional[str] = './temp.ckpt',
-                   remote_filename: Optional[str]= 's3://nowcasting-ml-models-development/v1/predict_pv_yield_951.ckpt'):
+                   remote_filename: Optional[str] = None):
 
-        # # download weights from s3
-        # _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
-        #
-        # remote_filename = Pathy(remote_filename)
-        # filesystem = fsspec.open(remote_filename.parent).fs
-        # try:
-        #     filesystem.get(remote_filename, local_filename)
-        # except FileNotFoundError as e:
-        #     _LOG.error(e)
-        #     message = f"Could not copy {remote_filename} to {local_filename}"
-        #     _LOG.error(message)
-        #     raise FileNotFoundError(message)
+        if remote_filename is None:
+            remote_filename = 's3://nowcasting-ml-models-development/v1/predict_pv_yield_951.ckpt'
+
+        # download weights from s3
+        _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
+
+        # remote_filename = os.path.abspath(remote_filename)
+        filesystem = fsspec.open(os.path.abspath(remote_filename)).fs
+        try:
+            filesystem.get(remote_filename, local_filename)
+        except FileNotFoundError as e:
+            _LOG.error(e)
+            message = f"Could not copy {remote_filename} to {local_filename}"
+            _LOG.error(message)
+            raise FileNotFoundError(message)
 
         # load weights into model
         return self.load_from_checkpoint(checkpoint_path=local_filename)

@@ -46,6 +46,7 @@ def nwp_irradiance_simple_trained_run_all_batches(
     add_national_forecast: bool = True,
     n_gsps: int = N_GSP,
     batches_dir: Optional[str] = None,
+    weights_file: Optional[str] = None
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
@@ -73,7 +74,7 @@ def nwp_irradiance_simple_trained_run_all_batches(
 
     # model
     model = Model()
-    model = model.load_model()
+    model = model.load_model(remote_filename=weights_file)
 
     # loop over batch
     forecasts = []
