@@ -7,16 +7,14 @@ Default parameters are set from the trained model
 
 
 import logging
-
-import numpy as np
-import torch.nn.functional as F
-from torch import nn
+from typing import Optional
 
 import fsspec
-from typing import Optional
+import numpy as np
 import pytorch_lightning as pl
-
+import torch.nn.functional as F
 from pathy import Pathy
+from torch import nn
 
 logging.basicConfig()
 _LOG = logging.getLogger(__name__)
@@ -77,9 +75,7 @@ class Model(pl.LightningModule):
         self.forecast_len_60 = (
             self.forecast_minutes // 60
         )  # the number of forecast timestemps for 60 minutes data
-        self.forecast_len = (
-                self.forecast_minutes // 30
-        )
+        self.forecast_len = self.forecast_minutes // 30
 
         super().__init__()
 
@@ -122,8 +118,8 @@ class Model(pl.LightningModule):
         # not needed
         self.history_len_5 = int(np.ceil(self.history_minutes / 5))
         self.pv_fc1 = nn.Linear(
-                in_features=128 * (6 + 1),
-                out_features=128,
+            in_features=128 * (6 + 1),
+            out_features=128,
         )
         self.pv_system_id_embedding = nn.Embedding(
             num_embeddings=940, embedding_dim=self.embedding_dem
@@ -154,8 +150,13 @@ class Model(pl.LightningModule):
 
         return out
 
-    def load_model(self, local_filename:Optional[str] = './temp.ckpt',
-                   remote_filename: Optional[str]= 's3://nowcasting-ml-models-development/v1/predict_pv_yield_951.ckpt'):
+    def load_model(
+        self,
+        local_filename: Optional[str] = "./temp.ckpt",
+        remote_filename: Optional[
+            str
+        ] = "s3://nowcasting-ml-models-development/v1/predict_pv_yield_951.ckpt",
+    ):
 
         # # download weights from s3
         # _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
@@ -172,13 +173,3 @@ class Model(pl.LightningModule):
 
         # load weights into model
         return self.load_from_checkpoint(checkpoint_path=local_filename)
-
-
-
-
-
-
-
-
-
-
