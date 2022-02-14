@@ -27,7 +27,7 @@ from nowcasting_forecast.utils import floor_30_minutes_dt
 
 logger = logging.getLogger(__name__)
 
-NAME="nwp_simple"
+NAME = "nwp_simple"
 
 
 def nwp_irradiance_simple_run_all_batches(

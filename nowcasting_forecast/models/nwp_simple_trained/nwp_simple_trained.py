@@ -9,12 +9,12 @@
 
 import logging
 import os
-import pandas as pd
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import List, Optional, Union
 
 import numpy as np
+import pandas as pd
 import xarray as xr
 from nowcasting_datamodel.fake import make_fake_input_data_last_updated
 from nowcasting_datamodel.models import (
@@ -38,7 +38,7 @@ from nowcasting_forecast.utils import floor_30_minutes_dt
 
 logger = logging.getLogger(__name__)
 
-NAME="nwp_simple_trained"
+NAME = "nwp_simple_trained"
 
 
 def nwp_irradiance_simple_trained_run_all_batches(
@@ -140,9 +140,7 @@ def nwp_irradiance_simple_trained_run_one_batch(
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
     # get model name
-    model = get_model(
-        name=NAME, version=nowcasting_forecast.__version__, session=session
-    )
+    model = get_model(name=NAME, version=nowcasting_forecast.__version__, session=session)
 
     if input_data_last_updated is None:
         # TODO make input data from actual data
@@ -217,7 +215,10 @@ def nwp_irradiance_simple_trained(batch: Batch, model) -> xr.DataArray:
 
     # re-normalize
     # load capacity
-    capacity = pd.read_csv(os.path.join(os.path.dirname(nowcasting_forecast.__file__), "data", "gsp_capacity.csv"), index_col=['gsp_id'])
+    capacity = pd.read_csv(
+        os.path.join(os.path.dirname(nowcasting_forecast.__file__), "data", "gsp_capacity.csv"),
+        index_col=["gsp_id"],
+    )
     capacity = capacity.loc[batch.metadata.ids]
 
     # times predictions by capacities
