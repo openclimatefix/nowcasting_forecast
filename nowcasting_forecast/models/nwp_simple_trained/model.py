@@ -120,7 +120,7 @@ class Model(pl.LightningModule):
         self.fc3 = nn.Linear(in_features=fc3_in_features, out_features=self.fc3_output_features)
         self.fc4 = nn.Linear(in_features=self.fc3_output_features, out_features=self.forecast_len)
 
-        # not needed
+        # not needed, but trained with these layers, so need to still init them
         self.history_len_5 = int(np.ceil(self.history_minutes / 5))
         self.pv_fc1 = nn.Linear(
             in_features=128 * (6 + 1),
