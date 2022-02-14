@@ -9,23 +9,15 @@ Default parameters are set from the trained model
 import logging
 import os
 
-<<<<<<< HEAD
 
-import numpy as np
-import torch.nn.functional as F
-from torch import clip, nn
-
-=======
 from typing import Optional
 
->>>>>>> 869c24ccc23d8c16c984d273499b1c0ad25313b6
 
 import fsspec
 import numpy as np
 import pytorch_lightning as pl
 import torch.nn.functional as F
-from pathy import Pathy
-from torch import nn
+from torch import clip, nn
 
 logging.basicConfig()
 _LOG = logging.getLogger(__name__)
