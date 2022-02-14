@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 )
 @click.option(
     "--model-name",
-    default="nwp_simple_trained",
+    default="nwp_simple",
     envvar="MODEL_NAME",
     help="Select which model to use",
     type=click.STRING,
