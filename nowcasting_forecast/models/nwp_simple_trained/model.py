@@ -8,10 +8,7 @@ Default parameters are set from the trained model
 
 import logging
 import os
-
-
 from typing import Optional
-
 
 import fsspec
 import numpy as np
@@ -155,11 +152,12 @@ class Model(pl.LightningModule):
 
         return out
 
-    def load_model(self, local_filename:Optional[str] = './temp.ckpt',
-                   remote_filename: Optional[str] = None):
+    def load_model(
+        self, local_filename: Optional[str] = "./temp.ckpt", remote_filename: Optional[str] = None
+    ):
 
         if remote_filename is None:
-            remote_filename = 's3://nowcasting-ml-models-development/v1/predict_pv_yield_951.ckpt'
+            remote_filename = "s3://nowcasting-ml-models-development/v1/predict_pv_yield_951.ckpt"
 
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
