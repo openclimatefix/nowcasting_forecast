@@ -173,6 +173,7 @@ class Model(pl.LightningModule):
         remote_filename = Pathy(remote_filename)
         filesystem = fsspec.open(remote_filename.parent).fs
         try:
+            _LOG.debug(f"Copying file from {remote_filename} to {local_filename}")
             filesystem.get_file(remote_filename, local_filename)
         except FileNotFoundError as e:
             _LOG.error(e)

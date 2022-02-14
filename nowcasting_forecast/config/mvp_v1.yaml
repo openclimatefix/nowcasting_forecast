@@ -1,0 +1,31 @@
+general:
+  description: Config for producing batches on for live forecasts.
+  name: mvp_v0
+input_data:
+  default_forecast_minutes: 60
+  default_history_minutes: 120
+  #---------------------- GSP -------------------
+  gsp:
+    gsp_zarr_path: ./nowcasting_forecast # this is not needed
+    history_minutes: 90
+    metadata_only: True
+    log_level: "INFO"
+
+  #---------------------- NWP -------------------
+  nwp:
+    nwp_channels:
+      - dswrf
+    nwp_image_size_pixels: 64
+    nwp_zarr_path: s3://nowcasting-nwp-development/data/latest.netcdf
+    forecast_minutes: 120
+    history_minutes: 60
+
+output_data:
+  filepath: ./batches/
+process:
+  batch_size: 32
+  seed: 1234
+  upload_every_n_batches: 0 # Write directly to output_data.filepath, not to a temp directory.
+  n_train_batches: 0
+  n_validation_batches: 0
+  n_test_batches: 0
