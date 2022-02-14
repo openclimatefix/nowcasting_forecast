@@ -45,7 +45,8 @@ class Model(pl.LightningModule):
         architecture is roughly
         1. nwp time series goes into many 3d convolution layers.
         2. Final convolutional layer goes to full connected layer.
-        3. Then there ~4 fully connected layers which end up forecasting the pv yield / gsp into the future
+        3. Then there ~4 fully connected layers which end up forecasting the
+            pv yield / gsp into the future
 
         forecast_len: the amount of minutes that should be forecasted
         history_len: the amount of historical minutes that are used
@@ -54,9 +55,12 @@ class Model(pl.LightningModule):
         image_size_pixels: the input satellite image size
         nwp_image_size_pixels: the input nwp image size
         number_sat_channels: number of nwp channels
-        fc1_output_features: number of fully connected outputs nodes out of the the first fully connected layer
-        fc2_output_features: number of fully connected outputs nodes out of the the second fully connected layer
-        fc3_output_features: number of fully connected outputs nodes out of the the third fully connected layer
+        fc1_output_features: number of fully connected outputs nodes out of
+            the first fully connected layer
+        fc2_output_features: number of fully connected outputs nodes out of
+            the second fully connected layer
+        fc3_output_features: number of fully connected outputs nodes out of
+            the third fully connected layer
         output_variable: the output variable to be predicted
         number_nwp_channels: The number of nwp channels there are
         """
