@@ -21,8 +21,8 @@ _LOG = logging.getLogger(__name__)
 
 
 class Model(pl.LightningModule):
-
-    name = "conv3d_sat_nwp"
+    """ Simople cnn model for NWP data """
+    name = "conv3d_nwp"
 
     def __init__(
         self,
@@ -126,7 +126,7 @@ class Model(pl.LightningModule):
         )
 
     def forward(self, nwp_data):
-
+        """ Pass data through model """
         # shape: batch_size, n_chans, seq_len, height, width
         nwp_data = nwp_data.data.float()
         out_nwp = F.relu(self.nwp_conv0(nwp_data))
@@ -155,7 +155,9 @@ class Model(pl.LightningModule):
     def load_model(
         self, local_filename: Optional[str] = "./temp.ckpt", remote_filename: Optional[str] = None
     ):
-
+        """
+        Load model weights
+        """
         if remote_filename is None:
             remote_filename = "s3://nowcasting-ml-models-development/v1/predict_pv_yield_951.ckpt"
 
