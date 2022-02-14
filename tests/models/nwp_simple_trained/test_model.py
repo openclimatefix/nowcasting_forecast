@@ -1,8 +1,8 @@
 import os
 import tempfile
 
-import torch
 import pytest
+import torch
 
 from nowcasting_forecast.models.nwp_simple_trained.model import Model
 
