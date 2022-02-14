@@ -1,6 +1,7 @@
-import torch
-import tempfile
 import os
+import tempfile
+
+import torch
 
 from nowcasting_forecast.models.nwp_simple_trained.model import Model
 

@@ -21,7 +21,8 @@ _LOG = logging.getLogger(__name__)
 
 
 class Model(pl.LightningModule):
-    """ Simople cnn model for NWP data """
+    """Simople cnn model for NWP data"""
+
     name = "conv3d_nwp"
 
     def __init__(
@@ -126,7 +127,7 @@ class Model(pl.LightningModule):
         )
 
     def forward(self, nwp_data):
-        """ Pass data through model """
+        """Pass data through model"""
         # shape: batch_size, n_chans, seq_len, height, width
         nwp_data = nwp_data.data.float()
         out_nwp = F.relu(self.nwp_conv0(nwp_data))
