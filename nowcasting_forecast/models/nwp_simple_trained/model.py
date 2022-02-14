@@ -6,16 +6,18 @@ Default parameters are set from the trained model
 """
 
 
-import os
 import logging
+import os
+
 <<<<<<< HEAD
 
 import numpy as np
 import torch.nn.functional as F
-from torch import nn
-from torch import clip
+from torch import clip, nn
+
 =======
 from typing import Optional
+
 >>>>>>> 869c24ccc23d8c16c984d273499b1c0ad25313b6
 
 import fsspec

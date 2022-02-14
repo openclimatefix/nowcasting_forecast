@@ -1,7 +1,7 @@
 import os
 import tempfile
-import torch
 
+import torch
 from nowcasting_datamodel.models import InputDataLastUpdatedSQL, LocationSQL
 from nowcasting_dataset.config.save import save_yaml_configuration
 
@@ -50,7 +50,7 @@ def test_nwp_irradiance_simple_check_locations(batch_nwp, db_session):
 def save_fake_weights(path) -> str:
     model = Model()
     model_nwp_simple_trained_weights = os.path.join(path, "weights.ckpt")
-    torch.save({'state_dict': model.state_dict()}, model_nwp_simple_trained_weights)
+    torch.save({"state_dict": model.state_dict()}, model_nwp_simple_trained_weights)
 
     return model_nwp_simple_trained_weights
 
@@ -72,7 +72,7 @@ def test_nwp_irradiance_simple_run_all_batches(batch_nwp, configuration, db_sess
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
-            weights_file=model_nwp_simple_trained_weights
+            weights_file=model_nwp_simple_trained_weights,
         )
 
         assert len(f) == batch_nwp.metadata.batch_size
@@ -98,7 +98,7 @@ def test_nwp_irradiance_simple_run_all_batches_and_national(batch_nwp, configura
             configuration_file=configuration_file,
             add_national_forecast=True,
             n_gsps=n_gsps,
-            weights_file=model_nwp_simple_trained_weights
+            weights_file=model_nwp_simple_trained_weights,
         )
 
         assert len(f) == n_gsps + 1
