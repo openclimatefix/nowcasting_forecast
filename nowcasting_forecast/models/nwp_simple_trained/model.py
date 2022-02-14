@@ -8,17 +8,22 @@ Default parameters are set from the trained model
 
 import os
 import logging
+<<<<<<< HEAD
 
 import numpy as np
 import torch.nn.functional as F
 from torch import nn
 from torch import clip
+=======
+from typing import Optional
+>>>>>>> 869c24ccc23d8c16c984d273499b1c0ad25313b6
 
 import fsspec
-from typing import Optional
+import numpy as np
 import pytorch_lightning as pl
-
+import torch.nn.functional as F
 from pathy import Pathy
+from torch import nn
 
 logging.basicConfig()
 _LOG = logging.getLogger(__name__)
@@ -79,9 +84,7 @@ class Model(pl.LightningModule):
         self.forecast_len_60 = (
             self.forecast_minutes // 60
         )  # the number of forecast timestemps for 60 minutes data
-        self.forecast_len = (
-                self.forecast_minutes // 30
-        )
+        self.forecast_len = self.forecast_minutes // 30
 
         super().__init__()
 
@@ -124,8 +127,8 @@ class Model(pl.LightningModule):
         # not needed
         self.history_len_5 = int(np.ceil(self.history_minutes / 5))
         self.pv_fc1 = nn.Linear(
-                in_features=128 * (6 + 1),
-                out_features=128,
+            in_features=128 * (6 + 1),
+            out_features=128,
         )
         self.pv_system_id_embedding = nn.Embedding(
             num_embeddings=940, embedding_dim=self.embedding_dem
@@ -179,13 +182,3 @@ class Model(pl.LightningModule):
 
         # load weights into model
         return self.load_from_checkpoint(checkpoint_path=local_filename)
-
-
-
-
-
-
-
-
-
-

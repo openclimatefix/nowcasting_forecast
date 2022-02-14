@@ -1,5 +1,6 @@
-from nowcasting_forecast.models.nwp_simple_trained.model import Model
 import torch
+
+from nowcasting_forecast.models.nwp_simple_trained.model import Model
 
 
 def test_model_init():

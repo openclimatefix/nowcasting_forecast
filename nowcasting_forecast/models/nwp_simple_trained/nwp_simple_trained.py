@@ -31,10 +31,9 @@ from sqlalchemy.orm.session import Session
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
-from nowcasting_forecast.utils import floor_30_minutes_dt
-
 from nowcasting_forecast.models.nwp_simple_trained.model import Model
 from nowcasting_forecast.models.nwp_simple_trained.xr_utils import re_order_dims
+from nowcasting_forecast.utils import floor_30_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -138,7 +137,9 @@ def nwp_irradiance_simple_trained_run_one_batch(
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
     # get model name
-    model = get_model(name='nwp_simple_trained', version=nowcasting_forecast.__version__, session=session)
+    model = get_model(
+        name="nwp_simple_trained", version=nowcasting_forecast.__version__, session=session
+    )
 
     if input_data_last_updated is None:
         # TODO make input data from actual data
@@ -168,9 +169,7 @@ def nwp_irradiance_simple_trained_run_one_batch(
             forecast_values.append(
                 ForecastValueSQL(
                     target_time=target_time,
-                    expected_power_generation_megawatts=float(
-                        predictions[i, t_index]
-                    ),
+                    expected_power_generation_megawatts=float(predictions[i, t_index]),
                 )
             )
 
@@ -197,13 +196,12 @@ def nwp_irradiance_simple_trained(batch: Batch, model) -> xr.DataArray:
 
     nwp = batch.nwp
 
-
     nwp = re_order_dims(nwp)
 
     # move to torch
     nwp_batch_ml = nwp.torch.to_tensor(["data", "time", "init_time", "x_osgb", "y_osgb"])
 
-    nwp = nwp_batch_ml['data']
+    nwp = nwp_batch_ml["data"]
 
     # normalize
     dswrf_mean = 294.6696933986283
