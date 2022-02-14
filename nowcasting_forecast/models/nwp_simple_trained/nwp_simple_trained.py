@@ -221,7 +221,7 @@ def nwp_irradiance_simple_trained(batch: Batch, model) -> xr.DataArray:
     )
     capacity = capacity.loc[batch.metadata.ids]
 
-    # times predictions by capacities
+    # multiply predictions by capacities
     predictions = capacity.values * predictions.detach().cpu().numpy()
 
     return predictions
