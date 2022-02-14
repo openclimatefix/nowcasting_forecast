@@ -7,7 +7,6 @@ Default parameters are set from the trained model
 
 
 import logging
-import os
 from typing import Optional
 
 import fsspec
