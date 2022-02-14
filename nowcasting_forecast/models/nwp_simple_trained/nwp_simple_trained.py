@@ -1,9 +1,9 @@
 """ Run the nwp simple trained model
 
-1. Setup model
-2. load weights from s3/neptune
-3. run model
-4. format predictions
+1. Setup model and load weights from s3/neptune
+2. run model by looping over batches
+3. format predictions
+4. add national forecast
 """
 
 
@@ -74,7 +74,7 @@ def nwp_irradiance_simple_trained_run_all_batches(
 
     input_data_last_updated = make_fake_input_data_last_updated()
 
-    # model
+    # load model
     model = Model()
     model = model.load_model(remote_filename=weights_file)
 
