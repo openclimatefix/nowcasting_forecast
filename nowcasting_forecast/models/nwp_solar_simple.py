@@ -27,6 +27,8 @@ from nowcasting_forecast.utils import floor_30_minutes_dt
 
 logger = logging.getLogger(__name__)
 
+NAME="nwp_simple"
+
 
 def nwp_irradiance_simple_run_all_batches(
     session: Session,
@@ -120,7 +122,7 @@ def nwp_irradiance_simple_run_one_batch(
     forecast_creation_time = datetime.now(tz=timezone.utc)
 
     # get model name
-    model = get_model(name="nwp_simple", version=nowcasting_forecast.__version__, session=session)
+    model = get_model(name=NAME, version=nowcasting_forecast.__version__, session=session)
 
     if input_data_last_updated is None:
         # TODO make input data from actual data

@@ -9,6 +9,7 @@
 
 import logging
 import os
+import pandas as pd
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import List, Optional, Union
@@ -36,6 +37,8 @@ from nowcasting_forecast.models.nwp_simple_trained.xr_utils import re_order_dims
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
 logger = logging.getLogger(__name__)
+
+NAME="nwp_simple_trained"
 
 
 def nwp_irradiance_simple_trained_run_all_batches(
@@ -138,7 +141,7 @@ def nwp_irradiance_simple_trained_run_one_batch(
 
     # get model name
     model = get_model(
-        name="nwp_simple_trained", version=nowcasting_forecast.__version__, session=session
+        name=NAME, version=nowcasting_forecast.__version__, session=session
     )
 
     if input_data_last_updated is None:
@@ -213,6 +216,11 @@ def nwp_irradiance_simple_trained(batch: Batch, model) -> xr.DataArray:
     predictions = model(nwp)
 
     # re-normalize
-    # TODO
+    # load capacity
+    capacity = pd.read_csv(os.path.join(os.path.dirname(nowcasting_forecast.__file__), "data", "gsp_capacity.csv"), index_col=['gsp_id'])
+    capacity = capacity.loc[batch.metadata.ids]
+
+    # times predictions by capacities
+    predictions = capacity.values * predictions.detach().cpu().numpy()
 
     return predictions

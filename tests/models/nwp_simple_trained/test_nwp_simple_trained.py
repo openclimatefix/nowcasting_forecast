@@ -13,6 +13,13 @@ from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
 )
 
 
+def save_fake_weights(path) -> str:
+    model = Model()
+    model_nwp_simple_trained_weights = os.path.join(path, "weights.ckpt")
+    torch.save({"state_dict": model.state_dict()}, model_nwp_simple_trained_weights)
+
+    return model_nwp_simple_trained_weights
+
 def test_nwp_irradiance_simple(batch_nwp):
 
     model = Model()
@@ -45,14 +52,6 @@ def test_nwp_irradiance_simple_check_locations(batch_nwp, db_session):
 
     assert len(db_session.query(LocationSQL).all()) == batch_nwp.metadata.batch_size
     assert len(db_session.query(InputDataLastUpdatedSQL).all()) == 2
-
-
-def save_fake_weights(path) -> str:
-    model = Model()
-    model_nwp_simple_trained_weights = os.path.join(path, "weights.ckpt")
-    torch.save({"state_dict": model.state_dict()}, model_nwp_simple_trained_weights)
-
-    return model_nwp_simple_trained_weights
 
 
 def test_nwp_irradiance_simple_run_all_batches(batch_nwp, configuration, db_session):

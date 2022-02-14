@@ -9,6 +9,7 @@ Default parameters are set from the trained model
 import logging
 import os
 from typing import Optional
+from pathy import Pathy
 
 import fsspec
 import numpy as np
@@ -169,10 +170,10 @@ class Model(pl.LightningModule):
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
 
-        # remote_filename = os.path.abspath(remote_filename)
-        filesystem = fsspec.open(os.path.abspath(remote_filename)).fs
+        remote_filename = Pathy(remote_filename)
+        filesystem = fsspec.open(remote_filename.parent).fs
         try:
-            filesystem.get(remote_filename, local_filename)
+            filesystem.get_file(remote_filename, local_filename)
         except FileNotFoundError as e:
             _LOG.error(e)
             message = f"Could not copy {remote_filename} to {local_filename}"
