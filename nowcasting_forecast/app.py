@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
     help="Select which model to use",
     type=click.STRING,
 )
-def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple_trained"):
+def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
     """
     Run main app.
 
