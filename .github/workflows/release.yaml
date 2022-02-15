@@ -6,7 +6,7 @@ on:
 
 jobs:
   bump-version-python-docker-release:
-    uses: openclimatefix/.github/.github/workflows/python-docker-release.yml@bug/forecast-44-wrong-version
+    uses: openclimatefix/.github/.github/workflows/python-docker-release.yml@main
     secrets:
       token: ${{ secrets.PYPI_API_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
