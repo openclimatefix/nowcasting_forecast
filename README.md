@@ -66,6 +66,8 @@ configuration: mvp_v0.yaml
 
 CNN model of 'dswrf' channel in NWP. 6 CNN layers then 4 fully connected layers.
 
+![Diagram](nowcasting_forecast/models/nwp_simple_trained/diagram.png)
+
 Training run: https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRED-951/charts
 
 configuration: mvp_v1.yaml
