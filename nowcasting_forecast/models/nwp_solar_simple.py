@@ -15,7 +15,7 @@ from nowcasting_datamodel.models import (
     InputDataLastUpdatedSQL,
 )
 from nowcasting_datamodel.national import make_national_forecast
-from nowcasting_datamodel.read import get_location, get_model
+from nowcasting_datamodel.read.read import get_location, get_model
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.dataset.batch import Batch
 from sqlalchemy.orm.session import Session
