@@ -25,7 +25,6 @@ logging.basicConfig(
 )
 
 
-
 @click.command()
 @click.option(
     "--db-url",
