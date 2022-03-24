@@ -109,7 +109,7 @@ def nwp_irradiance_simple_trained_run_all_batches(
     if add_national_forecast:
         # add national forecast
         try:
-            forecasts.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps))
+            forecasts.append(make_national_forecast(forecasts=forecasts, n_gsps=n_gsps,session=session))
         except Exception as e:
             logger.error(e)
             # TODO remove this
