@@ -7,7 +7,7 @@ import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts
-from nowcasting_datamodel.models import ForecastSQL
+from nowcasting_datamodel.models import ForecastSQL, InputDataLastUpdatedSQL
 from nowcasting_datamodel.models.base import Base_Forecast
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_osgb
@@ -58,7 +58,7 @@ def db_connection():
 
     url = os.getenv("DB_URL")
 
-    connection = DatabaseConnection(url=url)
+    connection = DatabaseConnection(url=url,echo=False)
     Base_Forecast.metadata.create_all(connection.engine)
 
     yield connection
@@ -142,3 +142,16 @@ def nwp_data():
         name="data",
     )  # Fake data for testing!
     return nwp.to_dataset(name="UKV")
+
+
+@pytest.fixture
+def input_data_last_updated_sql(db_session):
+
+    now = datetime.utcnow()
+
+    i = InputDataLastUpdatedSQL(gsp=now, pv=now, satellite=now, nwp=now)
+
+    db_session.add(i)
+    db_session.commit()
+
+    return i
