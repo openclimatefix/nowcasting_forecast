@@ -8,7 +8,6 @@ from nowcasting_datamodel.models import Forecast, ForecastSQL, LocationSQL, nati
 
 from nowcasting_forecast.app import run
 
-
 # def test_fake(db_connection: DatabaseConnection):
 #
 #     runner = CliRunner()
@@ -25,7 +24,9 @@ from nowcasting_forecast.app import run
 #         assert locations[0].label == national_gb_label
 
 
-def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated_sql):
+def test_not_fake(
+    db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated_sql
+):
 
     with tempfile.TemporaryDirectory() as temp_dir:
 

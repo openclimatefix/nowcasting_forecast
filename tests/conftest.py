@@ -58,7 +58,7 @@ def db_connection():
 
     url = os.getenv("DB_URL")
 
-    connection = DatabaseConnection(url=url,echo=False)
+    connection = DatabaseConnection(url=url, echo=False)
     Base_Forecast.metadata.create_all(connection.engine)
 
     yield connection
