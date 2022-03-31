@@ -16,7 +16,7 @@ from nowcasting_datamodel.models import (
 )
 from nowcasting_datamodel.national import make_national_forecast
 from nowcasting_datamodel.read.read import (
-    get_latest_input_data_last_updated,
+    # get_latest_input_data_last_updated,
     get_location,
     get_model,
 )
@@ -64,7 +64,8 @@ def nwp_irradiance_simple_run_all_batches(
     # make dataloader
     dataloader = iter(BatchDataLoader(n_batches=n_batches, configuration=configuration))
 
-    input_data_last_updated = get_latest_input_data_last_updated(session=session)
+    # input_data_last_updated = get_latest_input_data_last_updated(session=session)
+    input_data_last_updated = make_fake_input_data_last_updated()
 
     # loop over batch
     forecasts = []
