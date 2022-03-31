@@ -18,11 +18,11 @@ from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_all_batches
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
-logger = logging.getLogger(__name__)
 logging.basicConfig(
-    level=getattr(logging, os.getenv("LOGLEVEL", "INFO")),
+    level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
     format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
 )
+logger = logging.getLogger(__name__)
 
 
 @click.command()
