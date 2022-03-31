@@ -8,6 +8,7 @@ from nowcasting_datamodel.models import Forecast, ForecastSQL, LocationSQL, nati
 
 from nowcasting_forecast.app import run
 
+
 def test_fake(db_connection: DatabaseConnection):
 
     runner = CliRunner()
