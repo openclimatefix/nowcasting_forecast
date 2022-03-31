@@ -25,9 +25,7 @@ def test_fake(db_connection: DatabaseConnection):
         assert locations[0].label == national_gb_label
 
 
-def test_not_fake(
-    db_connection: DatabaseConnection, nwp_data: xr.Dataset
-):
+def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset):
 
     with tempfile.TemporaryDirectory() as temp_dir:
 
