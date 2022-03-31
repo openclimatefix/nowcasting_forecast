@@ -24,8 +24,7 @@ from nowcasting_datamodel.models import (
     InputDataLastUpdatedSQL,
 )
 from nowcasting_datamodel.national import make_national_forecast
-from nowcasting_datamodel.read.read import (
-    # get_latest_input_data_last_updated,
+from nowcasting_datamodel.read.read import (  # get_latest_input_data_last_updated,
     get_location,
     get_model,
 )
