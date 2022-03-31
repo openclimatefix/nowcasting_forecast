@@ -26,7 +26,7 @@ def test_fake(db_connection: DatabaseConnection):
 
 
 def test_not_fake(
-    db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated_sql
+    db_connection: DatabaseConnection, nwp_data: xr.Dataset
 ):
 
     with tempfile.TemporaryDirectory() as temp_dir:
