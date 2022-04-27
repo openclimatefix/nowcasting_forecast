@@ -47,7 +47,6 @@ input_data:
     hrvsatellite_image_size_pixels_width: 128
     hrvsatellite_zarr_path: s3://nowcasting-sat-development/data/latest/hrv_latest.nc
 
-
 output_data:
   filepath: ./batches/
 process:
