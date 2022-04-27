@@ -111,7 +111,7 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     image_size = 1000
     time_steps = 10
 
@@ -149,7 +149,10 @@ def sat_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    times = [t0_datetime_utc]
+    for i in range(7):
+        times.append(t0_datetime_utc + timedelta(minutes=5))
     image_size = 128
     time_steps = 10
 
@@ -158,7 +161,7 @@ def sat_data():
     )
 
     coords = (
-        ("time", [t0_datetime_utc]),
+        ("time", times),
         ("variable", np.array(["HRV"])),
         ("x_geostationary", x),
         ("y_geostationary", y),
@@ -169,7 +172,7 @@ def sat_data():
             np.random.uniform(
                 0,
                 200,
-                size=(1, 1, time_steps, image_size, image_size),
+                size=(8, 1, time_steps, image_size, image_size),
             )
         ),
         coords=coords,
