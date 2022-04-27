@@ -14,6 +14,7 @@ def test_make_batches(nwp_data):
 
         make_batches()
 
+
 def test_make_sat_batches(sat_data):
 
     with tempfile.TemporaryDirectory() as temp_dir:

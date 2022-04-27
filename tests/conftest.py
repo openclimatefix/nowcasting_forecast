@@ -143,6 +143,7 @@ def nwp_data():
     )  # Fake data for testing!
     return nwp.to_dataset(name="UKV")
 
+
 @pytest.fixture
 def sat_data():
 
