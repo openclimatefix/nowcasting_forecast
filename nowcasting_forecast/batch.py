@@ -37,8 +37,13 @@ def make_batches(
         manager.config.input_data.nwp.nwp_zarr_path = os.getenv("NWP_PATH")
         logger.debug(f"WIll be opening nwp file: {manager.config.input_data.nwp.nwp_zarr_path}")
 
+    # over write nwp zarr path
+    if os.getenv("HRV_SAT_PATH") is not None:
+        manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path = os.getenv("HRV_SAT_PATH")
+        logger.debug(f"WIll be opening sat file: {manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path}")
+
     # make location file
-    manager.initialize_data_sources(names_of_selected_data_sources=["gsp", "nwp"])
+    manager.initialize_data_sources(names_of_selected_data_sources=["gsp", "nwp", "satellite", "hrvsatellite"])
     manager.create_files_specifying_spatial_and_temporal_locations_of_each_example(
         t0_datetime=t0_datetime_utc
     )

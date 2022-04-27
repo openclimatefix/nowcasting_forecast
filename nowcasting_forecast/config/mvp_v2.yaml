@@ -36,7 +36,7 @@ input_data:
       - WV_073
     satellite_image_size_pixels_height: 48
     satellite_image_size_pixels_width: 48
-    satellite_zarr_path: s3://nowcasting-sat-development/data/latest.nc
+    satellite_zarr_path: s3://nowcasting-sat-development/data/latest/latest.nc
     keep_dawn_dusk_hours: 2
 
   #---------------------- HRVSatellite -------------
@@ -45,7 +45,7 @@ input_data:
       - HRV
     hrvsatellite_image_size_pixels_height: 128
     hrvsatellite_image_size_pixels_width: 128
-    hrvsatellite_zarr_path: s3://nowcasting-sat-development/data/hrv_latest.nc
+    hrvsatellite_zarr_path: s3://nowcasting-sat-development/data/latest/hrv_latest.nc
 
 
 output_data:

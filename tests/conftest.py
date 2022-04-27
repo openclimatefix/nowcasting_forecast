@@ -142,3 +142,37 @@ def nwp_data():
         name="data",
     )  # Fake data for testing!
     return nwp.to_dataset(name="UKV")
+
+@pytest.fixture
+def sat_data():
+
+    # middle of the UK
+    x_center_osgb = 500_000
+    y_center_osgb = 500_000
+    t0_datetime_utc = t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    image_size = 128
+    time_steps = 10
+
+    x, y = make_random_image_coords_osgb(
+        size=image_size, x_center_osgb=x_center_osgb, y_center_osgb=y_center_osgb, km_spacing=2
+    )
+
+    coords = (
+        ("time", [t0_datetime_utc]),
+        ("variable", np.array(["HRV"])),
+        ("x_geostationary", x),
+        ("y_geostationary", y),
+    )
+
+    sat = xr.DataArray(
+        abs(  # to make sure average is about 100
+            np.random.uniform(
+                0,
+                200,
+                size=(1, 1, time_steps, image_size, image_size),
+            )
+        ),
+        coords=coords,
+        name="data",
+    )  # Fake data for testing!
+    return sat.to_dataset(name="data")
