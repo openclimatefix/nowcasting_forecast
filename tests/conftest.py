@@ -213,7 +213,7 @@ def sat_data():
     y_center_osgb = 500_000
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     times = [t0_datetime_utc]
-    for i in range(1,6):
+    for i in range(1, 6):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
     image_size = 128
     time_steps = 10
