@@ -58,6 +58,7 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
 def db_connection():
 
     url = os.getenv("DB_URL")
+    os.environ['DB_URL_PV'] = url
 
     connection = DatabaseConnection(url=url)
     Base_Forecast.metadata.create_all(connection.engine)
@@ -161,8 +162,9 @@ def pv_yields_and_systems(db_session):
         For system 2: 1 pv yield at 16.00
     """
 
+    # this pv systems has same coordiantes as the first gsp
     pv_system_sql_1: PVSystemSQL = PVSystem(
-        pv_system_id=1, provider="pvoutput.org", status_interval_minutes=5, longitude=0, latitude=55
+        pv_system_id=1, provider="pvoutput.org", status_interval_minutes=5, longitude=-1.293, latitude=51.76
     ).to_orm()
     pv_system_sql_2: PVSystemSQL = PVSystem(
         pv_system_id=2, provider="pvoutput.org", status_interval_minutes=5, longitude=0, latitude=56
