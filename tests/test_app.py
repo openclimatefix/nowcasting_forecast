@@ -43,6 +43,7 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset):
             assert len(forecasts) == 338 + 1  # 338 gsp + national
             assert len(forecasts[0].forecast_values) > 1
 
+
 def test_not_fake_sat(db_connection: DatabaseConnection, sat_data: xr.Dataset):
 
     with tempfile.TemporaryDirectory() as temp_dir:
