@@ -7,9 +7,8 @@ import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts
-from nowcasting_datamodel.models import ForecastSQL
+from nowcasting_datamodel.models import ForecastSQL, PVSystem, PVSystemSQL, PVYield
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
-from nowcasting_datamodel.models import PVSystem, PVSystemSQL, PVYield
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_osgb
 from nowcasting_dataset.dataset.batch import Batch
@@ -58,7 +57,7 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
 def db_connection():
 
     url = os.getenv("DB_URL")
-    os.environ['DB_URL_PV'] = url
+    os.environ["DB_URL_PV"] = url
 
     connection = DatabaseConnection(url=url)
     Base_Forecast.metadata.create_all(connection.engine)
@@ -164,7 +163,11 @@ def pv_yields_and_systems(db_session):
 
     # this pv systems has same coordiantes as the first gsp
     pv_system_sql_1: PVSystemSQL = PVSystem(
-        pv_system_id=1, provider="pvoutput.org", status_interval_minutes=5, longitude=-1.293, latitude=51.76
+        pv_system_id=1,
+        provider="pvoutput.org",
+        status_interval_minutes=5,
+        longitude=-1.293,
+        latitude=51.76,
     ).to_orm()
     pv_system_sql_2: PVSystemSQL = PVSystem(
         pv_system_id=2, provider="pvoutput.org", status_interval_minutes=5, longitude=0, latitude=56
@@ -175,7 +178,7 @@ def pv_yields_and_systems(db_session):
     pv_yield_sqls = []
     for hour in range(0, 6):
         for minute in range(0, 60, 5):
-            datetime_utc = t0_datetime_utc + timedelta(hours=hour-2,minutes=minute)
+            datetime_utc = t0_datetime_utc + timedelta(hours=hour - 2, minutes=minute)
             pv_yield_1 = PVYield(
                 datetime_utc=datetime_utc,
                 solar_generation_kw=hour + minute / 100,
