@@ -185,7 +185,7 @@ def pv_yields_and_systems(db_session):
             ).to_orm()
             if datetime_utc.hour in [22, 23, 0, 1, 2]:
                 pv_yield_1.solar_generation_kw = 0
-            pv_yield_1.pv_system = pv_system_sql_1
+            pv_yield_1.pv_system = pv_system_sql_1s
             pv_yield_sqls.append(pv_yield_1)
 
     pv_yield_4 = PVYield(datetime_utc=datetime(2022, 1, 1, 4), solar_generation_kw=4).to_orm()
@@ -214,7 +214,7 @@ def sat_data():
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     times = [t0_datetime_utc]
     for i in range(7):
-        times.append(t0_datetime_utc + timedelta(minutes=5))
+        times.append(t0_datetime_utc + timedelta(minutes=5*i))
     image_size = 128
     time_steps = 10
 
