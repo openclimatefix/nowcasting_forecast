@@ -51,6 +51,7 @@ def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems):
         pv = PV(pv)
         assert pv.power_mw.max() > 0
 
+
 def test_make_sat_batches(sat_data):
 
     with tempfile.TemporaryDirectory() as temp_dir:
