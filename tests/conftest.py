@@ -8,7 +8,7 @@ import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts
 from nowcasting_datamodel.models import ForecastSQL
-from nowcasting_datamodel.models.base import Base_Forecast
+from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_osgb
 from nowcasting_dataset.dataset.batch import Batch
@@ -60,10 +60,12 @@ def db_connection():
 
     connection = DatabaseConnection(url=url)
     Base_Forecast.metadata.create_all(connection.engine)
+    Base_PV.metadata.create_all(connection.engine)
 
     yield connection
 
     Base_Forecast.metadata.drop_all(connection.engine)
+    Base_PV.metadata.drop_all(connection.engine)
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -116,7 +118,11 @@ def nwp_data():
     time_steps = 10
 
     x, y = make_random_image_coords_osgb(
-        size=image_size, x_center_osgb=x_center_osgb, y_center_osgb=y_center_osgb, km_spacing=2
+        size_x=image_size,
+        size_y=image_size,
+        x_center_osgb=x_center_osgb,
+        y_center_osgb=y_center_osgb,
+        km_spacing=2,
     )
 
     # time = pd.date_range(start=t0_datetime_utc, freq="30T", periods=10)

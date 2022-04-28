@@ -15,7 +15,8 @@ input_data:
   nwp:
     nwp_channels:
       - dswrf
-    nwp_image_size_pixels: 64
+    nwp_image_size_pixels_height: 64
+    nwp_image_size_pixels_width: 64
     nwp_zarr_path: s3://nowcasting-nwp-development/data/latest.netcdf
     forecast_minutes: 120
     history_minutes: 60
