@@ -158,7 +158,7 @@ def pv_yields_and_systems(db_session):
 
     Pv systems: Two systems
     PV yields:
-        FOr system 1, pv yields from 4 to 10 at 5 minutes
+        FOr system 1, pv yields from 2 hours ago to 4 in the future at 5 minutes intervals
         For system 2: 1 pv yield at 16.00
     """
 
