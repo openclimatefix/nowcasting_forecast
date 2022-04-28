@@ -204,6 +204,7 @@ def pv_yields_and_systems(db_session):
         "pv_systems": [pv_system_sql_1, pv_system_sql_2],
     }
 
+
 @pytest.fixture
 def sat_data():
 
