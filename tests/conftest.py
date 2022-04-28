@@ -219,7 +219,7 @@ def sat_data():
     time_steps = 10
 
     x, y = make_random_image_coords_osgb(
-        size=image_size, x_center_osgb=x_center_osgb, y_center_osgb=y_center_osgb, km_spacing=2
+        size_x=image_size, size_y=image_size, x_center_osgb=x_center_osgb, y_center_osgb=y_center_osgb, km_spacing=2
     )
 
     coords = (
