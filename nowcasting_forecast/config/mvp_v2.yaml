@@ -61,5 +61,3 @@ process:
   n_train_batches: 0
   n_validation_batches: 0
   n_test_batches: 0
-
-
