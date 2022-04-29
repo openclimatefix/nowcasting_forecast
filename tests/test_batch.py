@@ -38,10 +38,10 @@ def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
         os.environ["NWP_PATH"] = nwp_path
-        hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.netcdf"
+        hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.nc"
         hrv_sat_data.to_netcdf(hrv_sat_path, engine="h5netcdf")
         os.environ["HRV_SAT_PATH"] = hrv_sat_path
-        sat_path = f"{temp_dir}/sat_unittest.netcdf"
+        sat_path = f"{temp_dir}/sat_unittest.nc"
         sat_data.to_netcdf(sat_path, engine="h5netcdf")
         os.environ["SAT_PATH"] = sat_path
 
