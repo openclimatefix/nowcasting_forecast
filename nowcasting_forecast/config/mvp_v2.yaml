@@ -47,16 +47,6 @@ input_data:
     hrvsatellite_image_size_pixels_width: 128
     hrvsatellite_zarr_path: s3://nowcasting-sat-development/data/latest/hrv_latest.nc
 
-output_data:
-  filepath: ./batches/
-process:
-  batch_size: 32
-  seed: 1234
-  upload_every_n_batches: 0 # Write directly to output_data.filepath, not to a temp directory.
-  n_train_batches: 0
-  n_validation_batches: 0
-  n_test_batches: 0
-
   #--------- PV --------
   pv:
     is_live: True
@@ -70,3 +60,5 @@ process:
   n_train_batches: 0
   n_validation_batches: 0
   n_test_batches: 0
+
+
