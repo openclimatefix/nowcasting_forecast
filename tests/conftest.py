@@ -228,6 +228,47 @@ def sat_data():
 
     coords = (
         ("time", times),
+        ("variable", np.array(['IR_016', 'IR_039', 'IR_087', 'IR_097', 'IR_108', 'IR_120', 'IR_134', 'VIS006', 'VIS008', 'WV_062', 'WV_073'])),
+        ("x_geostationary", x),
+        ("y_geostationary", y),
+    )
+
+    sat = xr.DataArray(
+        abs(  # to make sure average is about 100
+            np.random.uniform(
+                0,
+                200,
+                size=(time_steps, 11, image_size, image_size),
+            )
+        ),
+        coords=coords,
+        name="data",
+    )  # Fake data for testing!
+    return sat.to_dataset(name="data")
+
+@pytest.fixture
+def hrv_sat_data():
+
+    # middle of the UK
+    x_center_osgb = 500_000
+    y_center_osgb = 500_000
+    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    times = [t0_datetime_utc]
+    for i in range(1, 7):
+        times.append(t0_datetime_utc + timedelta(minutes=5 * i))
+    image_size = 128
+    time_steps = 7
+
+    x, y = make_random_image_coords_osgb(
+        size_x=image_size,
+        size_y=image_size,
+        x_center_osgb=x_center_osgb,
+        y_center_osgb=y_center_osgb,
+        km_spacing=2,
+    )
+
+    coords = (
+        ("time", times),
         ("variable", np.array(["HRV"])),
         ("x_geostationary", x),
         ("y_geostationary", y),
