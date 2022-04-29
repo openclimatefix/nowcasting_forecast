@@ -228,7 +228,24 @@ def sat_data():
 
     coords = (
         ("time", times),
-        ("variable", np.array(['IR_016', 'IR_039', 'IR_087', 'IR_097', 'IR_108', 'IR_120', 'IR_134', 'VIS006', 'VIS008', 'WV_062', 'WV_073'])),
+        (
+            "variable",
+            np.array(
+                [
+                    "IR_016",
+                    "IR_039",
+                    "IR_087",
+                    "IR_097",
+                    "IR_108",
+                    "IR_120",
+                    "IR_134",
+                    "VIS006",
+                    "VIS008",
+                    "WV_062",
+                    "WV_073",
+                ]
+            ),
+        ),
         ("x_geostationary", x),
         ("y_geostationary", y),
     )
@@ -245,6 +262,7 @@ def sat_data():
         name="data",
     )  # Fake data for testing!
     return sat.to_dataset(name="data")
+
 
 @pytest.fixture
 def hrv_sat_data():
