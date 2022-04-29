@@ -53,5 +53,3 @@ def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data):
         pv = xr.load_dataset(f"{temp_dir}/live/pv/000000.nc", engine="h5netcdf")
         pv = PV(pv)
         assert pv.power_mw.max() > 0
-
-
