@@ -213,10 +213,10 @@ def sat_data():
     y_center_osgb = 500_000
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     times = [t0_datetime_utc]
-    for i in range(1, 7):
+    for i in range(1, 13):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
     image_size = 128
-    time_steps = 7
+    time_steps = 13
 
     x, y = make_random_image_coords_osgb(
         size_x=image_size,
@@ -261,6 +261,9 @@ def sat_data():
         coords=coords,
         name="data",
     )  # Fake data for testing!
+
+    area_attr = np.load("sat_data/area.npy")
+    sat.attrs['area'] = area_attr
     return sat.to_dataset(name="data")
 
 
@@ -272,10 +275,10 @@ def hrv_sat_data():
     y_center_osgb = 500_000
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     times = [t0_datetime_utc]
-    for i in range(1, 7):
+    for i in range(1, 13):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
     image_size = 128
-    time_steps = 7
+    time_steps = 13
 
     x, y = make_random_image_coords_osgb(
         size_x=image_size,
@@ -303,4 +306,6 @@ def hrv_sat_data():
         coords=coords,
         name="data",
     )  # Fake data for testing!
+    area_attr = np.load("sat_data/hrv_area.npy")
+    sat.attrs['area'] = area_attr
     return sat.to_dataset(name="data")
