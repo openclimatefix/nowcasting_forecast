@@ -41,7 +41,8 @@ def make_batches(
     if os.getenv("HRV_SAT_PATH", None) is not None:
         manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path = os.getenv("HRV_SAT_PATH")
         logger.debug(
-            f"WIll be opening sat file: {manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path}"
+            f"WIll be opening sat file:"
+            f" {manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path}"
         )
 
     # over write sat zarr path
