@@ -223,7 +223,7 @@ def sat_data():
         size_y=image_size,
         x_center_osgb=x_center_osgb,
         y_center_osgb=y_center_osgb,
-        km_spacing=2,
+        km_spacing=6,
     )
 
     coords = (
