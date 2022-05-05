@@ -9,3 +9,5 @@ fsspec
 s3fs
 torch
 pytorch-lightning
+xarray
+zarr
