@@ -205,7 +205,7 @@ def pv_yields_and_systems(db_session):
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def sat_data():
 
     # middle of the UK
@@ -225,6 +225,8 @@ def sat_data():
         y_center_osgb=y_center_osgb,
         km_spacing=4,
     )
+    local_path = os.path.dirname(os.path.abspath(__file__))
+    x, y = np.load(f"{local_path}/sat_data/geo.npy")
 
     coords = (
         ("time", times),
@@ -255,20 +257,19 @@ def sat_data():
             np.random.uniform(
                 0,
                 200,
-                size=(time_steps, 11, image_size, image_size),
+                size=(time_steps, 11, 615, 298),
             )
         ),
         coords=coords,
         name="data",
     )  # Fake data for testing!
 
-    local_path = os.path.dirname(os.path.abspath(__file__))
     area_attr = np.load(f"{local_path}/sat_data/area.npy")
     sat.attrs["area"] = area_attr
     return sat.to_dataset(name="data")
 
 
-@pytest.fixture
+@pytest.fixture()
 def hrv_sat_data():
 
     # middle of the UK
@@ -278,16 +279,17 @@ def hrv_sat_data():
     times = [t0_datetime_utc]
     for i in range(1, 13):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
-    image_size = 1000
     time_steps = 13
+    local_path = os.path.dirname(os.path.abspath(__file__))
 
-    x, y = make_random_image_coords_osgb(
-        size_x=image_size,
-        size_y=image_size,
-        x_center_osgb=x_center_osgb,
-        y_center_osgb=y_center_osgb,
-        km_spacing=2,
-    )
+    x, y = np.load(f"{local_path}/sat_data/hrv_geo.npy")
+    #make_random_image_coords_osgb(
+    #    size_x=1843,
+    #    size_y=891,
+    #    x_center_osgb=x_center_osgb,
+    #    y_center_osgb=y_center_osgb,
+    #    km_spacing=2,
+    #)
 
     coords = (
         ("time", times),
@@ -301,13 +303,12 @@ def hrv_sat_data():
             np.random.uniform(
                 0,
                 200,
-                size=(time_steps, 1, image_size, image_size),
+                size=(time_steps, 1, 1843, 891),
             )
         ),
         coords=coords,
         name="data",
     )  # Fake data for testing!
-    local_path = os.path.dirname(os.path.abspath(__file__))
     area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
     return sat.to_dataset(name="data")
