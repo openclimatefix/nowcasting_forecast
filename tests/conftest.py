@@ -226,7 +226,7 @@ def sat_data():
         km_spacing=4,
     )
     local_path = os.path.dirname(os.path.abspath(__file__))
-    x, y = np.load(f"{local_path}/sat_data/geo.npy")
+    x, y = np.load(f"{local_path}/sat_data/geo.npy", allow_pickle=True)
 
     coords = (
         ("time", times),
@@ -282,7 +282,7 @@ def hrv_sat_data():
     time_steps = 13
     local_path = os.path.dirname(os.path.abspath(__file__))
 
-    x, y = np.load(f"{local_path}/sat_data/hrv_geo.npy")
+    x, y = np.load(f"{local_path}/sat_data/hrv_geo.npy", allow_pickle=True)
     #make_random_image_coords_osgb(
     #    size_x=1843,
     #    size_y=891,
