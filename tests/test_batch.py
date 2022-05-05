@@ -2,6 +2,7 @@ import os
 import tempfile
 
 import xarray as xr
+import zarr
 from nowcasting_dataset.data_sources.pv.pv_model import PV
 
 from nowcasting_forecast.batch import make_batches
@@ -38,11 +39,13 @@ def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
         os.environ["NWP_PATH"] = nwp_path
-        hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.nc"
-        hrv_sat_data.to_netcdf(hrv_sat_path, engine="h5netcdf")
+        hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.zarr.zip"
+        with zarr.ZipStore(hrv_sat_path) as store:
+            hrv_sat_data.to_zarr(store, compute=True)
         os.environ["HRV_SAT_PATH"] = hrv_sat_path
         sat_path = f"{temp_dir}/sat_unittest.nc"
-        sat_data.to_netcdf(sat_path, engine="h5netcdf")
+        with zarr.ZipStore(sat_path) as store:
+            sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
 
         make_batches(
