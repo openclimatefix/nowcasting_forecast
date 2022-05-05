@@ -209,22 +209,12 @@ def pv_yields_and_systems(db_session):
 def sat_data():
 
     # middle of the UK
-    x_center_osgb = 500_000
-    y_center_osgb = 500_000
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     times = [t0_datetime_utc]
-    for i in range(1, 13):
+    time_steps = 26
+    for i in range(1, time_steps):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
-    image_size = 1000
-    time_steps = 13
 
-    x, y = make_random_image_coords_osgb(
-        size_x=image_size,
-        size_y=image_size,
-        x_center_osgb=x_center_osgb,
-        y_center_osgb=y_center_osgb,
-        km_spacing=4,
-    )
     local_path = os.path.dirname(os.path.abspath(__file__))
     x, y = np.load(f"{local_path}/sat_data/geo.npy", allow_pickle=True)
 
@@ -266,30 +256,21 @@ def sat_data():
 
     area_attr = np.load(f"{local_path}/sat_data/area.npy")
     sat.attrs["area"] = area_attr
-    return sat.to_dataset(name="data")
+    return sat.to_dataset(name="data").sortby("time")
 
 
 @pytest.fixture()
 def hrv_sat_data():
 
     # middle of the UK
-    x_center_osgb = 500_000
-    y_center_osgb = 500_000
     t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     times = [t0_datetime_utc]
-    for i in range(1, 13):
+    time_steps = 26
+    for i in range(1, time_steps):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
-    time_steps = 13
     local_path = os.path.dirname(os.path.abspath(__file__))
 
     x, y = np.load(f"{local_path}/sat_data/hrv_geo.npy", allow_pickle=True)
-    #make_random_image_coords_osgb(
-    #    size_x=1843,
-    #    size_y=891,
-    #    x_center_osgb=x_center_osgb,
-    #    y_center_osgb=y_center_osgb,
-    #    km_spacing=2,
-    #)
 
     coords = (
         ("time", times),
@@ -311,4 +292,4 @@ def hrv_sat_data():
     )  # Fake data for testing!
     area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
-    return sat.to_dataset(name="data")
+    return sat.to_dataset(name="data").sortby("time")
