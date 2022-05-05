@@ -278,7 +278,7 @@ def hrv_sat_data():
     times = [t0_datetime_utc]
     for i in range(1, 13):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
-    image_size = 128
+    image_size = 512
     time_steps = 13
 
     x, y = make_random_image_coords_osgb(
