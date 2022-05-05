@@ -262,7 +262,8 @@ def sat_data():
         name="data",
     )  # Fake data for testing!
 
-    area_attr = np.load("sat_data/area.npy")
+    local_path = os.path.dirname(os.path.abspath(__file__))
+    area_attr = np.load(f"{local_path}/sat_data/area.npy")
     sat.attrs["area"] = area_attr
     return sat.to_dataset(name="data")
 
@@ -306,6 +307,7 @@ def hrv_sat_data():
         coords=coords,
         name="data",
     )  # Fake data for testing!
-    area_attr = np.load("sat_data/hrv_area.npy")
+    local_path = os.path.dirname(os.path.abspath(__file__))
+    area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
     return sat.to_dataset(name="data")
