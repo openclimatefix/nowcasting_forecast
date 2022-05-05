@@ -43,7 +43,7 @@ def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_
         with zarr.ZipStore(hrv_sat_path) as store:
             hrv_sat_data.to_zarr(store, compute=True)
         os.environ["HRV_SAT_PATH"] = hrv_sat_path
-        sat_path = f"{temp_dir}/sat_unittest.nc"
+        sat_path = f"{temp_dir}/sat_unittest.zarr.zip"
         with zarr.ZipStore(sat_path) as store:
             sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
