@@ -33,12 +33,29 @@ def make_batches(
         manager.config.output_data.filepath = Path(temporary_dir)
 
     # over write nwp zarr path
-    if os.getenv("NWP_PATH") is not None:
+    if os.getenv("NWP_PATH", None) is not None:
         manager.config.input_data.nwp.nwp_zarr_path = os.getenv("NWP_PATH")
         logger.debug(f"WIll be opening nwp file: {manager.config.input_data.nwp.nwp_zarr_path}")
 
+    # over write hrv sat zarr path
+    if os.getenv("HRV_SAT_PATH", None) is not None:
+        manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path = os.getenv("HRV_SAT_PATH")
+        logger.debug(
+            f"WIll be opening sat file:"
+            f" {manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path}"
+        )
+
+    # over write sat zarr path
+    if os.getenv("SAT_PATH", None) is not None:
+        manager.config.input_data.satellite.satellite_zarr_path = os.getenv("SAT_PATH")
+        logger.debug(
+            f"WIll be opening sat file: {manager.config.input_data.satellite.satellite_zarr_path}"
+        )
+
     # make location file
-    manager.initialize_data_sources(names_of_selected_data_sources=["gsp", "nwp", "pv"])
+    manager.initialize_data_sources(
+        names_of_selected_data_sources=["gsp", "nwp", "pv", "satellite", "hrvsatellite"]
+    )
     manager.create_files_specifying_spatial_and_temporal_locations_of_each_example(
         t0_datetime=t0_datetime_utc
     )

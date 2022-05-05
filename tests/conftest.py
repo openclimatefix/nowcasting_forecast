@@ -203,3 +203,93 @@ def pv_yields_and_systems(db_session):
         "pv_yields": pv_yield_sqls,
         "pv_systems": [pv_system_sql_1, pv_system_sql_2],
     }
+
+
+@pytest.fixture()
+def sat_data():
+
+    # middle of the UK
+    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    times = [t0_datetime_utc]
+    time_steps = 26
+    for i in range(1, time_steps):
+        times.append(t0_datetime_utc + timedelta(minutes=5 * i))
+
+    local_path = os.path.dirname(os.path.abspath(__file__))
+    x, y = np.load(f"{local_path}/sat_data/geo.npy", allow_pickle=True)
+
+    coords = (
+        ("time", times),
+        ("x_geostationary", x),
+        ("y_geostationary", y),
+        (
+            "variable",
+            np.array(
+                [
+                    "IR_016",
+                    "IR_039",
+                    "IR_087",
+                    "IR_097",
+                    "IR_108",
+                    "IR_120",
+                    "IR_134",
+                    "VIS006",
+                    "VIS008",
+                    "WV_062",
+                    "WV_073",
+                ]
+            ),
+        ),
+    )
+
+    sat = xr.DataArray(
+        abs(  # to make sure average is about 100
+            np.random.uniform(
+                0,
+                200,
+                size=(time_steps, 615, 298, 11),
+            )
+        ),
+        coords=coords,
+        name="data",
+    )  # Fake data for testing!
+
+    area_attr = np.load(f"{local_path}/sat_data/area.npy")
+    sat.attrs["area"] = area_attr
+    return sat.to_dataset(name="data").sortby("time")
+
+
+@pytest.fixture()
+def hrv_sat_data():
+
+    # middle of the UK
+    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    times = [t0_datetime_utc]
+    time_steps = 26
+    for i in range(1, time_steps):
+        times.append(t0_datetime_utc + timedelta(minutes=5 * i))
+    local_path = os.path.dirname(os.path.abspath(__file__))
+
+    x, y = np.load(f"{local_path}/sat_data/hrv_geo.npy", allow_pickle=True)
+
+    coords = (
+        ("time", times),
+        ("x_geostationary", x),
+        ("y_geostationary", y),
+        ("variable", np.array(["HRV"])),
+    )
+
+    sat = xr.DataArray(
+        abs(  # to make sure average is about 100
+            np.random.uniform(
+                0,
+                200,
+                size=(time_steps, 1843, 891, 1),
+            )
+        ),
+        coords=coords,
+        name="data",
+    )  # Fake data for testing!
+    area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
+    sat.attrs["area"] = area_attr
+    return sat.to_dataset(name="data").sortby("time")
