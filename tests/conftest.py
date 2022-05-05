@@ -230,6 +230,8 @@ def sat_data():
 
     coords = (
         ("time", times),
+        ("x_geostationary", x),
+        ("y_geostationary", y),
         (
             "variable",
             np.array(
@@ -248,8 +250,6 @@ def sat_data():
                 ]
             ),
         ),
-        ("x_geostationary", x),
-        ("y_geostationary", y),
     )
 
     sat = xr.DataArray(
@@ -257,7 +257,7 @@ def sat_data():
             np.random.uniform(
                 0,
                 200,
-                size=(time_steps, 11, 615, 298),
+                size=(time_steps, 615, 298, 11),
             )
         ),
         coords=coords,
@@ -293,9 +293,9 @@ def hrv_sat_data():
 
     coords = (
         ("time", times),
-        ("variable", np.array(["HRV"])),
         ("x_geostationary", x),
         ("y_geostationary", y),
+        ("variable", np.array(["HRV"])),
     )
 
     sat = xr.DataArray(
@@ -303,7 +303,7 @@ def hrv_sat_data():
             np.random.uniform(
                 0,
                 200,
-                size=(time_steps, 1, 1843, 891),
+                size=(time_steps, 1843, 891, 1),
             )
         ),
         coords=coords,
