@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 from nowcasting_forecast import N_GSP, __version__
 from nowcasting_forecast.batch import make_batches
 from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
-    nwp_irradiance_simple_trained_run_one_batch
+    nwp_irradiance_simple_trained_run_one_batch,
 )
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches

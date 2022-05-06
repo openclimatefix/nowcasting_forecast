@@ -8,7 +8,6 @@ from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
     nwp_irradiance_simple_trained,
     nwp_irradiance_simple_trained_run_one_batch,
 )
-
 from nowcasting_forecast.models.utils import check_results_df
 
 

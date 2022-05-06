@@ -71,21 +71,21 @@ def nwp_irradiance_simple_trained_run_one_batch(
         gsp_id = batch.metadata.space_time_locations[i].id
 
         # t0 value value
-        t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(tzinfo=timezone.utc)
+        t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(
+            tzinfo=timezone.utc
+        )
 
         forecast_values = []
         for t_index in range(len(predictions[0])):
             # add timezone
-            target_time = t0_datetime_utc+ timedelta(minutes=30) * t_index
+            target_time = t0_datetime_utc + timedelta(minutes=30) * t_index
 
             forecasts.append(
                 dict(
                     t0_datetime_utc=t0_datetime_utc,
                     target_datetime_utc=target_time,
-                    forecast_gsp_pv_outturn_mw=float(
-                        predictions[i, t_index]
-                    ),
-                    gsp_id=gsp_id
+                    forecast_gsp_pv_outturn_mw=float(predictions[i, t_index]),
+                    gsp_id=gsp_id,
                 )
             )
 

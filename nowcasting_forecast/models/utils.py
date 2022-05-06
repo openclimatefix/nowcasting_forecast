@@ -19,10 +19,8 @@ import pandas as pd
 from nowcasting_datamodel.models import (
     Forecast,
     ForecastSQL,
-    InputDataLastUpdatedSQL,
-)
-from nowcasting_datamodel.models import (
     ForecastValue,
+    InputDataLastUpdatedSQL,
     MLModelSQL,
 )
 from nowcasting_datamodel.national import make_national_forecast
@@ -33,8 +31,7 @@ from nowcasting_datamodel.read.read import (
 )
 from nowcasting_datamodel.utils import datetime_must_have_timezone
 from nowcasting_dataset.config.load import load_yaml_configuration
-from pydantic import BaseModel, Field
-from pydantic import validator
+from pydantic import BaseModel, Field, validator
 from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
@@ -113,14 +110,15 @@ def convert_to_forecast_sql(
     """
     Convert dataframe to forecast sql object
     """
-    logger.debug('Converting dataframe to ForecastSQLs')
-    logger.debug(f'Result dataframe has {len(results_df)} values')
+
+    logger.debug("Converting dataframe to ForecastSQLs")
+    logger.debug(f"Result dataframe has {len(results_df)} values")
 
     check_results_df(results_df)
 
     # get gsp ids
     gsps_ids = results_df["gsp_id"].unique()
-    logger.debug(f'There are {len(gsps_ids)} gsps ids')
+    logger.debug(f"There are {len(gsps_ids)} gsps ids")
 
     # get last input data
     input_data_last_updated = get_latest_input_data_last_updated(session=session)
@@ -148,7 +146,7 @@ def convert_to_forecast_sql(
         if len(forecasts) > N_GSP:
             break
 
-    logger.debug(f'Made {len(forecasts)} forecasts')
+    logger.debug(f"Made {len(forecasts)} forecasts")
 
     return forecasts
 
@@ -240,7 +238,7 @@ def general_forecast_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         # calculate how many examples are needed
-        n_examples = np.min([N_GSP - i*batch_size, batch_size])
+        n_examples = np.min([N_GSP - i * batch_size, batch_size])
 
         batch = next(dataloader)
         forecasts.append(
