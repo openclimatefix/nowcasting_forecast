@@ -54,9 +54,17 @@ def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_da
         os.environ["NWP_PATH"] = nwp_path
 
         runner = CliRunner()
-        response = runner.invoke(run, ["--db-url", db_connection.url,
-                                       "--fake", "false",
-                                       "--model-name", "nwp_simple_trained"])
+        response = runner.invoke(
+            run,
+            [
+                "--db-url",
+                db_connection.url,
+                "--fake",
+                "false",
+                "--model-name",
+                "nwp_simple_trained",
+            ],
+        )
         assert response.exit_code == 0, response
 
         with db_connection.get_session() as session:
