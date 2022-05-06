@@ -24,7 +24,7 @@ def test_fake(db_connection: DatabaseConnection):
         assert len(locations) == 338 + 1
 
 
-def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset):
+def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated):
 
     with tempfile.TemporaryDirectory() as temp_dir:
 

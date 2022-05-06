@@ -111,10 +111,14 @@ def convert_to_forecast_sql(
     model_name: str,
 ) -> List[ForecastSQL]:
 
+    logger.debug('Converting dataframe to ForecastSQLs')
+    logger.debug(f'Result dataframe has {len(results_df)} values')
+
     check_results_df(results_df)
 
     # get gsp ids
     gsps_ids = results_df["gsp_id"].unique()
+    logger.debug(f'There are {len(gsps_ids)} gsps ids')
 
     # get last input data
     input_data_last_updated = get_latest_input_data_last_updated(session=session)
@@ -131,7 +135,7 @@ def convert_to_forecast_sql(
         results = MLResults(forecasts=results_df_one_gsp.to_dict(orient="records"))
 
         forecasts.append(
-            convert_on_gsp_id_to_forecast_sql(
+            convert_one_gsp_id_to_forecast_sql(
                 results_for_one_gsp_id=results,
                 session=session,
                 input_data_last_updated=input_data_last_updated,
@@ -139,10 +143,15 @@ def convert_to_forecast_sql(
             )
         )
 
+        if len(forecasts) > N_GSP:
+            break
+
+    logger.debug(f'Made {len(forecasts)} forecasts')
+
     return forecasts
 
 
-def convert_on_gsp_id_to_forecast_sql(
+def convert_one_gsp_id_to_forecast_sql(
     results_for_one_gsp_id: MLResults,
     session: Session,
     input_data_last_updated: InputDataLastUpdatedSQL,
@@ -241,18 +250,19 @@ def general_forecast_run_all_batches(
     # make into one big dataframe
     forecasts = pd.concat(forecasts)
 
-    # select first 338 forecast
-    if len(forecasts) > N_GSP:
-        logger.debug(
-            f"There are more than {N_GSP} forecasts, so just taking the first {N_GSP}. "
-            "This can happen due to rounding up the examples to fit in batches"
-        )
-        forecasts = forecasts[0:N_GSP]
-
     # convert dataframe to ForecastSQL
     forecast_sql = convert_to_forecast_sql(
         results_df=forecasts, session=session, model_name=model_name
     )
+
+    # select first 338 forecast
+    if len(forecast_sql) > N_GSP:
+        logger.debug(
+            f"There are more than {N_GSP} forecasts ({len(forecast_sql)}), so just taking the first {N_GSP}. "
+            "This can happen due to rounding up the examples to fit in batches"
+        )
+        forecast_sql = forecast_sql[0:N_GSP]
+        assert len(forecast_sql) == N_GSP
 
     if add_national_forecast:
         # add national forecast
