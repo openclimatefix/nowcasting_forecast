@@ -78,7 +78,7 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                     forecasts = general_forecast_run_all_batches(
                         session=session,
                         batches_dir=temporary_dir,
-                        callable_forecast_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
+                        callable_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
                         model_name="nwp_simple",
                     )
 
@@ -86,7 +86,7 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                     forecasts = general_forecast_run_all_batches(
                         session=session,
                         batches_dir=temporary_dir,
-                        callable_forecast_function_for_on_batch=nwp_irradiance_simple_trained_run_one_batch(),
+                        callable_function_for_on_batch=nwp_irradiance_simple_trained_run_one_batch,
                         model_name="nwp_simple_trained",
                     )
                 else:

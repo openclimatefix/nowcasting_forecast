@@ -1,34 +1,16 @@
 """ Simple model to take NWP irradence and make solar """
 import logging
-import os
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import List, Optional, Union
 
-import numpy as np
+from datetime import timedelta, timezone
+
+from typing import Optional, Union
+
+
 import pandas as pd
 import xarray as xr
-from nowcasting_datamodel.fake import make_fake_input_data_last_updated
-from nowcasting_datamodel.models import (
-    Forecast,
-    ForecastSQL,
-    ForecastValueSQL,
-    InputDataLastUpdatedSQL,
-)
-from nowcasting_datamodel.national import make_national_forecast
-from nowcasting_datamodel.read.read import (
-    get_latest_input_data_last_updated,
-    get_location,
-    get_model,
-)
-from nowcasting_dataset.config.load import load_yaml_configuration
-from nowcasting_dataset.dataset.batch import Batch
-from sqlalchemy.orm.session import Session
 
-import nowcasting_forecast
-from nowcasting_forecast import N_GSP
-from nowcasting_forecast.dataloader import BatchDataLoader
-from nowcasting_forecast.utils import floor_30_minutes_dt
+from nowcasting_dataset.dataset.batch import Batch
+
 
 logger = logging.getLogger(__name__)
 

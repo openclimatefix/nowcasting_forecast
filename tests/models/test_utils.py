@@ -30,7 +30,7 @@ def test_general_run_all_batches(batch, configuration, db_session, input_data_la
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
-            callable_forecast_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
+            callable_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
             model_name="test_model",
         )
 
@@ -55,7 +55,7 @@ def test_general_batches_and_national(batch, configuration, db_session, input_da
             configuration_file=configuration_file,
             add_national_forecast=True,
             n_gsps=n_gsps,
-            callable_forecast_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
+            callable_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
             model_name="test_model",
         )
 
@@ -78,7 +78,7 @@ def test_general_run_all_batches_check_locations(
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
-            callable_forecast_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
+            callable_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
             model_name="test_model",
         )
 
@@ -90,7 +90,7 @@ def test_general_run_all_batches_check_locations(
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
-            callable_forecast_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
+            callable_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
             model_name="test_model",
         )
 

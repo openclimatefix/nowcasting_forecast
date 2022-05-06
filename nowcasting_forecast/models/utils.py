@@ -201,7 +201,7 @@ def convert_one_gsp_id_to_forecast_sql(
 
 def general_forecast_run_all_batches(
     session: Session,
-    callable_forecast_function_for_on_batch,
+    callable_function_for_on_batch,
     model_name: str,
     configuration_file: Optional[str] = None,
     n_batches: int = 11,
@@ -242,7 +242,7 @@ def general_forecast_run_all_batches(
 
         batch = next(dataloader)
         forecasts.append(
-            callable_forecast_function_for_on_batch(
+            callable_function_for_on_batch(
                 batch=batch,
                 n_examples=n_examples,
             )
@@ -259,7 +259,8 @@ def general_forecast_run_all_batches(
     # select first 338 forecast
     if len(forecast_sql) > N_GSP:
         logger.debug(
-            f"There are more than {N_GSP} forecasts ({len(forecast_sql)}), so just taking the first {N_GSP}. "
+            f"There are more than {N_GSP} forecasts ({len(forecast_sql)}), "
+            f"so just taking the first {N_GSP}. "
             "This can happen due to rounding up the examples to fit in batches"
         )
         forecast_sql = forecast_sql[0:N_GSP]

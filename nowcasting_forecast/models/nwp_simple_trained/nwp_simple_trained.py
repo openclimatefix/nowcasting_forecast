@@ -9,36 +9,18 @@
 
 import logging
 import os
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import List, Optional, Union
+from datetime import timedelta, timezone
+from typing import Optional, Union
 
-import numpy as np
 import pandas as pd
 import xarray as xr
-from nowcasting_datamodel.fake import make_fake_input_data_last_updated
-from nowcasting_datamodel.models import (
-    Forecast,
-    ForecastSQL,
-    ForecastValueSQL,
-    InputDataLastUpdatedSQL,
-)
-from nowcasting_datamodel.national import make_national_forecast
-from nowcasting_datamodel.read.read import (
-    get_latest_input_data_last_updated,
-    get_location,
-    get_model,
-)
-from nowcasting_dataset.config.load import load_yaml_configuration
+
 from nowcasting_dataset.dataset.batch import Batch
-from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
-from nowcasting_forecast import N_GSP
-from nowcasting_forecast.dataloader import BatchDataLoader
-from nowcasting_forecast.models.nwp_simple_trained.model import Model
+
 from nowcasting_forecast.models.nwp_simple_trained.xr_utils import re_order_dims
-from nowcasting_forecast.utils import floor_30_minutes_dt
+
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +57,6 @@ def nwp_irradiance_simple_trained_run_one_batch(
             tzinfo=timezone.utc
         )
 
-        forecast_values = []
         for t_index in range(len(predictions[0])):
             # add timezone
             target_time = t0_datetime_utc + timedelta(minutes=30) * t_index
