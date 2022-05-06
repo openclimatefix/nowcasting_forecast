@@ -9,44 +9,21 @@ functions:
 """
 
 import logging
-import numpy as np
-from typing import List
-import pandas as pd
-import nowcasting_forecast
-from datetime import datetime
-from pydantic import BaseModel, Field
-from pydantic import validator
-from datetime import datetime, timezone, timedelta
-
-from nowcasting_datamodel.utils import datetime_must_have_timezone
-from nowcasting_datamodel.models import (
-    ForecastSQL,
-    ForecastValue,
-    Forecast,
-    InputDataLastUpdatedSQL,
-    MLModelSQL,
-)
-from sqlalchemy.orm.session import Session
-from nowcasting_datamodel.read.read import (
-    get_latest_input_data_last_updated,
-    get_location,
-    get_model,
-)
-import logging
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
-import xarray as xr
-from nowcasting_datamodel.fake import make_fake_input_data_last_updated
 from nowcasting_datamodel.models import (
     Forecast,
     ForecastSQL,
-    ForecastValueSQL,
     InputDataLastUpdatedSQL,
+)
+from nowcasting_datamodel.models import (
+    ForecastValue,
+    MLModelSQL,
 )
 from nowcasting_datamodel.national import make_national_forecast
 from nowcasting_datamodel.read.read import (
@@ -54,15 +31,16 @@ from nowcasting_datamodel.read.read import (
     get_location,
     get_model,
 )
+from nowcasting_datamodel.utils import datetime_must_have_timezone
 from nowcasting_dataset.config.load import load_yaml_configuration
-from nowcasting_dataset.dataset.batch import Batch
+from pydantic import BaseModel, Field
+from pydantic import validator
 from sqlalchemy.orm.session import Session
 
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_30_minutes_dt
-
 
 logger = logging.getLogger(__name__)
 
@@ -150,14 +128,16 @@ def convert_to_forecast_sql(
         results_df_one_gsp = results_df[results_df["gsp_id"] == gsp_id]
 
         # convert to 'MLResults'
-        results = MLResults(forecast=results_df_one_gsp.to_dict(orient="records"))
+        results = MLResults(forecasts=results_df_one_gsp.to_dict(orient="records"))
 
-        forecasts.append(convert_on_gsp_id_to_forecast_sql(
-            results_for_one_gsp_id=results,
-            session=session,
-            input_data_last_updated=input_data_last_updated,
-            ml_model=model
-        ))
+        forecasts.append(
+            convert_on_gsp_id_to_forecast_sql(
+                results_for_one_gsp_id=results,
+                session=session,
+                input_data_last_updated=input_data_last_updated,
+                ml_model=model,
+            )
+        )
 
     return forecasts
 
@@ -187,7 +167,7 @@ def convert_on_gsp_id_to_forecast_sql(
     forecast_values = []
     for forecast in results_for_one_gsp_id.forecasts:
         # add timezone
-        target_time = forecast.t0_datetime_utc.replace(tzinfo=timezone.utc)
+        target_time = forecast.target_datetime_utc.replace(tzinfo=timezone.utc)
 
         forecast_values.append(
             ForecastValue(
@@ -251,9 +231,11 @@ def general_forecast_run_all_batches(
         n_examples = np.min([N_GSP - len(forecasts), configuration.process.batch_size])
 
         batch = next(dataloader)
-        forecasts = forecasts + callable_forecast_function_for_on_batch(
-            batch=batch,
-            n_examples=n_examples,
+        forecasts.append(
+            callable_forecast_function_for_on_batch(
+                batch=batch,
+                n_examples=n_examples,
+            )
         )
 
     # make into one big dataframe
@@ -268,7 +250,9 @@ def general_forecast_run_all_batches(
         forecasts = forecasts[0:N_GSP]
 
     # convert dataframe to ForecastSQL
-    forecast_sql = convert_to_forecast_sql(results_df=forecasts, session=session,model_name=model_name)
+    forecast_sql = convert_to_forecast_sql(
+        results_df=forecasts, session=session, model_name=model_name
+    )
 
     if add_national_forecast:
         # add national forecast

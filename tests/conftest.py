@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
-from nowcasting_datamodel.fake import make_fake_forecasts
+from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_input_data_last_updated
 from nowcasting_datamodel.models import ForecastSQL, PVSystem, PVSystemSQL, PVYield
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
 from nowcasting_dataset.config.model import Configuration
@@ -293,3 +293,10 @@ def hrv_sat_data():
     area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
     return sat.to_dataset(name="data").sortby("time")
+
+
+@pytest.fixture()
+def input_data_last_updated(db_session):
+    i = make_fake_input_data_last_updated()
+    db_session.add(i)
+    db_session.commit()

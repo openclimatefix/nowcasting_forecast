@@ -47,11 +47,9 @@ NAME = "nwp_simple_trained"
 
 def nwp_irradiance_simple_trained_run_one_batch(
     batch: Union[dict, Batch],
-    session: Session,
     pytorch_model,
     n_examples: Optional[int] = None,
-    input_data_last_updated: Optional[InputDataLastUpdatedSQL] = None,
-) -> List[ForecastSQL]:
+) -> pd.DataFrame:
     """Run model for one batch"""
 
     # make sure its a Batch object
@@ -60,15 +58,6 @@ def nwp_irradiance_simple_trained_run_one_batch(
 
     if n_examples is None:
         n_examples = batch.metadata.batch_size
-
-    # set up forecasts fields
-    forecast_creation_time = datetime.now(tz=timezone.utc)
-
-    # get model name
-    model = get_model(name=NAME, version=nowcasting_forecast.__version__, session=session)
-
-    if input_data_last_updated is None:
-        input_data_last_updated = make_fake_input_data_last_updated()
 
     # run model
     predictions = nwp_irradiance_simple_trained(batch, model=pytorch_model)
@@ -81,32 +70,26 @@ def nwp_irradiance_simple_trained_run_one_batch(
         # get id from location
         gsp_id = batch.metadata.space_time_locations[i].id
 
-        location = get_location(gsp_id=gsp_id, session=session)
+        # t0 value value
+        t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(tzinfo=timezone.utc)
 
         forecast_values = []
         for t_index in range(len(predictions[0])):
             # add timezone
-            target_time = (
-                batch.metadata.space_time_locations[i].t0_datetime_utc.replace(tzinfo=timezone.utc)
-                + timedelta(minutes=30) * t_index
-            )
+            target_time = t0_datetime_utc+ timedelta(minutes=30) * t_index
 
-            forecast_values.append(
-                ForecastValueSQL(
-                    target_time=target_time,
-                    expected_power_generation_megawatts=float(predictions[i, t_index]),
+            forecasts.append(
+                dict(
+                    t0_datetime_utc=t0_datetime_utc,
+                    target_datetime_utc=target_time,
+                    forecast_gsp_pv_outturn_mw=float(
+                        predictions[i, t_index]
+                    ),
+                    gsp_id=gsp_id
                 )
             )
 
-        forecasts.append(
-            ForecastSQL(
-                model=model,
-                location=location,
-                forecast_creation_time=forecast_creation_time,
-                forecast_values=forecast_values,
-                input_data_last_updated=input_data_last_updated,
-            )
-        )
+    forecasts = pd.DataFrame(forecasts)
 
     return forecasts
 
