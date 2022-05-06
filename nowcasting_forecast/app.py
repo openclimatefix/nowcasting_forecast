@@ -13,9 +13,10 @@ from sqlalchemy.orm import Session
 from nowcasting_forecast import N_GSP, __version__
 from nowcasting_forecast.batch import make_batches
 from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
-    nwp_irradiance_simple_trained_run_all_batches,
+    nwp_irradiance_simple_trained_run_one_batch,
 )
-from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_all_batches
+from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
+from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 from nowcasting_forecast.utils import floor_30_minutes_dt
 
 logging.basicConfig(
@@ -74,12 +75,19 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
 
                 # make forecasts
                 if model_name == "nwp_simple":
-                    forecasts = nwp_irradiance_simple_run_all_batches(
-                        session=session, batches_dir=temporary_dir
+                    forecasts = general_forecast_run_all_batches(
+                        session=session,
+                        batches_dir=temporary_dir,
+                        callable_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
+                        model_name="nwp_simple",
                     )
+
                 elif model_name == "nwp_simple_trained":
-                    forecasts = nwp_irradiance_simple_trained_run_all_batches(
-                        session=session, batches_dir=temporary_dir
+                    forecasts = general_forecast_run_all_batches(
+                        session=session,
+                        batches_dir=temporary_dir,
+                        callable_function_for_on_batch=nwp_irradiance_simple_trained_run_one_batch,
+                        model_name="nwp_simple_trained",
                     )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
