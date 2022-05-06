@@ -60,7 +60,9 @@ def nwp_irradiance_simple_run_one_batch(
         gsp_id = batch.metadata.space_time_locations[i].id
 
         # t0 value value
-        t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(tzinfo=timezone.utc)
+        t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(
+            tzinfo=timezone.utc
+        )
 
         for t_index in irradiance_mean.time_index:
 
@@ -70,10 +72,8 @@ def nwp_irradiance_simple_run_one_batch(
                 dict(
                     t0_datetime_utc=t0_datetime_utc,
                     target_datetime_utc=target_time,
-                    forecast_gsp_pv_outturn_mw=float(
-                        irradiance_mean[i, t_index].values[0]
-                    ),
-                    gsp_id=gsp_id
+                    forecast_gsp_pv_outturn_mw=float(irradiance_mean[i, t_index].values[0]),
+                    gsp_id=gsp_id,
                 )
             )
 
