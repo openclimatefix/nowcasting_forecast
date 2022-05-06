@@ -45,11 +45,7 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input
             assert len(forecasts[0].forecast_values) > 1
 
 
-<<<<<<< HEAD
 @pytest.mark.skip('CI doesnt have access to AWS for model weights')
-=======
-@pytest.skip("CI doesnt have access to AWS for model weights")
->>>>>>> c3893f4a8530f6e9de5609388d1a3abb57a23403
 def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated):
 
     with tempfile.TemporaryDirectory() as temp_dir:
