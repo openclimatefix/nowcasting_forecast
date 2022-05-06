@@ -250,16 +250,12 @@ def general_forecast_run_all_batches(
         n_examples = np.min([N_GSP - i * batch_size, batch_size])
         batch = next(dataloader)
 
-        callbacks_args = dict(
-                batch=batch,
-                n_examples=n_examples)
+        callbacks_args = dict(batch=batch, n_examples=n_examples)
 
         if ml_model is not None:
-            callbacks_args['pytorch_model'] = model
+            callbacks_args["pytorch_model"] = model
 
-        forecasts.append(
-            callable_function_for_on_batch(**callbacks_args)
-        )
+        forecasts.append(callable_function_for_on_batch(**callbacks_args))
 
     # make into one big dataframe
     forecasts = pd.concat(forecasts)
