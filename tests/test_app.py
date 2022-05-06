@@ -42,3 +42,25 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input
             _ = Forecast.from_orm(forecasts[0])
             assert len(forecasts) == 338 + 1  # 338 gsp + national
             assert len(forecasts[0].forecast_values) > 1
+
+
+def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated):
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+
+        # save nwp data
+        nwp_path = f"{temp_dir}/unittest.netcdf"
+        nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
+        os.environ["NWP_PATH"] = nwp_path
+
+        runner = CliRunner()
+        response = runner.invoke(run, ["--db-url", db_connection.url,
+                                       "--fake", "false",
+                                       "--model-name", "nwp_simple_trained"])
+        assert response.exit_code == 0, response
+
+        with db_connection.get_session() as session:
+            forecasts = session.query(ForecastSQL).all()
+            _ = Forecast.from_orm(forecasts[0])
+            assert len(forecasts) == 338 + 1  # 338 gsp + national
+            assert len(forecasts[0].forecast_values) > 1
