@@ -110,7 +110,9 @@ def convert_to_forecast_sql(
     session: Session,
     model_name: str,
 ) -> List[ForecastSQL]:
-
+    """
+    Convert dataframe to forecast sql object
+    """
     logger.debug('Converting dataframe to ForecastSQLs')
     logger.debug(f'Result dataframe has {len(results_df)} values')
 
