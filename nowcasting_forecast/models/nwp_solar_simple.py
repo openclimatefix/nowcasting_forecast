@@ -1,16 +1,11 @@
 """ Simple model to take NWP irradence and make solar """
 import logging
-
 from datetime import timedelta, timezone
-
 from typing import Optional, Union
-
 
 import pandas as pd
 import xarray as xr
-
 from nowcasting_dataset.dataset.batch import Batch
-
 
 logger = logging.getLogger(__name__)
 
