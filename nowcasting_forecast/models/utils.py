@@ -224,6 +224,7 @@ def general_forecast_run_all_batches(
         )
     logger.debug(f"Loading configuration {configuration_file}")
     configuration = load_yaml_configuration(filename=configuration_file)
+    batch_size = configuration.process.batch_size
 
     if batches_dir is not None:
         configuration.output_data.filepath = Path(batches_dir)
@@ -237,7 +238,7 @@ def general_forecast_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         # calculate how many examples are needed
-        n_examples = np.min([N_GSP - len(forecasts), configuration.process.batch_size])
+        n_examples = np.min([N_GSP - i*batch_size, batch_size])
 
         batch = next(dataloader)
         forecasts.append(
