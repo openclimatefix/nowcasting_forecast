@@ -1,6 +1,7 @@
 import os
 import tempfile
 
+import pytest
 import xarray as xr
 from click.testing import CliRunner
 from nowcasting_datamodel.connection import DatabaseConnection
@@ -44,6 +45,7 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input
             assert len(forecasts[0].forecast_values) > 1
 
 
+@pytest.skip('CI doesnt have access to AWS for model weights')
 def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated):
 
     with tempfile.TemporaryDirectory() as temp_dir:
