@@ -25,6 +25,22 @@ def test_fake(db_connection: DatabaseConnection):
         assert len(locations) == 338 + 1
 
 
+def test_fake_twice(db_connection: DatabaseConnection):
+
+    runner = CliRunner()
+    _ = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true"])
+    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true"])
+    assert response.exit_code == 0
+
+    with db_connection.get_session() as session:
+        forecasts = session.query(ForecastSQL).all()
+        _ = Forecast.from_orm(forecasts[0])
+        assert len(forecasts) == (338 + 1)*2  # 338 gsp + national
+
+        locations = session.query(LocationSQL).all()
+        assert len(locations) == 338 + 1
+
+
 def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated):
 
     with tempfile.TemporaryDirectory() as temp_dir:
