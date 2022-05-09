@@ -4,7 +4,7 @@ psycopg2-binary
 numpy
 click
 nowcasting_dataset==3.2.7
-nowcasting_datamodel==0.0.45
+nowcasting_datamodel==0.0.50
 fsspec
 s3fs
 torch
