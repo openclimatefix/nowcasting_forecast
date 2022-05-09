@@ -112,7 +112,7 @@ def make_dummy_forecasts(session: Session):
     )
 
     # add national forecast
-    forecasts.append(make_fake_national_forecast(session=session,t0_datetime_utc=t0_datetime_utc))
+    forecasts.append(make_fake_national_forecast(session=session, t0_datetime_utc=t0_datetime_utc))
 
     return forecasts
 
