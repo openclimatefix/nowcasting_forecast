@@ -35,6 +35,7 @@ def test_fake_twice(db_connection: DatabaseConnection):
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
+
         assert len(forecasts) == (N_GSP + 1)  # 338 gsp + national
 
         locations = session.query(LocationSQL).all()
