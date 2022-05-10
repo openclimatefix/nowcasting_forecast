@@ -108,11 +108,11 @@ def make_dummy_forecasts(session: Session):
 
     # make gsp fake results
     forecasts = make_fake_forecasts(
-        gsp_ids=list(range(N_GSP)), t0_datetime_utc=t0_datetime_utc, session=session
+        gsp_ids=list(range(1, N_GSP + 1)), t0_datetime_utc=t0_datetime_utc, session=session
     )
 
     # add national forecast
-    forecasts.append(make_fake_national_forecast(t0_datetime_utc=t0_datetime_utc))
+    forecasts.append(make_fake_national_forecast(session=session, t0_datetime_utc=t0_datetime_utc))
 
     return forecasts
 
