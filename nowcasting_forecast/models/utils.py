@@ -210,6 +210,7 @@ def general_forecast_run_all_batches(
     batches_dir: Optional[str] = None,
     ml_model: Optional = None,
     weights_file: Optional[str] = None,
+    dataloader: Optional = None,
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
@@ -232,7 +233,8 @@ def general_forecast_run_all_batches(
         configuration.output_data.filepath = Path(batches_dir)
 
     # make dataloader
-    dataloader = iter(BatchDataLoader(n_batches=n_batches, configuration=configuration))
+    if dataloader is None:
+        dataloader = iter(BatchDataLoader(n_batches=n_batches, configuration=configuration))
 
     # make pytorch model
     if ml_model is not None:

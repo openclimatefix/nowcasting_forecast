@@ -16,6 +16,8 @@ from nowcasting_forecast.models.nwp_simple_trained.model import Model
 from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
     nwp_irradiance_simple_trained_run_one_batch,
 )
+from nowcasting_forecast.models.cnn.model import Model as CNN_Model
+from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 from nowcasting_forecast.utils import floor_30_minutes_dt
@@ -67,8 +69,12 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
 
             if model_name == "nwp_simple":
                 config_filename = "nowcasting_forecast/config/mvp_v0.yaml"
-            else:
+            elif model_name == "nwp_simple_trained":
                 config_filename = "nowcasting_forecast/config/mvp_v1.yaml"
+            elif model_name == 'cnn':
+                config_filename = "nowcasting_forecast/config/mvp_v2.yaml"
+            else:
+                raise NotImplementedError(f'Model {model_name} has not be implemented')
 
             with tempfile.TemporaryDirectory() as temporary_dir:
                 # make batches
@@ -90,6 +96,16 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         callable_function_for_on_batch=nwp_irradiance_simple_trained_run_one_batch,
                         model_name="nwp_simple_trained",
                         ml_model=Model,
+                    )
+                elif model_name == 'cnn':
+                    dataloader = get_cnn_data_loader()
+                    forecasts = general_forecast_run_all_batches(
+                        session=session,
+                        batches_dir=temporary_dir,
+                        callable_function_for_on_batch=nwp_irradiance_simple_trained_run_one_batch,
+                        model_name="nwp_simple_trained",
+                        ml_model=Model,
+                        dataloader=dataloader
                     )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")

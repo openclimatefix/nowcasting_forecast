@@ -8,7 +8,7 @@ Default parameters are set from the trained model
 
 
 import logging
-from typing import Optional
+from typing import Optional, Union
 
 import fsspec
 import numpy as np
@@ -27,7 +27,7 @@ import torch.nn.functional as F
 from torch import nn
 
 
-# from nowcasting_dataloader.batch import BatchML
+from nowcasting_dataloader.batch import BatchML
 
 logging.basicConfig()
 _LOG = logging.getLogger("predict_pv_yield")
@@ -39,7 +39,7 @@ class Model(pl.LightningModule):
 
     def __init__(
         self,
-        include_pv_or_gsp_yield_history: bool = True,
+        include_pv_or_gsp_yield_history: bool = False,
         include_nwp: bool = True,
         forecast_minutes: int = 120,
         history_minutes: int = 30,
@@ -53,10 +53,10 @@ class Model(pl.LightningModule):
         fc2_output_features: int = 128,
         fc3_output_features: int = 64,
         output_variable: str = "gsp_yield",
-        embedding_dem: int = 16,
+        embedding_dem: int = 0,
         include_pv_yield_history: int = True,
         include_future_satellite: int = False,
-        live_satellite_images: bool = True
+        live_satellite_images: bool = True,
     ):
         """
         3d conv model, that takes in different data streams
@@ -103,6 +103,8 @@ class Model(pl.LightningModule):
         self.include_pv_yield_history = include_pv_yield_history
         self.include_future_satellite = include_future_satellite
         self.live_satellite_images = live_satellite_images
+        self.number_sat_channels = number_sat_channels
+        self.image_size_pixels = image_size_pixels
 
         super().__init__()
 
@@ -120,20 +122,20 @@ class Model(pl.LightningModule):
         conv3d_channels = conv3d_channels
 
         if include_future_satellite:
-            cnn_output_size_time = self.forecast_len_5 + self.history_len_5 + 1
+            self.cnn_output_size_time = self.forecast_len_5 + self.history_len_5 + 1
         else:
-            cnn_output_size_time = self.history_len_5 + 1
+            self.cnn_output_size_time = self.history_len_5 + 1
 
         if live_satellite_images:
             # remove the last 6 satellite images (30 minutes) as no available live
-            cnn_output_size_time = cnn_output_size_time - 6
-            if cnn_output_size_time <= 0:
-                assert Exception('Need to use at least 30 mintues of satellite data in the past')
+            self.cnn_output_size_time = self.cnn_output_size_time - 6
+            if self.cnn_output_size_time <= 0:
+                assert Exception("Need to use at least 30 mintues of satellite data in the past")
 
         self.cnn_output_size = (
             conv3d_channels
             * ((image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
-            * cnn_output_size_time
+            * self.cnn_output_size_time
         )
 
         self.nwp_cnn_output_size = (
@@ -215,8 +217,27 @@ class Model(pl.LightningModule):
         # self.fc5 = nn.Linear(in_features=32, out_features=8)
         # self.fc6 = nn.Linear(in_features=8, out_features=1)
 
-    def forward(self, sat_data, nwp_data, pv_data, pv_system_row_number):
+    def forward(self, batch: Union[BatchML, dict]):
 
+        if isinstance(batch, dict):
+            batch = BatchML(**batch)
+
+        sat_data = batch.satellite.data
+        nwp_data = batch.nwp.data
+        pv_data = batch.pv.pv_yield
+        pv_system_row_number = batch.pv.pv_system_row_number
+
+        print(sat_data.shape)
+        print(self.number_sat_channels)
+        print(self.cnn_output_size_time)
+        print(self.image_size_pixels)
+        # assert sat_data.shape == torch.Size([
+        #     32,
+        #     self.number_sat_channels,
+        #     self.cnn_output_size_time,
+        #     self.image_size_pixels,
+        #     self.image_size_pixels,
+        # ])
 
         # ******************* Satellite imagery *************************
         # Shape: batch_size, channel, seq_length, height, width
@@ -244,9 +265,7 @@ class Model(pl.LightningModule):
 
         # add pv yield
         if self.include_pv_or_gsp_yield_history:
-            pv_yield_history = (
-                pv_data[:, : self.history_len_30 + 1].nan_to_num(nan=0.0).float()
-            )
+            pv_yield_history = pv_data[:, : self.history_len_30 + 1].nan_to_num(nan=0.0).float()
 
             pv_yield_history = pv_yield_history.reshape(
                 pv_yield_history.shape[0], pv_yield_history.shape[1] * pv_yield_history.shape[2]
@@ -313,7 +332,9 @@ class Model(pl.LightningModule):
         Load model weights
         """
         if remote_filename is None:
-            remote_filename = "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
+            remote_filename = (
+                "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
+            )
 
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")

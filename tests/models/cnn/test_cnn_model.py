@@ -5,11 +5,15 @@ import pytest
 import torch
 
 from nowcasting_forecast.models.cnn.model import Model
+from nowcasting_dataloader.batch import BatchML
+import nowcasting_forecast
+from nowcasting_dataset.config.load import load_yaml_configuration
 
 
 def test_model_init():
 
     _ = Model()
+
 
 def test_model_load_weights():
     model = Model()
@@ -29,11 +33,15 @@ def test_model_load_weights_error():
 
 
 def test_forward():
-    # shape: batch_size, n_chans, seq_len, height, width
-    nwp_data = torch.rand(1, 1, 4, 64, 64)
-    sat_data = torch.rand(1, 11, 12, 24, 24)
-    pv_data = torch.rand(1, 7, 128)
-    pv_system_row_number = torch.rand(1, 2)
+
+    # make configuration
+    configuration_file = os.path.join(
+        os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v2.yaml"
+    )
+
+    configuration = load_yaml_configuration(filename=configuration_file)
+
+    batch = BatchML.fake(configuration=configuration)
 
     model = Model()
-    model.forward(nwp_data=nwp_data,sat_data=sat_data, pv_data=pv_data,pv_system_row_number=pv_system_row_number)
+    model.forward(batch)
