@@ -37,7 +37,7 @@ from sqlalchemy.orm.session import Session
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
-from nowcasting_forecast.utils import floor_30_minutes_dt
+from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +217,7 @@ def general_forecast_run_all_batches(
     logger.info("Running nwp_irradiance_simple model")
 
     # time now rounded down by 30 mins
-    t0_datetime_utc = floor_30_minutes_dt(datetime.now(timezone.utc))
+    t0_datetime_utc = floor_minutes_dt(datetime.now(timezone.utc))
     logger.info(f"Making forecasts for {t0_datetime_utc=}")
 
     # make configuration
