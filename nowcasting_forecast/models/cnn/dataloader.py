@@ -7,7 +7,12 @@ from nowcasting_dataset.config.load import load_yaml_configuration
 import nowcasting_forecast
 
 
-def get_cnn_data_loader(configuration_file: Optional[str] = None, n_batches: Optional[int] = 11):
+def get_cnn_data_loader(
+    configuration_file: Optional[str] = None,
+    n_batches: Optional[int] = 11,
+    src_path: Optional[str] = None,
+    tmp_path: Optional[str] = None,
+):
     """
     Get data laoder for cnn model
 
@@ -21,8 +26,11 @@ def get_cnn_data_loader(configuration_file: Optional[str] = None, n_batches: Opt
 
     configuration = load_yaml_configuration(filename=configuration_file)
 
-    src_path = configuration.output_data.filepath
-    tmp_path = configuration.output_data.filepath
+    if src_path is None:
+        src_path = configuration.output_data.filepath
+    if tmp_path is None:
+        tmp_path = configuration.output_data.filepath
+
     data_loader = NetCDFDataset(
         n_batches=n_batches, src_path=src_path, tmp_path=tmp_path, configuration=configuration
     )

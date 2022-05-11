@@ -18,6 +18,7 @@ from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
 )
 from nowcasting_forecast.models.cnn.model import Model as CNN_Model
 from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
+from nowcasting_forecast.models.cnn.cnn import cnn_run_one_batch
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 from nowcasting_forecast.utils import floor_minutes_dt
@@ -102,9 +103,9 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                     forecasts = general_forecast_run_all_batches(
                         session=session,
                         batches_dir=temporary_dir,
-                        callable_function_for_on_batch=nwp_irradiance_simple_trained_run_one_batch,
+                        callable_function_for_on_batch=cnn_run_one_batch,
                         model_name="nwp_simple_trained",
-                        ml_model=Model,
+                        ml_model=CNN_Model,
                         dataloader=dataloader
                     )
                 else:
