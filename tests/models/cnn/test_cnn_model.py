@@ -25,6 +25,11 @@ def test_model_load_weights():
         model.load_model(remote_filename=model_nwp_simple_trained_weights)
 
 
+def test_model_load_weights_from_hf():
+    model = Model()
+    model.load_model()
+
+
 def test_model_load_weights_error():
     model = Model()
 

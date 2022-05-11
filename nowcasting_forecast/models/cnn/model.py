@@ -333,14 +333,14 @@ class Model(pl.LightningModule):
         """
         if remote_filename is None:
             remote_filename = (
-                "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
+                # "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
+                './weights_run999_e1.ckpt'
             )
 
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
 
-        remote_filename = Pathy(remote_filename)
-        filesystem = fsspec.open(remote_filename.parent).fs
+        filesystem = fsspec.open(Pathy(remote_filename).parent).fs
         try:
             _LOG.debug(f"Copying file from {remote_filename} to {local_filename}")
             filesystem.get_file(remote_filename, local_filename)
