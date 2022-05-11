@@ -59,7 +59,7 @@ def make_batches(
         names_of_selected_data_sources=["gsp", "nwp", "pv", "satellite", "hrvsatellite"]
     )
     manager.create_files_specifying_spatial_and_temporal_locations_of_each_example(
-        t0_datetime=t0_datetime_utc
+        t0_datetime=t0_datetime_utc, n_gsps=n_gsps,
     )
 
     # remove gsp as a datasource
