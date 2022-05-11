@@ -8,6 +8,7 @@ from typing import Optional
 from nowcasting_dataset.manager.manager_live import ManagerLive
 
 from nowcasting_forecast.utils import floor_minutes_dt
+from nowcasting_forecast import N_GSP
 
 logger = logging.getLogger(__name__)
 
