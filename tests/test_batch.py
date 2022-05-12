@@ -3,12 +3,12 @@ import tempfile
 
 import xarray as xr
 import zarr
+from nowcasting_dataset.config.load import load_yaml_configuration
+from nowcasting_dataset.config.save import save_yaml_configuration
 from nowcasting_dataset.data_sources.pv.pv_model import PV
 from nowcasting_dataset.data_sources.satellite.satellite_model import Satellite
 
 from nowcasting_forecast.batch import make_batches
-from nowcasting_dataset.config.load import load_yaml_configuration
-from nowcasting_dataset.config.save import save_yaml_configuration
 
 
 def test_make_batches(nwp_data):
@@ -35,7 +35,6 @@ def test_make_batches_mvp_v1(nwp_data, pv_yields_and_systems):
         )
 
 
-
 def test_make_batches_mvp_v2_just_sat_data(sat_data):
 
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -46,7 +45,7 @@ def test_make_batches_mvp_v2_just_sat_data(sat_data):
         configuration.input_data.pv = None
         configuration.input_data.hrvsatellite = None
 
-        filename = f'{temp_dir}/temp.yaml'
+        filename = f"{temp_dir}/temp.yaml"
         save_yaml_configuration(configuration=configuration, filename=filename)
 
         sat_path = f"{temp_dir}/sat_unittest.zarr.zip"
