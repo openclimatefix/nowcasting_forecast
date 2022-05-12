@@ -24,6 +24,7 @@ from nowcasting_forecast.models.hub import NowcastingModelHubMixin
 logging.basicConfig()
 _LOG = logging.getLogger(__name__)
 
+
 class Model(pl.LightningModule, NowcastingModelHubMixin):
     """CNN Forecast model"""
     name = "conv3d_sat_nwp"
