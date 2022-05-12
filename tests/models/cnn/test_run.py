@@ -47,4 +47,5 @@ def test_run(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, db_session
             model_name="nwp_simple_trained",
             ml_model=Model,
             dataloader=dataloader,
+            use_hf=True
         )
