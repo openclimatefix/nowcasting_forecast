@@ -24,10 +24,8 @@ import logging
 
 import torch
 import torch.nn.functional as F
-from torch import nn
-
-
 from nowcasting_dataloader.batch import BatchML
+from torch import nn
 
 logging.basicConfig()
 _LOG = logging.getLogger("predict_pv_yield")
@@ -332,7 +330,9 @@ class Model(pl.LightningModule):
         Load model weights
         """
         if remote_filename is None:
-            remote_filename = "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
+            remote_filename = (
+                "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
+            )
 
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")

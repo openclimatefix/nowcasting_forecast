@@ -1,9 +1,10 @@
-from typing import Optional
 import os
+from typing import Optional
 
 from nowcasting_dataloader.datasets import NetCDFDataset
-from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.config.load import load_yaml_configuration
+from nowcasting_dataset.config.model import Configuration
+
 import nowcasting_forecast
 
 

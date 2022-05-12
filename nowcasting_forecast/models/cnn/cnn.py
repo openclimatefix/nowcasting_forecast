@@ -14,8 +14,8 @@ from typing import Optional, Union
 
 import pandas as pd
 import xarray as xr
-from nowcasting_dataset.dataset.batch import Batch
 from nowcasting_dataloader.batch import BatchML
+from nowcasting_dataset.dataset.batch import Batch
 
 import nowcasting_forecast
 from nowcasting_forecast.models.nwp_simple_trained.xr_utils import re_order_dims

@@ -4,9 +4,10 @@ import tempfile
 import pytest
 import torch
 from nowcasting_dataloader.batch import BatchML
-from nowcasting_forecast.models.cnn.model import Model
-import nowcasting_forecast
 from nowcasting_dataset.config.load import load_yaml_configuration
+
+import nowcasting_forecast
+from nowcasting_forecast.models.cnn.model import Model
 
 
 def test_model_init():

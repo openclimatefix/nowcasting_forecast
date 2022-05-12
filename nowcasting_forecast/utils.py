@@ -1,11 +1,11 @@
 """ Utils functions """
 from datetime import timedelta
-
-import numpy as np
 from typing import Optional
 
+import numpy as np
 
-def floor_minutes_dt(dt, minutes:Optional[int]=30):
+
+def floor_minutes_dt(dt, minutes: Optional[int] = 30):
     """
     Floor a datetime by 30 mins.
 
@@ -23,4 +23,3 @@ def floor_minutes_dt(dt, minutes:Optional[int]=30):
     dt += timedelta(minutes=approx)
 
     return dt
-

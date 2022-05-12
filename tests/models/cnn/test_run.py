@@ -1,15 +1,17 @@
 """ Test to make one batch and run it through the model """
 
 import os
+import tempfile
+
 import xarray as xr
 import zarr
-import tempfile
+
 import nowcasting_forecast
-from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 from nowcasting_forecast.batch import make_batches
-from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 from nowcasting_forecast.models.cnn.cnn import cnn_run_one_batch
+from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 from nowcasting_forecast.models.cnn.model import Model
+from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 
 def test_run(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, db_session):
@@ -44,6 +46,5 @@ def test_run(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, db_session
             callable_function_for_on_batch=cnn_run_one_batch,
             model_name="nwp_simple_trained",
             ml_model=Model,
-            dataloader=dataloader
+            dataloader=dataloader,
         )
-

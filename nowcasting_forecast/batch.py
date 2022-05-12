@@ -7,8 +7,8 @@ from typing import Optional
 
 from nowcasting_dataset.manager.manager_live import ManagerLive
 
-from nowcasting_forecast.utils import floor_minutes_dt
 from nowcasting_forecast import N_GSP
+from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ def make_batches(
     config_filename: str = "nowcasting_forecast/config/mvp_v0.yaml",
     t0_datetime_utc: datetime = None,
     temporary_dir: Optional[str] = None,
-    n_gsps: Optional[int] = N_GSP
+    n_gsps: Optional[int] = N_GSP,
 ):
     """Make batches from config file"""
 
@@ -59,7 +59,8 @@ def make_batches(
         names_of_selected_data_sources=["gsp", "nwp", "pv", "satellite", "hrvsatellite"]
     )
     manager.create_files_specifying_spatial_and_temporal_locations_of_each_example(
-        t0_datetime=t0_datetime_utc, n_gsps=n_gsps,
+        t0_datetime=t0_datetime_utc,
+        n_gsps=n_gsps,
     )
 
     # remove gsp as a datasource
