@@ -1,3 +1,4 @@
+"""Dataloader for the CNN forecaster"""
 import os
 from typing import Optional
 

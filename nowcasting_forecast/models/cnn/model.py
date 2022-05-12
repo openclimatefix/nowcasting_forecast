@@ -34,7 +34,7 @@ _LOG = logging.getLogger("predict_pv_yield")
 
 
 class Model(pl.LightningModule, NowcastingModelHubMixin):
-
+    """CNN Forecast model"""
     name = "conv3d_sat_nwp"
 
     def __init__(
@@ -219,6 +219,9 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         self.save_hyperparameters()
 
     def forward(self, batch: Union[BatchML, dict]):
+        """
+        Forward pass
+        """
 
         if isinstance(batch, dict):
             batch = BatchML(**batch)
