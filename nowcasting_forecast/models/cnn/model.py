@@ -332,10 +332,7 @@ class Model(pl.LightningModule):
         Load model weights
         """
         if remote_filename is None:
-            remote_filename = './w_r1001_e1.ckpt'
-                # "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
-                # './w_r1000_e0.ckpt'
-            # )
+            remote_filename = "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
 
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
