@@ -28,9 +28,11 @@ def test_model_load_weights():
 def test_model_load_weights_from_hf():
     model = Model.from_pretrained("openclimatefix/nowcasting_cnn")
 
+
 def test_model_load_weights_from_hf_load_model():
     model = Model()
     model = model.load_model(use_hf=True)
+
 
 def test_model_load_weights_error():
     model = Model()
