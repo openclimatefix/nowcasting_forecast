@@ -211,6 +211,7 @@ def general_forecast_run_all_batches(
     ml_model: Optional = None,
     weights_file: Optional[str] = None,
     dataloader: Optional = None,
+    use_hf: bool = False
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
@@ -238,8 +239,12 @@ def general_forecast_run_all_batches(
 
     # make pytorch model
     if ml_model is not None:
-        model = ml_model()
-        model = model.load_model(remote_filename=weights_file)
+        if use_hf:
+            model = ml_model()
+            model.load_model(use_hf=use_hf)
+        else:
+            model = ml_model()
+            model = model.load_model(remote_filename=weights_file)
     else:
         model = None
 
