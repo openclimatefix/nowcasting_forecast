@@ -26,6 +26,7 @@ import torch
 import torch.nn.functional as F
 from nowcasting_dataloader.batch import BatchML
 from torch import nn
+
 from nowcasting_forecast.models.hub import NowcastingModelHubMixin
 
 logging.basicConfig()
@@ -326,7 +327,10 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         return out
 
     def load_model(
-        self, local_filename: Optional[str] = "temp.ckpt", remote_filename: Optional[str] = None, use_hf: bool = False
+        self,
+        local_filename: Optional[str] = "temp.ckpt",
+        remote_filename: Optional[str] = None,
+        use_hf: bool = False,
     ):
         """
         Load model weights
