@@ -6,21 +6,13 @@ https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRED-980/monitori
 Default parameters are set from the trained model
 """
 
-
 import logging
 from typing import Optional, Union
 
 import fsspec
 import numpy as np
 import pytorch_lightning as pl
-import torch.nn.functional as F
 from pathy import Pathy
-from torch import clip, nn
-
-logging.basicConfig()
-_LOG = logging.getLogger(__name__)
-
-import logging
 
 import torch
 import torch.nn.functional as F
@@ -30,34 +22,32 @@ from torch import nn
 from nowcasting_forecast.models.hub import NowcastingModelHubMixin
 
 logging.basicConfig()
-_LOG = logging.getLogger("predict_pv_yield")
-
+_LOG = logging.getLogger(__name__)
 
 class Model(pl.LightningModule, NowcastingModelHubMixin):
     """CNN Forecast model"""
-
     name = "conv3d_sat_nwp"
 
     def __init__(
-        self,
-        include_pv_or_gsp_yield_history: bool = False,
-        include_nwp: bool = True,
-        forecast_minutes: int = 120,
-        history_minutes: int = 30,
-        number_of_conv3d_layers: int = 6,
-        conv3d_channels: int = 32,
-        image_size_pixels: int = 24,
-        nwp_image_size_pixels: int = 64,
-        number_sat_channels: int = 11,
-        number_nwp_channels: int = 1,
-        fc1_output_features: int = 128,
-        fc2_output_features: int = 128,
-        fc3_output_features: int = 64,
-        output_variable: str = "gsp_yield",
-        embedding_dem: int = 0,
-        include_pv_yield_history: int = True,
-        include_future_satellite: int = False,
-        live_satellite_images: bool = True,
+            self,
+            include_pv_or_gsp_yield_history: bool = False,
+            include_nwp: bool = True,
+            forecast_minutes: int = 120,
+            history_minutes: int = 30,
+            number_of_conv3d_layers: int = 6,
+            conv3d_channels: int = 32,
+            image_size_pixels: int = 24,
+            nwp_image_size_pixels: int = 64,
+            number_sat_channels: int = 11,
+            number_nwp_channels: int = 1,
+            fc1_output_features: int = 128,
+            fc2_output_features: int = 128,
+            fc3_output_features: int = 64,
+            output_variable: str = "gsp_yield",
+            embedding_dem: int = 0,
+            include_pv_yield_history: int = True,
+            include_future_satellite: int = False,
+            live_satellite_images: bool = True,
     ):
         """
         3d conv model, that takes in different data streams
@@ -65,10 +55,12 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         architecture is roughly
         1. satellite image time series goes into many 3d convolution layers.
         2. nwp time series goes into many 3d convolution layers.
-        3. Final convolutional layer goes to full connected layer. This is joined by other data inputs like
+        3. Final convolutional layer goes to full connected layer. This is joined by
+        other data inputs like
         - pv yield
         - time variables
-        Then there ~4 fully connected layers which end up forecasting the pv yield / gsp into the future
+        Then there ~4 fully connected layers which end up forecasting the
+        pv yield / gsp into the future
 
         include_pv_or_gsp_yield_history: include pv yield data
         include_nwp: include nwp data
@@ -79,9 +71,12 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         image_size_pixels: the input satellite image size
         nwp_image_size_pixels: the input nwp image size
         number_sat_channels: number of nwp channels
-        fc1_output_features: number of fully connected outputs nodes out of the the first fully connected layer
-        fc2_output_features: number of fully connected outputs nodes out of the the second fully connected layer
-        fc3_output_features: number of fully connected outputs nodes out of the the third fully connected layer
+        fc1_output_features: number of fully connected outputs nodes out of the
+        the first fully connected layer
+        fc2_output_features: number of fully connected outputs nodes out of the
+        the second fully connected layer
+        fc3_output_features: number of fully connected outputs nodes out of the
+        the third fully connected layer
         output_variable: the output variable to be predicted
         number_nwp_channels: The number of nwp channels there are
         include_future_satellite: option to include future satellite images, or not
@@ -113,7 +108,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         self.history_len_30 = int(np.ceil(self.history_minutes / 30))
         self.history_len_5 = int(np.ceil(self.history_minutes / 5))
         self.forecast_len_60 = (
-            self.forecast_minutes // 60
+                self.forecast_minutes // 60
         )  # the number of forecast timestemps for 60 minutes data
         self.forecast_len = self.forecast_minutes // 30
         self.number_of_pv_samples_per_batch = 128
@@ -134,15 +129,15 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
                 assert Exception("Need to use at least 30 mintues of satellite data in the past")
 
         self.cnn_output_size = (
-            conv3d_channels
-            * ((image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
-            * self.cnn_output_size_time
+                conv3d_channels
+                * ((image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
+                * self.cnn_output_size_time
         )
 
         self.nwp_cnn_output_size = (
-            conv3d_channels
-            * ((nwp_image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
-            * (self.forecast_len_60 + self.history_len_60 + 1)
+                conv3d_channels
+                * ((nwp_image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
+                * (self.forecast_len_60 + self.history_len_60 + 1)
         )
 
         # conv0
@@ -215,8 +210,6 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         self.fc3 = nn.Linear(in_features=fc3_in_features, out_features=self.fc3_output_features)
         self.fc4 = nn.Linear(in_features=self.fc3_output_features, out_features=self.forecast_len)
-        # self.fc5 = nn.Linear(in_features=32, out_features=8)
-        # self.fc6 = nn.Linear(in_features=8, out_features=1)
         self.save_hyperparameters()
 
     def forward(self, batch: Union[BatchML, dict]):
@@ -231,18 +224,6 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         nwp_data = batch.nwp.data
         pv_data = batch.pv.pv_yield
         pv_system_row_number = batch.pv.pv_system_row_number
-
-        print(sat_data.shape)
-        print(self.number_sat_channels)
-        print(self.cnn_output_size_time)
-        print(self.image_size_pixels)
-        # assert sat_data.shape == torch.Size([
-        #     32,
-        #     self.number_sat_channels,
-        #     self.cnn_output_size_time,
-        #     self.image_size_pixels,
-        #     self.image_size_pixels,
-        # ])
 
         # ******************* Satellite imagery *************************
         # Shape: batch_size, channel, seq_length, height, width
@@ -314,8 +295,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         # ********************** Embedding of PV system ID ********************
         if self.embedding_dem:
-
-            id = pv_system_row_number[0 : self.batch_size, 0]
+            id = pv_system_row_number[0: self.batch_size, 0]
 
             id = id.type(torch.IntTensor)
             id = id.to(out.device)
@@ -331,10 +311,10 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         return out
 
     def load_model(
-        self,
-        local_filename: Optional[str] = "temp.ckpt",
-        remote_filename: Optional[str] = None,
-        use_hf: bool = False,
+            self,
+            local_filename: Optional[str] = "temp.ckpt",
+            remote_filename: Optional[str] = None,
+            use_hf: bool = False,
     ):
         """
         Load model weights
