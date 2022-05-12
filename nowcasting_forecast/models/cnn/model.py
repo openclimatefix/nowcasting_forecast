@@ -26,12 +26,13 @@ import torch
 import torch.nn.functional as F
 from nowcasting_dataloader.batch import BatchML
 from torch import nn
+from nowcasting_forecast.models.hub import NowcastingModelHubMixin
 
 logging.basicConfig()
 _LOG = logging.getLogger("predict_pv_yield")
 
 
-class Model(pl.LightningModule):
+class Model(pl.LightningModule, NowcastingModelHubMixin):
 
     name = "conv3d_sat_nwp"
 
@@ -214,6 +215,7 @@ class Model(pl.LightningModule):
         self.fc4 = nn.Linear(in_features=self.fc3_output_features, out_features=self.forecast_len)
         # self.fc5 = nn.Linear(in_features=32, out_features=8)
         # self.fc6 = nn.Linear(in_features=8, out_features=1)
+        self.save_hyperparameters()
 
     def forward(self, batch: Union[BatchML, dict]):
 
@@ -324,11 +326,15 @@ class Model(pl.LightningModule):
         return out
 
     def load_model(
-        self, local_filename: Optional[str] = "temp.ckpt", remote_filename: Optional[str] = None
+        self, local_filename: Optional[str] = "temp.ckpt", remote_filename: Optional[str] = None, use_hf: bool = False
     ):
         """
         Load model weights
         """
+
+        if use_hf:
+            return Model.from_pretrained("openclimatefix/nowcasting_cnn")
+
         if remote_filename is None:
             remote_filename = (
                 "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
