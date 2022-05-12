@@ -12,11 +12,10 @@ from typing import Optional, Union
 import fsspec
 import numpy as np
 import pytorch_lightning as pl
-from pathy import Pathy
-
 import torch
 import torch.nn.functional as F
 from nowcasting_dataloader.batch import BatchML
+from pathy import Pathy
 from torch import nn
 
 from nowcasting_forecast.models.hub import NowcastingModelHubMixin
@@ -27,28 +26,29 @@ _LOG = logging.getLogger(__name__)
 
 class Model(pl.LightningModule, NowcastingModelHubMixin):
     """CNN Forecast model"""
+
     name = "conv3d_sat_nwp"
 
     def __init__(
-            self,
-            include_pv_or_gsp_yield_history: bool = False,
-            include_nwp: bool = True,
-            forecast_minutes: int = 120,
-            history_minutes: int = 30,
-            number_of_conv3d_layers: int = 6,
-            conv3d_channels: int = 32,
-            image_size_pixels: int = 24,
-            nwp_image_size_pixels: int = 64,
-            number_sat_channels: int = 11,
-            number_nwp_channels: int = 1,
-            fc1_output_features: int = 128,
-            fc2_output_features: int = 128,
-            fc3_output_features: int = 64,
-            output_variable: str = "gsp_yield",
-            embedding_dem: int = 0,
-            include_pv_yield_history: int = True,
-            include_future_satellite: int = False,
-            live_satellite_images: bool = True,
+        self,
+        include_pv_or_gsp_yield_history: bool = False,
+        include_nwp: bool = True,
+        forecast_minutes: int = 120,
+        history_minutes: int = 30,
+        number_of_conv3d_layers: int = 6,
+        conv3d_channels: int = 32,
+        image_size_pixels: int = 24,
+        nwp_image_size_pixels: int = 64,
+        number_sat_channels: int = 11,
+        number_nwp_channels: int = 1,
+        fc1_output_features: int = 128,
+        fc2_output_features: int = 128,
+        fc3_output_features: int = 64,
+        output_variable: str = "gsp_yield",
+        embedding_dem: int = 0,
+        include_pv_yield_history: int = True,
+        include_future_satellite: int = False,
+        live_satellite_images: bool = True,
     ):
         """
         3d conv model, that takes in different data streams
@@ -109,7 +109,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         self.history_len_30 = int(np.ceil(self.history_minutes / 30))
         self.history_len_5 = int(np.ceil(self.history_minutes / 5))
         self.forecast_len_60 = (
-                self.forecast_minutes // 60
+            self.forecast_minutes // 60
         )  # the number of forecast timestemps for 60 minutes data
         self.forecast_len = self.forecast_minutes // 30
         self.number_of_pv_samples_per_batch = 128
@@ -130,15 +130,15 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
                 assert Exception("Need to use at least 30 mintues of satellite data in the past")
 
         self.cnn_output_size = (
-                conv3d_channels
-                * ((image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
-                * self.cnn_output_size_time
+            conv3d_channels
+            * ((image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
+            * self.cnn_output_size_time
         )
 
         self.nwp_cnn_output_size = (
-                conv3d_channels
-                * ((nwp_image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
-                * (self.forecast_len_60 + self.history_len_60 + 1)
+            conv3d_channels
+            * ((nwp_image_size_pixels - 2 * self.number_of_conv3d_layers) ** 2)
+            * (self.forecast_len_60 + self.history_len_60 + 1)
         )
 
         # conv0
@@ -296,7 +296,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         # ********************** Embedding of PV system ID ********************
         if self.embedding_dem:
-            id = pv_system_row_number[0: self.batch_size, 0]
+            id = pv_system_row_number[0 : self.batch_size, 0]
 
             id = id.type(torch.IntTensor)
             id = id.to(out.device)
@@ -312,10 +312,10 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         return out
 
     def load_model(
-            self,
-            local_filename: Optional[str] = "temp.ckpt",
-            remote_filename: Optional[str] = None,
-            use_hf: bool = False,
+        self,
+        local_filename: Optional[str] = "temp.ckpt",
+        remote_filename: Optional[str] = None,
+        use_hf: bool = False,
     ):
         """
         Load model weights
