@@ -12,7 +12,6 @@ from functools import partial
 
 import torch
 
-
 try:
     from huggingface_hub import cached_download, hf_hub_url
 
@@ -121,18 +120,18 @@ class NowcastingModelHubMixin(ModelHubMixin):
 
     @classmethod
     def _from_pretrained(
-            cls,
-            model_id,
-            revision,
-            cache_dir,
-            force_download,
-            proxies,
-            resume_download,
-            local_files_only,
-            use_auth_token,
-            map_location="cpu",
-            strict=False,
-            **model_kwargs,
+        cls,
+        model_id,
+        revision,
+        cache_dir,
+        force_download,
+        proxies,
+        resume_download,
+        local_files_only,
+        use_auth_token,
+        map_location="cpu",
+        strict=False,
+        **model_kwargs,
     ):
         map_location = torch.device(map_location)
 
