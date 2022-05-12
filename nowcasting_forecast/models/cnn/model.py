@@ -326,16 +326,16 @@ class Model(pl.LightningModule):
         return out
 
     def load_model(
-        self, local_filename: Optional[str] = "./temp.ckpt", remote_filename: Optional[str] = None
+        self, local_filename: Optional[str] = "temp.ckpt", remote_filename: Optional[str] = None
     ):
         """
         Load model weights
         """
         if remote_filename is None:
-            remote_filename = (
+            remote_filename = './w_r1001_e1.ckpt'
                 # "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
-                './weights_run999_e1.ckpt'
-            )
+                # './w_r1000_e0.ckpt'
+            # )
 
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
@@ -351,4 +351,4 @@ class Model(pl.LightningModule):
             raise FileNotFoundError(message)
 
         # load weights into model
-        return self.load_from_checkpoint(checkpoint_path=local_filename)
+        return self.load_from_checkpoint(checkpoint_path=remote_filename)

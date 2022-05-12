@@ -34,7 +34,7 @@ def test_model_load_weights_error():
     model = Model()
 
     with pytest.raises(Exception):
-        model.load_model(remote_filename="weights.ckpt")
+        model.load_from_checkpoint(checkpoint_path="./error.ckpt")
 
 
 def test_forward():
