@@ -211,7 +211,7 @@ def general_forecast_run_all_batches(
     ml_model: Optional = None,
     weights_file: Optional[str] = None,
     dataloader: Optional = None,
-    use_hf: bool = False
+    use_hf: bool = False,
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
