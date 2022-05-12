@@ -35,6 +35,7 @@ _LOG = logging.getLogger("predict_pv_yield")
 
 class Model(pl.LightningModule, NowcastingModelHubMixin):
     """CNN Forecast model"""
+
     name = "conv3d_sat_nwp"
 
     def __init__(
