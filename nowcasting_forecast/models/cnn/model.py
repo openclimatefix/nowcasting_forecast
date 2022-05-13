@@ -9,13 +9,11 @@ Default parameters are set from the trained model
 import logging
 from typing import Optional, Union
 
-import fsspec
 import numpy as np
 import pytorch_lightning as pl
 import torch
 import torch.nn.functional as F
 from nowcasting_dataloader.batch import BatchML
-from pathy import Pathy
 from torch import nn
 
 from nowcasting_forecast.models.hub import NowcastingModelHubMixin
