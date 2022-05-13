@@ -22,7 +22,7 @@ def test_model_load_weights():
         model_nwp_simple_trained_weights = os.path.join(tempdir, "weights.ckpt")
         torch.save({"state_dict": model.state_dict()}, model_nwp_simple_trained_weights)
 
-        model.load_model(remote_filename=model_nwp_simple_trained_weights)
+        model.load_model(local_filename=model_nwp_simple_trained_weights, use_hf=False)
 
 
 def test_model_load_weights_from_hf():
