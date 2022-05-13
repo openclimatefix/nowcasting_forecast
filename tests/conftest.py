@@ -14,7 +14,7 @@ from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_
 from nowcasting_dataset.dataset.batch import Batch
 
 from nowcasting_forecast import N_GSP
-from nowcasting_forecast.utils import floor_30_minutes_dt
+from nowcasting_forecast.utils import floor_minutes_dt
 
 
 @pytest.fixture
@@ -56,7 +56,7 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
 @pytest.fixture
 def db_connection():
 
-    url = os.getenv("DB_URL")
+    url = os.getenv("DB_URL", "sqlite:///test.db")
     os.environ["DB_URL_PV"] = url
 
     connection = DatabaseConnection(url=url)
@@ -114,7 +114,7 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     image_size = 1000
     time_steps = 10
 
@@ -173,7 +173,7 @@ def pv_yields_and_systems(db_session):
         pv_system_id=2, provider="pvoutput.org", status_interval_minutes=5, longitude=0, latitude=56
     ).to_orm()
 
-    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
 
     pv_yield_sqls = []
     for hour in range(0, 6):
@@ -208,7 +208,9 @@ def pv_yields_and_systems(db_session):
 @pytest.fixture()
 def sat_data():
 
-    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    # middle of the UK
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+
     times = [t0_datetime_utc]
     # this means there will be about 30 mins of no data.
     # This reflects the true satellite consumer
@@ -264,7 +266,7 @@ def sat_data():
 def hrv_sat_data():
 
     # middle of the UK
-    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
     times = [t0_datetime_utc]
     time_steps = 26
     for i in range(1, time_steps):

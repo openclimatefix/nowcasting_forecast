@@ -12,13 +12,16 @@ from sqlalchemy.orm import Session
 
 from nowcasting_forecast import N_GSP, __version__
 from nowcasting_forecast.batch import make_batches
+from nowcasting_forecast.models.cnn.cnn import cnn_run_one_batch
+from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
+from nowcasting_forecast.models.cnn.model import Model as CNN_Model
 from nowcasting_forecast.models.nwp_simple_trained.model import Model
 from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
     nwp_irradiance_simple_trained_run_one_batch,
 )
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
-from nowcasting_forecast.utils import floor_30_minutes_dt
+from nowcasting_forecast.utils import floor_minutes_dt
 
 logging.basicConfig(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
@@ -67,8 +70,12 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
 
             if model_name == "nwp_simple":
                 config_filename = "nowcasting_forecast/config/mvp_v0.yaml"
-            else:
+            elif model_name == "nwp_simple_trained":
                 config_filename = "nowcasting_forecast/config/mvp_v1.yaml"
+            elif model_name == "cnn":
+                config_filename = "nowcasting_forecast/config/mvp_v2.yaml"
+            else:
+                raise NotImplementedError(f"Model {model_name} has not be implemented")
 
             with tempfile.TemporaryDirectory() as temporary_dir:
                 # make batches
@@ -91,6 +98,16 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         model_name="nwp_simple_trained",
                         ml_model=Model,
                     )
+                elif model_name == "cnn":
+                    dataloader = get_cnn_data_loader()
+                    forecasts = general_forecast_run_all_batches(
+                        session=session,
+                        batches_dir=temporary_dir,
+                        callable_function_for_on_batch=cnn_run_one_batch,
+                        model_name="nwp_simple_trained",
+                        ml_model=CNN_Model,
+                        dataloader=dataloader,
+                    )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
 
@@ -104,7 +121,7 @@ def make_dummy_forecasts(session: Session):
     Dummy forecasts are made for all gsps and for several forecast horizons
     """
     # time now rounded down by 30 mins
-    t0_datetime_utc = floor_30_minutes_dt(datetime.utcnow())
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow())
 
     # make gsp fake results
     forecasts = make_fake_forecasts(

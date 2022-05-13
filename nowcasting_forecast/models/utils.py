@@ -37,7 +37,7 @@ from sqlalchemy.orm.session import Session
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
-from nowcasting_forecast.utils import floor_30_minutes_dt
+from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -210,13 +210,15 @@ def general_forecast_run_all_batches(
     batches_dir: Optional[str] = None,
     ml_model: Optional = None,
     weights_file: Optional[str] = None,
+    dataloader: Optional = None,
+    use_hf: bool = False,
 ) -> List[ForecastSQL]:
     """Run model for all batches"""
 
     logger.info("Running nwp_irradiance_simple model")
 
     # time now rounded down by 30 mins
-    t0_datetime_utc = floor_30_minutes_dt(datetime.now(timezone.utc))
+    t0_datetime_utc = floor_minutes_dt(datetime.now(timezone.utc))
     logger.info(f"Making forecasts for {t0_datetime_utc=}")
 
     # make configuration
@@ -232,12 +234,17 @@ def general_forecast_run_all_batches(
         configuration.output_data.filepath = Path(batches_dir)
 
     # make dataloader
-    dataloader = iter(BatchDataLoader(n_batches=n_batches, configuration=configuration))
+    if dataloader is None:
+        dataloader = iter(BatchDataLoader(n_batches=n_batches, configuration=configuration))
 
     # make pytorch model
     if ml_model is not None:
-        model = ml_model()
-        model = model.load_model(remote_filename=weights_file)
+        if use_hf:
+            model = ml_model()
+            model.load_model(use_hf=use_hf).eval()
+        else:
+            model = ml_model()
+            model = model.load_model(remote_filename=weights_file).eval()
     else:
         model = None
 
