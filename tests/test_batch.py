@@ -3,7 +3,10 @@ import tempfile
 
 import xarray as xr
 import zarr
+from nowcasting_dataset.config.load import load_yaml_configuration
+from nowcasting_dataset.config.save import save_yaml_configuration
 from nowcasting_dataset.data_sources.pv.pv_model import PV
+from nowcasting_dataset.data_sources.satellite.satellite_model import Satellite
 
 from nowcasting_forecast.batch import make_batches
 
@@ -30,6 +33,34 @@ def test_make_batches_mvp_v1(nwp_data, pv_yields_and_systems):
         make_batches(
             config_filename="nowcasting_forecast/config/mvp_v1.yaml", temporary_dir=temp_dir
         )
+
+
+def test_make_batches_mvp_v2_just_sat_data(sat_data):
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+
+        configuration = load_yaml_configuration("nowcasting_forecast/config/mvp_v2.yaml")
+
+        configuration.input_data.nwp = None
+        configuration.input_data.pv = None
+        configuration.input_data.hrvsatellite = None
+
+        filename = f"{temp_dir}/temp.yaml"
+        save_yaml_configuration(configuration=configuration, filename=filename)
+
+        sat_path = f"{temp_dir}/sat_unittest.zarr.zip"
+        with zarr.ZipStore(sat_path) as store:
+            sat_data.to_zarr(store, compute=True)
+        os.environ["SAT_PATH"] = sat_path
+
+        make_batches(config_filename=filename, temporary_dir=temp_dir)
+
+        # open pv files and check there is something in there
+        assert os.path.exists(f"{temp_dir}/live")
+        assert os.path.exists(f"{temp_dir}/live/satellite")
+        assert os.path.exists(f"{temp_dir}/live/satellite/000000.nc")
+        sat = xr.load_dataset(f"{temp_dir}/live/satellite/000000.nc", engine="h5netcdf")
+        _ = Satellite(sat)
 
 
 def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data):

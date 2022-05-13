@@ -41,6 +41,7 @@ input_data:
     forecast_minutes: 0
     satellite_zarr_path: s3://nowcasting-sat-development/data/latest/latest.zarr.zip
     keep_dawn_dusk_hours: 2
+    is_live: True
 
   #---------------------- HRVSatellite -------------
   hrvsatellite:
@@ -51,6 +52,7 @@ input_data:
     history_minutes: 60
     forecast_minutes: 0
     hrvsatellite_zarr_path: s3://nowcasting-sat-development/data/latest/hrv_latest.zarr.zip
+    is_live: True
 
   #--------- PV --------
   pv:
