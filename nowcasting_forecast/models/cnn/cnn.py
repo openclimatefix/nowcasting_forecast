@@ -62,9 +62,7 @@ def cnn_run_one_batch(
         gsp_id = batch.metadata.id[i]
 
         # t0 value value
-        t0_datetime_utc = batch.metadata.t0_datetime_utc[i].replace(
-            tzinfo=timezone.utc
-        )
+        t0_datetime_utc = batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
 
         for t_index in range(len(predictions[0])):
             # add timezone

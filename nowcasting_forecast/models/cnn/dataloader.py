@@ -33,7 +33,11 @@ def get_cnn_data_loader(
         tmp_path = configuration.output_data.filepath
 
     data_loader = NetCDFDataset(
-        n_batches=n_batches, src_path=os.path.join(src_path, "live"), tmp_path=os.path.join(tmp_path, "live"), configuration=configuration, mix_two_batches=False
+        n_batches=n_batches,
+        src_path=os.path.join(src_path, "live"),
+        tmp_path=os.path.join(tmp_path, "live"),
+        configuration=configuration,
+        mix_two_batches=False,
     )
 
     return iter(data_loader)
