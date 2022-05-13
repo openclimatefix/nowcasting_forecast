@@ -80,4 +80,3 @@ def cnn_run_one_batch(
     forecasts = pd.DataFrame(forecasts)
 
     return forecasts
-
