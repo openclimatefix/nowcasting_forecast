@@ -313,9 +313,8 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
     def load_model(
         self,
-        local_filename: Optional[str] = "temp.ckpt",
-        remote_filename: Optional[str] = None,
-        use_hf: bool = False,
+        local_filename: Optional[str] = None,
+        use_hf: bool = True,
     ):
         """
         Load model weights
@@ -323,24 +322,5 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         if use_hf:
             return Model.from_pretrained("openclimatefix/nowcasting_cnn")
-
-        if remote_filename is None:
-            remote_filename = (
-                "https://huggingface.co/openclimatefix/nowcasting_cnn/blob/main/lit_model.ckpt"
-            )
-
-        # download weights from s3
-        _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
-
-        filesystem = fsspec.open(Pathy(remote_filename).parent).fs
-        try:
-            _LOG.debug(f"Copying file from {remote_filename} to {local_filename}")
-            filesystem.get_file(remote_filename, local_filename)
-        except FileNotFoundError as e:
-            _LOG.error(e)
-            message = f"Could not copy {remote_filename} to {local_filename}"
-            _LOG.error(message)
-            raise FileNotFoundError(message)
-
-        # load weights into model
-        return self.load_from_checkpoint(checkpoint_path=remote_filename)
+        else:
+            return self.load_from_checkpoint(checkpoint_path=local_filename)
