@@ -36,4 +36,4 @@ def get_cnn_data_loader(
         n_batches=n_batches, src_path=src_path, tmp_path=tmp_path, configuration=configuration
     )
 
-    return data_loader
+    return iter(data_loader)
