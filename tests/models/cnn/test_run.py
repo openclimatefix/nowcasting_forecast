@@ -14,12 +14,8 @@ from nowcasting_forecast.models.cnn.model import Model
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 
-def test_run(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, db_session):
+def test_run(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, db_session, input_data_last_updated):
 
-    # make configuration
-    # configuration_file = os.path.join(
-    #     os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v2.yaml"
-    # )
 
     with tempfile.TemporaryDirectory() as temp_dir:
         # save nwp data
