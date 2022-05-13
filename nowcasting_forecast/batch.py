@@ -35,12 +35,14 @@ def make_batches(
         manager.config.output_data.filepath = Path(temporary_dir)
 
     # over write nwp zarr path
-    if os.getenv("NWP_PATH", None) is not None:
+    if (os.getenv("NWP_PATH", None) is not None) and (manager.config.input_data.nwp is not None):
         manager.config.input_data.nwp.nwp_zarr_path = os.getenv("NWP_PATH")
         logger.debug(f"WIll be opening nwp file: {manager.config.input_data.nwp.nwp_zarr_path}")
 
     # over write hrv sat zarr path
-    if os.getenv("HRV_SAT_PATH", None) is not None:
+    if (os.getenv("HRV_SAT_PATH", None) is not None) and (
+        manager.config.input_data.hrvsatellite is not None
+    ):
         manager.config.input_data.hrvsatellite.hrvsatellite_zarr_path = os.getenv("HRV_SAT_PATH")
         logger.debug(
             f"WIll be opening sat file:"
@@ -48,7 +50,9 @@ def make_batches(
         )
 
     # over write sat zarr path
-    if os.getenv("SAT_PATH", None) is not None:
+    if (os.getenv("SAT_PATH", None) is not None) and (
+        manager.config.input_data.satellite is not None
+    ):
         manager.config.input_data.satellite.satellite_zarr_path = os.getenv("SAT_PATH")
         logger.debug(
             f"WIll be opening sat file: {manager.config.input_data.satellite.satellite_zarr_path}"

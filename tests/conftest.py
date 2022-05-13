@@ -208,10 +208,14 @@ def pv_yields_and_systems(db_session):
 @pytest.fixture()
 def sat_data():
 
+
     # middle of the UK
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+
     times = [t0_datetime_utc]
-    time_steps = 26
+    # this means there will be about 30 mins of no data.
+    # This reflects the true satellite consumer
+    time_steps = 20
     for i in range(1, time_steps):
         times.append(t0_datetime_utc + timedelta(minutes=5 * i))
 
