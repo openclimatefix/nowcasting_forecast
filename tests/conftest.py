@@ -208,7 +208,6 @@ def pv_yields_and_systems(db_session):
 @pytest.fixture()
 def sat_data():
 
-
     # middle of the UK
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
 
