@@ -241,10 +241,10 @@ def general_forecast_run_all_batches(
     if ml_model is not None:
         if use_hf:
             model = ml_model()
-            model.load_model(use_hf=use_hf)
+            model.load_model(use_hf=use_hf).eval()
         else:
             model = ml_model()
-            model = model.load_model(remote_filename=weights_file)
+            model = model.load_model(remote_filename=weights_file).eval()
     else:
         model = None
 

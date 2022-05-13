@@ -219,10 +219,10 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         if isinstance(batch, dict):
             batch = BatchML(**batch)
 
-        sat_data = batch.satellite.data
-        nwp_data = batch.nwp.data
-        pv_data = batch.pv.pv_yield
-        pv_system_row_number = batch.pv.pv_system_row_number
+        sat_data = batch.satellite.data.float()
+        nwp_data = batch.nwp.data.float()
+        pv_data = batch.pv.pv_yield.float()
+        pv_system_row_number = batch.pv.pv_system_row_number.float()
 
         # ******************* Satellite imagery *************************
         # Shape: batch_size, channel, seq_length, height, width

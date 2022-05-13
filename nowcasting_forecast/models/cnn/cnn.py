@@ -59,10 +59,10 @@ def cnn_run_one_batch(
             break
 
         # get id from location
-        gsp_id = batch.metadata.space_time_locations[i].id
+        gsp_id = batch.metadata.id[i]
 
         # t0 value value
-        t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(
+        t0_datetime_utc = batch.metadata.t0_datetime_utc[i].replace(
             tzinfo=timezone.utc
         )
 
