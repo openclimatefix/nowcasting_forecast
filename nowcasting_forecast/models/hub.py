@@ -31,15 +31,25 @@ tags:
 - remote-sensing
 ---
 
-# {model_name}
+# Nowcasting CNN
 
 ## Model description
 
-[More information needed]
+3d conv model, that takes in different data streams
+
+        architecture is roughly
+        1. satellite image time series goes into many 3d convolution layers.
+        2. nwp time series goes into many 3d convolution layers.
+        3. Final convolutional layer goes to full connected layer. This is joined by
+        other data inputs like
+        - pv yield
+        - time variables
+        Then there ~4 fully connected layers which end up forecasting the
+        pv yield / gsp into the future
 
 ## Intended uses & limitations
 
-[More information needed]
+Forecasting short term PV power for different regions and nationally in the UK
 
 ## How to use
 
@@ -51,7 +61,7 @@ tags:
 
 ## Training data
 
-[More information needed]
+Training data is EUMETSAT RSS imagery over the UK, on-the-ground PV data, and NWP predictions.
 
 ## Training procedure
 
