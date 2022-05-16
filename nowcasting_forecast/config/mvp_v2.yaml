@@ -47,8 +47,8 @@ input_data:
   hrvsatellite:
     hrvsatellite_channels:
       - HRV
-    hrvsatellite_image_size_pixels_height: 128
-    hrvsatellite_image_size_pixels_width: 128
+    hrvsatellite_image_size_pixels_height: 24
+    hrvsatellite_image_size_pixels_width: 24
     history_minutes: 60
     forecast_minutes: 0
     hrvsatellite_zarr_path: s3://nowcasting-sat-development/data/latest/hrv_latest.zarr.zip

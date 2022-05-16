@@ -28,7 +28,7 @@ logging.basicConfig(
     format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
-
+# TODO make logs show up in AWS
 
 @click.command()
 @click.option(
