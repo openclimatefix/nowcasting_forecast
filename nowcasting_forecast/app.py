@@ -30,6 +30,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 # TODO make logs show up in AWS
 
+
 @click.command()
 @click.option(
     "--db-url",
