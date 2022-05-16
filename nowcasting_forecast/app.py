@@ -108,6 +108,7 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         model_name="nwp_simple_trained",
                         ml_model=CNN_Model,
                         dataloader=dataloader,
+                        use_hf=True
                     )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
