@@ -28,6 +28,9 @@ logging.basicConfig(
     format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+logger.setLevel(
+    level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
+)
 # TODO make logs show up in AWS
 
 
