@@ -28,9 +28,9 @@ def get_cnn_data_loader(
     configuration = load_yaml_configuration(filename=configuration_file)
 
     if src_path is None:
-        src_path = configuration.output_data.filepath + '/live'
+        src_path = configuration.output_data.filepath / 'live'
     if tmp_path is None:
-        tmp_path = configuration.output_data.filepath + '/live'
+        tmp_path = configuration.output_data.filepath / 'live'
 
     data_loader = NetCDFDataset(
         n_batches=n_batches,
