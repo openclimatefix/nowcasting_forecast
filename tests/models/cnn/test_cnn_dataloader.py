@@ -1,12 +1,11 @@
-from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 import os
 import tempfile
-
 
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.config.save import save_yaml_configuration
 
 import nowcasting_forecast
+from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 
 
 def test_get_cnn_data_loader():
