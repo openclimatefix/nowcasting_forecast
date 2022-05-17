@@ -321,10 +321,10 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         if use_hf:
             _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_cnn" ')
             model = Model.from_pretrained("openclimatefix/nowcasting_cnn")
-            _LOG.debug('Loading mode from Hugging Face: done')
+            _LOG.debug("Loading mode from Hugging Face: done")
             return model
         else:
-            _LOG.debug(f'Loading model weights from {local_filename}')
+            _LOG.debug(f"Loading model weights from {local_filename}")
             model = self.load_from_checkpoint(checkpoint_path=local_filename)
-            _LOG.debug('Loading model weights: done')
+            _LOG.debug("Loading model weights: done")
             return model
