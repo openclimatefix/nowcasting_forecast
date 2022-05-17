@@ -99,10 +99,11 @@ def run(
 
             with tempfile.TemporaryDirectory() as temporary_dir:
                 # make batches
+                save_dir = batch_save_dir + "batch/" if batch_save_dir is not None else None
                 make_batches(
                     temporary_dir=temporary_dir,
                     config_filename=config_filename,
-                    batch_save_dir=batch_save_dir,
+                    batch_save_dir=save_dir,
                 )
 
                 # make forecasts
