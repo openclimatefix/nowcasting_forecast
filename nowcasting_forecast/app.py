@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
 )
-logging.getLogger('nowcasting_forecast').setLevel(
+logging.getLogger("nowcasting_forecast").setLevel(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
 )
 # TODO make logs show up in AWS
@@ -59,7 +59,19 @@ logging.getLogger('nowcasting_forecast').setLevel(
     help="Select which model to use",
     type=click.STRING,
 )
-def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
+@click.option(
+    "--batch-save-dr",
+    default=None,
+    envvar="BATCH_SAVE_DIR",
+    help="Optional directory to save first bacth to",
+    type=click.STRING,
+)
+def run(
+    db_url: str,
+    fake: bool = False,
+    model_name: str = "nwp_simple",
+    batch_save_dir: Optiona[str] = None,
+):
     """
     Run main app.
 
@@ -86,7 +98,11 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
 
             with tempfile.TemporaryDirectory() as temporary_dir:
                 # make batches
-                make_batches(temporary_dir=temporary_dir, config_filename=config_filename)
+                make_batches(
+                    temporary_dir=temporary_dir,
+                    config_filename=config_filename,
+                    batch_save_dir=batch_save_dir,
+                )
 
                 # make forecasts
                 if model_name == "nwp_simple":
@@ -106,8 +122,9 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         ml_model=Model,
                     )
                 elif model_name == "cnn":
-                    dataloader = get_cnn_data_loader(src_path=f'{temporary_dir}/live',
-                                                     tmp_path=f'{temporary_dir}/live')
+                    dataloader = get_cnn_data_loader(
+                        src_path=f"{temporary_dir}/live", tmp_path=f"{temporary_dir}/live"
+                    )
                     forecasts = general_forecast_run_all_batches(
                         session=session,
                         batches_dir=temporary_dir,
@@ -116,7 +133,7 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         ml_model=CNN_Model,
                         dataloader=dataloader,
                         use_hf=True,
-                        configuration_file="nowcasting_forecast/config/mvp_v2.yaml"
+                        configuration_file="nowcasting_forecast/config/mvp_v2.yaml",
                     )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
