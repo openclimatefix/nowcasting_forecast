@@ -265,7 +265,7 @@ def general_forecast_run_all_batches(
         forecast_one_batch = callable_function_for_on_batch(**callbacks_args)
 
         if i == 0:
-            logger.debug(f'First forecasts are {forecast_one_batch}')
+            logger.debug(f"First forecasts are {forecast_one_batch}")
 
         forecasts.append(forecast_one_batch)
 
