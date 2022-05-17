@@ -124,7 +124,7 @@ def run(
                     )
                 elif model_name == "cnn":
                     dataloader = get_cnn_data_loader(
-                        src_path=f"{temporary_dir}/live", tmp_path=f"{temporary_dir}/live"
+                        src_path=f"{temporary_dir}/live", tmp_path=f"{temporary_dir}/live", batch_save_dir=batch_save_dir
                     )
                     forecasts = general_forecast_run_all_batches(
                         session=session,
