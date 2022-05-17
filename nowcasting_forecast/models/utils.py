@@ -241,7 +241,7 @@ def general_forecast_run_all_batches(
     if ml_model is not None:
         if use_hf:
             model = ml_model()
-            model.load_model(use_hf=use_hf).eval()
+            model = model.load_model(use_hf=use_hf).eval()
         else:
             model = ml_model()
             model = model.load_model(remote_filename=weights_file).eval()
@@ -266,9 +266,9 @@ def general_forecast_run_all_batches(
 
         if i == 0:
             logger.debug(
-                f'First forecasts are '
+                f"First forecasts are "
                 f'{forecast_one_batch[["target_datetime_utc","forecast_gsp_pv_outturn_mw"]]} '
-                f'{forecast_one_batch}'
+                f"{forecast_one_batch}"
             )
 
         forecasts.append(forecast_one_batch)
