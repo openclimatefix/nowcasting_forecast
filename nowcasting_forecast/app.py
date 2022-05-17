@@ -112,7 +112,7 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         session=session,
                         batches_dir=temporary_dir,
                         callable_function_for_on_batch=cnn_run_one_batch,
-                        model_name="nwp_simple_trained",
+                        model_name="cnn",
                         ml_model=CNN_Model,
                         dataloader=dataloader,
                         use_hf=True,
