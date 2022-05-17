@@ -28,6 +28,9 @@ logging.basicConfig(
     format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+logger.setLevel(
+    level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
+)
 # TODO make logs show up in AWS
 
 
@@ -108,7 +111,7 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         model_name="nwp_simple_trained",
                         ml_model=CNN_Model,
                         dataloader=dataloader,
-                        use_hf=True
+                        use_hf=True,
                     )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
