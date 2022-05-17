@@ -106,7 +106,8 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         ml_model=Model,
                     )
                 elif model_name == "cnn":
-                    dataloader = get_cnn_data_loader()
+                    dataloader = get_cnn_data_loader(src_path=f'{temporary_dir}/live',
+                                                     tmp_path=f'{temporary_dir}/live')
                     forecasts = general_forecast_run_all_batches(
                         session=session,
                         batches_dir=temporary_dir,
