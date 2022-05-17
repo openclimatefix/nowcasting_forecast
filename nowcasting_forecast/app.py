@@ -60,7 +60,7 @@ logging.getLogger("nowcasting_forecast").setLevel(
     type=click.STRING,
 )
 @click.option(
-    "--batch-save-dr",
+    "--batch-save-dir",
     default=None,
     envvar="BATCH_SAVE_DIR",
     help="Optional directory to save first bacth to",

@@ -65,7 +65,9 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input
         os.environ["NWP_PATH"] = nwp_path
 
         runner = CliRunner()
-        response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "false"])
+        response = runner.invoke(
+            run, ["--db-url", db_connection.url, "--fake", "false", "--batch-save-dir", temp_dir]
+        )
         assert response.exit_code == 0, response
 
         with db_connection.get_session() as session:
