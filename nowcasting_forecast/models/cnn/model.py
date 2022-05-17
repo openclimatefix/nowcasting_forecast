@@ -319,6 +319,12 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         """
 
         if use_hf:
-            return Model.from_pretrained("openclimatefix/nowcasting_cnn")
+            _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_cnn" ')
+            model = Model.from_pretrained("openclimatefix/nowcasting_cnn")
+            _LOG.debug('Loading mode from Hugging Face: done')
+            return model
         else:
-            return self.load_from_checkpoint(checkpoint_path=local_filename)
+            _LOG.debug(f'Loading model weights from {local_filename}')
+            model = self.load_from_checkpoint(checkpoint_path=local_filename)
+            _LOG.debug(f'Loading model weights: doner')
+            return model
