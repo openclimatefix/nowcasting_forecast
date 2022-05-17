@@ -262,7 +262,12 @@ def general_forecast_run_all_batches(
         if ml_model is not None:
             callbacks_args["pytorch_model"] = model
 
-        forecasts.append(callable_function_for_on_batch(**callbacks_args))
+        forecast_one_batch = callable_function_for_on_batch(**callbacks_args)
+
+        if i == 0:
+            logger.debug(f"First forecasts are {forecast_one_batch}")
+
+        forecasts.append(forecast_one_batch)
 
     # make into one big dataframe
     forecasts = pd.concat(forecasts)
