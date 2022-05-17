@@ -13,6 +13,7 @@ def get_cnn_data_loader(
     n_batches: Optional[int] = 11,
     src_path: Optional[str] = None,
     tmp_path: Optional[str] = None,
+    batch_save_dir: Optional[str] = None
 ):
     """
     Get data laoder for cnn model
@@ -38,6 +39,7 @@ def get_cnn_data_loader(
         tmp_path=tmp_path,
         configuration=configuration,
         mix_two_batches=False,
+        save_first_batch=os.path.join(batch_save_dir, "batchml", "batchml_0.npy") if batch_save_dir is not None else None,
     )
 
     return iter(data_loader)
