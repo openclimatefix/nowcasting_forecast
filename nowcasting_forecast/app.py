@@ -115,6 +115,7 @@ def run(db_url: str, fake: bool = False, model_name: str = "nwp_simple"):
                         ml_model=CNN_Model,
                         dataloader=dataloader,
                         use_hf=True,
+                        configuration_file="nowcasting_forecast/config/mvp_v2.yaml"
                     )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
