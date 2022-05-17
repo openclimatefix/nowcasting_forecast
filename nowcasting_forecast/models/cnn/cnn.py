@@ -50,6 +50,9 @@ def cnn_run_one_batch(
     # multiply predictions by capacities
     predictions = capacity.values * predictions.detach().cpu().numpy()
 
+    logger.debug(f'The maximum predictions is {predictions.max()}')
+    logger.debug(f'The minimum predictions is {predictions.min()}')
+
     forecasts = []
     for i in range(batch.metadata.batch_size):
         if i >= n_examples:
