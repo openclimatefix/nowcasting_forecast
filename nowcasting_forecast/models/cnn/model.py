@@ -326,5 +326,5 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         else:
             _LOG.debug(f'Loading model weights from {local_filename}')
             model = self.load_from_checkpoint(checkpoint_path=local_filename)
-            _LOG.debug(f'Loading model weights: doner')
+            _LOG.debug('Loading model weights: done')
             return model
