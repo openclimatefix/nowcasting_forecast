@@ -3,6 +3,7 @@ import logging
 import os
 import tempfile
 from datetime import datetime
+from typing import Optional
 
 import click
 from nowcasting_datamodel.connection import DatabaseConnection
@@ -70,7 +71,7 @@ def run(
     db_url: str,
     fake: bool = False,
     model_name: str = "nwp_simple",
-    batch_save_dir: Optiona[str] = None,
+    batch_save_dir: Optional[str] = None,
 ):
     """
     Run main app.

@@ -18,7 +18,7 @@ def make_batches(
     t0_datetime_utc: datetime = None,
     temporary_dir: Optional[str] = None,
     n_gsps: Optional[int] = N_GSP,
-    batch_save_dir: Optional[str] = None
+    batch_save_dir: Optional[str] = None,
 ):
     """Make batches from config file"""
 
@@ -76,5 +76,4 @@ def make_batches(
 
     # save batch to s3, just save batch 0
     if batch_save_dir is not None:
-        manager.save_batch(batch_idx=0,path=batch_save_dir)
-
+        manager.save_batch(batch_idx=0, path=batch_save_dir)
