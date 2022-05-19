@@ -1,9 +1,9 @@
 import os
 import tempfile
 
-from freezegun import freeze_time
 import xarray as xr
 import zarr
+from freezegun import freeze_time
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.config.save import save_yaml_configuration
 from nowcasting_dataset.data_sources.pv.pv_model import PV
@@ -64,7 +64,7 @@ def test_make_batches_mvp_v2_just_sat_data(sat_data):
         _ = Satellite(sat)
 
 
-@freeze_time('2022-01-01 12:00')
+@freeze_time("2022-01-01 12:00")
 def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data):
 
     with tempfile.TemporaryDirectory() as temp_dir:
