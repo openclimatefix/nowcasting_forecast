@@ -57,6 +57,9 @@ input_data:
   #--------- PV --------
   pv:
     is_live: True
+    live_interpolate_minutes: 60
+    live_load_extra_minutes: 30
+
 
 output_data:
   filepath: ./batches/
