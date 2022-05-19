@@ -60,7 +60,6 @@ input_data:
     live_interpolate_minutes: 60
     live_load_extra_minutes: 30
 
-
 output_data:
   filepath: ./batches/
 process:
