@@ -1,3 +1,4 @@
+""" functions to filter forecasts on the sun """
 from typing import List
 
 from nowcasting_datamodel.models import ForecastSQL
@@ -9,7 +10,7 @@ ELEVATION_LIMIT = 0
 
 def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[ForecastSQL]:
     """
-    Filters predictions if the sun elevation is more than 5 degrees below the horizon
+    Filters predictions if the sun elevation is more than X degrees below the horizon
 
     Args:
         forecasts: The forecast output
@@ -32,7 +33,10 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
             latitude=lat, longitude=lon, datestamps=target_times
         )
 
+        # check that any elevations are < 'ELEVATION_LIMIT'
         if (sun_df["elevation"] < ELEVATION_LIMIT).sum() > 0:
+
+            # loop through target times
             for i in range(len(target_times)):
                 sun_for_target_time = sun_df.iloc[i]
                 if sun_for_target_time.elevation < ELEVATION_LIMIT:
