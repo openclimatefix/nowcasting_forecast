@@ -228,7 +228,6 @@ def filter_on_sun_elevation(forecast: MLResult) -> MLResult:
         # nrel_c is probably fastest but requires C code to be manually compiled:
         # https://midcdmz.nrel.gov/spa/
     )
-    solpos = solpos.iloc[0]
     elevation = solpos["elevation"]
 
     if elevation < -5:
