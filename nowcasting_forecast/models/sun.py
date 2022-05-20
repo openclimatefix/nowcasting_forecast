@@ -4,7 +4,6 @@ from typing import List
 from nowcasting_datamodel.models import ForecastSQL
 from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 
-
 ELEVATION_LIMIT = 0
 
 

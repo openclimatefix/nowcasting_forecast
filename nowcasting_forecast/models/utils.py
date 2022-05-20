@@ -37,8 +37,8 @@ from sqlalchemy.orm.session import Session
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
-from nowcasting_forecast.utils import floor_minutes_dt
 from nowcasting_forecast.models.sun import filter_forecasts_on_sun_elevation
+from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -308,5 +308,3 @@ def general_forecast_run_all_batches(
     logger.info(f"Made {len(forecast_sql)} forecasts")
 
     return forecast_sql
-
-
