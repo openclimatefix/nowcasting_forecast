@@ -168,9 +168,15 @@ def pv_yields_and_systems(db_session):
         status_interval_minutes=5,
         longitude=-1.293,
         latitude=51.76,
+        installed_capacity_kw=123,
     ).to_orm()
     pv_system_sql_2: PVSystemSQL = PVSystem(
-        pv_system_id=2, provider="pvoutput.org", status_interval_minutes=5, longitude=0, latitude=56
+        pv_system_id=2,
+        provider="pvoutput.org",
+        status_interval_minutes=5,
+        longitude=0,
+        latitude=56,
+        installed_capacity_kw=124,
     ).to_orm()
 
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
