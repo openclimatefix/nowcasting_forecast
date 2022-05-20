@@ -177,7 +177,7 @@ def convert_one_gsp_id_to_forecast_sql(
     for forecast in results_for_one_gsp_id.forecasts:
         # add timezone
         target_time = forecast.target_datetime_utc.replace(tzinfo=timezone.utc)
-
+        # TODO Do filtering here, before in SQL
         forecast_values.append(
             ForecastValue(
                 target_time=target_time,
@@ -198,6 +198,33 @@ def convert_one_gsp_id_to_forecast_sql(
 
     return forecast
 
+
+def filter_on_sun_elevation(forecast: ForecastSQL) -> ForecastSQL:
+    """
+    Filters predictions if the sun elevation is more than 5 degrees below the horizon
+
+    Args:
+        forecast: The forecast output
+
+    Returns:
+        forecast with zeroed out times
+    """
+    for i, (lat, lon, dt) in enumerate(zip(lats, lons, datetimes)):
+        dt = pd.DatetimeIndex([dt])  # pvlib expects a `pd.DatetimeIndex`.
+        solpos = pvlib.solarposition.get_solarposition(
+            time=dt,
+            latitude=lat,
+            longitude=lon,
+            # Which `method` to use?
+            # pyephem seemed to be a good mix between speed and ease but causes segfaults!
+            # nrel_numba doesn't work when using multiple worker processes.
+            # nrel_c is probably fastest but requires C code to be manually compiled:
+            # https://midcdmz.nrel.gov/spa/
+        )
+        solpos = solpos.iloc[0]
+        azimuth[i] = solpos["azimuth"]
+        elevation[i] = solpos["elevation"]
+    return forecast
 
 def general_forecast_run_all_batches(
     session: Session,
