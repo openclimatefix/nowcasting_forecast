@@ -3,7 +3,6 @@
 import os
 import tempfile
 
-import xarray as xr
 import zarr
 
 import nowcasting_forecast

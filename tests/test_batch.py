@@ -79,6 +79,7 @@ def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_
             sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
 
+
         make_batches(
             config_filename="nowcasting_forecast/config/mvp_v2.yaml", temporary_dir=temp_dir
         )
