@@ -15,8 +15,8 @@ from pathlib import Path
 from typing import List, Optional
 
 import numpy as np
-import pvlib
 import pandas as pd
+import pvlib
 from nowcasting_datamodel.models import (
     Forecast,
     ForecastSQL,
@@ -236,6 +236,7 @@ def filter_on_sun_elevation(forecast: MLResult) -> MLResult:
         forecast.forecast_gsp_pv_outturn_mw = 0.0
 
     return forecast
+
 
 def general_forecast_run_all_batches(
     session: Session,
