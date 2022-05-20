@@ -3,9 +3,7 @@
 import os
 import tempfile
 
-import xarray as xr
 import zarr
-from freezegun import freeze_time
 
 import nowcasting_forecast
 from nowcasting_forecast.batch import make_batches
@@ -15,7 +13,6 @@ from nowcasting_forecast.models.cnn.model import Model
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 
-@freeze_time("2022-01-01 12:00")
 def test_run(
     nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, db_session, input_data_last_updated
 ):
