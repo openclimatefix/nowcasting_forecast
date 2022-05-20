@@ -13,6 +13,8 @@ def test_filter_forecasts_on_sun_elevation(forecasts):
     forecasts[0].forecast_values[1].target_time = datetime(2022, 1, 1, 12)
     forecasts[0].forecast_values[1].expected_power_generation_megawatts = 1
 
+    forecasts[-1].location.gsp_id = 338
+
     _ = filter_forecasts_on_sun_elevation(forecasts)
 
     assert forecasts[0].forecast_values[0].expected_power_generation_megawatts == 0
