@@ -216,8 +216,8 @@ def filter_on_sun_elevation(forecast: MLResult) -> MLResult:
     gsp_id = forecast.gsp_id
     metadata = get_gsp_metadata_from_eso()
     metadata.set_index("gsp_id", drop=False, inplace=True)
-    lat = list(metadata.iloc[gsp_id].centroid_lat)[0]
-    lon = list(metadata.iloc[gsp_id].centroid_lon)[0]
+    lat = metadata.iloc[gsp_id].centroid_lat
+    lon = metadata.iloc[gsp_id].centroid_lon
     solpos = pvlib.solarposition.get_solarposition(
         time=dt,
         latitude=lat,
