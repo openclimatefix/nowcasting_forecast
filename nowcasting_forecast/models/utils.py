@@ -16,7 +16,6 @@ from typing import List, Optional
 
 import numpy as np
 import pandas as pd
-import pvlib
 from nowcasting_datamodel.models import (
     Forecast,
     ForecastSQL,
@@ -32,7 +31,6 @@ from nowcasting_datamodel.read.read import (
 )
 from nowcasting_datamodel.utils import datetime_must_have_timezone
 from nowcasting_dataset.config.load import load_yaml_configuration
-from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from pydantic import BaseModel, Field, validator
 from sqlalchemy.orm.session import Session
 
@@ -40,6 +38,7 @@ import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
 from nowcasting_forecast.utils import floor_minutes_dt
+from nowcasting_forecast.models.sun import filter_forecasts_on_sun_elevation
 
 logger = logging.getLogger(__name__)
 
@@ -179,7 +178,6 @@ def convert_one_gsp_id_to_forecast_sql(
     for forecast in results_for_one_gsp_id.forecasts:
         # add timezone
         target_time = forecast.target_datetime_utc.replace(tzinfo=timezone.utc)
-        forecast = filter_on_sun_elevation(forecast)
         forecast_values.append(
             ForecastValue(
                 target_time=target_time,
@@ -197,42 +195,6 @@ def convert_one_gsp_id_to_forecast_sql(
 
     # validate
     _ = Forecast.from_orm(forecast)
-
-    return forecast
-
-
-def filter_on_sun_elevation(forecast: MLResult) -> MLResult:
-    """
-    Filters predictions if the sun elevation is more than 5 degrees below the horizon
-
-    Args:
-        forecast: The forecast output
-
-    Returns:
-        forecast with zeroed out times
-    """
-
-    dt = pd.DatetimeIndex([forecast.target_datetime_utc])
-    gsp_id = forecast.gsp_id
-    metadata = get_gsp_metadata_from_eso()
-    metadata.set_index("gsp_id", drop=False, inplace=True)
-    lat = metadata.iloc[gsp_id].centroid_lat
-    lon = metadata.iloc[gsp_id].centroid_lon
-    solpos = pvlib.solarposition.get_solarposition(
-        time=dt,
-        latitude=lat,
-        longitude=lon,
-        # Which `method` to use?
-        # pyephem seemed to be a good mix between speed and ease but causes segfaults!
-        # nrel_numba doesn't work when using multiple worker processes.
-        # nrel_c is probably fastest but requires C code to be manually compiled:
-        # https://midcdmz.nrel.gov/spa/
-    )
-    elevation = solpos["elevation"]
-
-    if elevation < -5:
-        # Zero out
-        forecast.forecast_gsp_pv_outturn_mw = 0.0
 
     return forecast
 
@@ -319,6 +281,9 @@ def general_forecast_run_all_batches(
         results_df=forecasts, session=session, model_name=model_name
     )
 
+    # filter forecast for sun
+    forecast_sql = filter_forecasts_on_sun_elevation(forecasts=forecasts)
+
     # select first 338 forecast
     if len(forecast_sql) > N_GSP:
         logger.debug(
@@ -343,3 +308,5 @@ def general_forecast_run_all_batches(
     logger.info(f"Made {len(forecast_sql)} forecasts")
 
     return forecast_sql
+
+
