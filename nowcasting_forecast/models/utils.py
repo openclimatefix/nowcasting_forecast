@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import List, Optional
 
 import numpy as np
+import pvlib
 import pandas as pd
 from nowcasting_datamodel.models import (
     Forecast,
@@ -31,6 +32,7 @@ from nowcasting_datamodel.read.read import (
 )
 from nowcasting_datamodel.utils import datetime_must_have_timezone
 from nowcasting_dataset.config.load import load_yaml_configuration
+from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from pydantic import BaseModel, Field, validator
 from sqlalchemy.orm.session import Session
 
@@ -177,7 +179,7 @@ def convert_one_gsp_id_to_forecast_sql(
     for forecast in results_for_one_gsp_id.forecasts:
         # add timezone
         target_time = forecast.target_datetime_utc.replace(tzinfo=timezone.utc)
-        # TODO Do filtering here, before in SQL
+        forecast = filter_on_sun_elevation(forecast)
         forecast_values.append(
             ForecastValue(
                 target_time=target_time,
@@ -199,7 +201,7 @@ def convert_one_gsp_id_to_forecast_sql(
     return forecast
 
 
-def filter_on_sun_elevation(forecast: ForecastSQL) -> ForecastSQL:
+def filter_on_sun_elevation(forecast: MLResult) -> MLResult:
     """
     Filters predictions if the sun elevation is more than 5 degrees below the horizon
 
@@ -209,21 +211,30 @@ def filter_on_sun_elevation(forecast: ForecastSQL) -> ForecastSQL:
     Returns:
         forecast with zeroed out times
     """
-    for i, (lat, lon, dt) in enumerate(zip(lats, lons, datetimes)):
-        dt = pd.DatetimeIndex([dt])  # pvlib expects a `pd.DatetimeIndex`.
-        solpos = pvlib.solarposition.get_solarposition(
-            time=dt,
-            latitude=lat,
-            longitude=lon,
-            # Which `method` to use?
-            # pyephem seemed to be a good mix between speed and ease but causes segfaults!
-            # nrel_numba doesn't work when using multiple worker processes.
-            # nrel_c is probably fastest but requires C code to be manually compiled:
-            # https://midcdmz.nrel.gov/spa/
-        )
-        solpos = solpos.iloc[0]
-        azimuth[i] = solpos["azimuth"]
-        elevation[i] = solpos["elevation"]
+
+    dt = pd.DatetimeIndex([forecast.target_datetime_utc])
+    gsp_id = forecast.gsp_id
+    metadata = get_gsp_metadata_from_eso()
+    metadata.set_index("gsp_id", drop=False, inplace=True)
+    lat = list(metadata.iloc[gsp_id].centroid_lat)[0]
+    lon = list(metadata.iloc[gsp_id].centroid_lon)[0]
+    solpos = pvlib.solarposition.get_solarposition(
+        time=dt,
+        latitude=lat,
+        longitude=lon,
+        # Which `method` to use?
+        # pyephem seemed to be a good mix between speed and ease but causes segfaults!
+        # nrel_numba doesn't work when using multiple worker processes.
+        # nrel_c is probably fastest but requires C code to be manually compiled:
+        # https://midcdmz.nrel.gov/spa/
+    )
+    solpos = solpos.iloc[0]
+    elevation = solpos["elevation"]
+
+    if elevation < -5:
+        # Zero out
+        forecast.forecast_gsp_pv_outturn_mw = 0.0
+
     return forecast
 
 def general_forecast_run_all_batches(
