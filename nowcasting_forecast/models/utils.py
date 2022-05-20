@@ -37,6 +37,7 @@ from sqlalchemy.orm.session import Session
 import nowcasting_forecast
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.dataloader import BatchDataLoader
+from nowcasting_forecast.models.sun import filter_forecasts_on_sun_elevation
 from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
@@ -177,7 +178,6 @@ def convert_one_gsp_id_to_forecast_sql(
     for forecast in results_for_one_gsp_id.forecasts:
         # add timezone
         target_time = forecast.target_datetime_utc.replace(tzinfo=timezone.utc)
-
         forecast_values.append(
             ForecastValue(
                 target_time=target_time,
@@ -280,6 +280,9 @@ def general_forecast_run_all_batches(
     forecast_sql = convert_to_forecast_sql(
         results_df=forecasts, session=session, model_name=model_name
     )
+
+    # filter forecast for sun
+    forecast_sql = filter_forecasts_on_sun_elevation(forecasts=forecast_sql)
 
     # select first 338 forecast
     if len(forecast_sql) > N_GSP:

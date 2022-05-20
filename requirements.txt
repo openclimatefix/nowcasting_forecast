@@ -13,3 +13,4 @@ pytorch-lightning
 xarray
 zarr
 huggingface_hub
+pvlib
