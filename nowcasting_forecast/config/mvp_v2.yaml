@@ -1,8 +1,8 @@
 general:
   description: Config for producing batches on for live forecasts.
-  name: mvp_v0
+  name: mvp_v2
 input_data:
-  default_forecast_minutes: 60
+  default_forecast_minutes: 30
   default_history_minutes: 120
   #---------------------- GSP -------------------
   gsp:
