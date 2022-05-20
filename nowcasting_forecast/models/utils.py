@@ -282,7 +282,7 @@ def general_forecast_run_all_batches(
     )
 
     # filter forecast for sun
-    forecast_sql = filter_forecasts_on_sun_elevation(forecasts=forecasts)
+    forecast_sql = filter_forecasts_on_sun_elevation(forecasts=forecast_sql)
 
     # select first 338 forecast
     if len(forecast_sql) > N_GSP:
