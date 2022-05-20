@@ -2,8 +2,8 @@ general:
   description: Config for producing batches on for live forecasts.
   name: mvp_v2
 input_data:
-  default_forecast_minutes: 30
-  default_history_minutes: 120
+  default_forecast_minutes: 120
+  default_history_minutes: 30
   #---------------------- GSP -------------------
   gsp:
     gsp_zarr_path: ./nowcasting_forecast # this is not needed
