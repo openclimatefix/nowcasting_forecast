@@ -87,8 +87,10 @@ def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_
         assert os.path.exists(f"{temp_dir}/live")
         assert os.path.exists(f"{temp_dir}/live/nwp")
         assert os.path.exists(f"{temp_dir}/live/pv")
+        assert os.path.exists(f"{temp_dir}/live/gsp")
         assert os.path.exists(f"{temp_dir}/live/satellite")
         assert os.path.exists(f"{temp_dir}/live/hrvsatellite")
+        assert os.path.exists(f"{temp_dir}/live/gsp/000000.nc")
         pv = xr.load_dataset(f"{temp_dir}/live/pv/000000.nc", engine="h5netcdf")
         pv = PV(pv)
         assert pv.power_mw.max() > 0

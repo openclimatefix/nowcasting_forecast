@@ -261,7 +261,7 @@ def gsp_yields_and_systems(db_session):
 
     return {
         "gsp_yields": gsp_yield_sqls,
-        "gs_systems": [location_sql_1],
+        "gs_systems": locations,
     }
 
 
