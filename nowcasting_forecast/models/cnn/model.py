@@ -48,7 +48,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         include_future_satellite: int = False,
         live_satellite_images: bool = True,
         gsp_forecast_minutes: int = 480,
-        gsp_history_minutes: int = 120
+        gsp_history_minutes: int = 120,
     ):
         """
         3d conv model, that takes in different data streams
