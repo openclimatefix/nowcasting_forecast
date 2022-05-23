@@ -29,7 +29,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
     def __init__(
         self,
-        include_pv_or_gsp_yield_history: bool = False,
+        include_pv_or_gsp_yield_history: bool = True,
         include_nwp: bool = True,
         forecast_minutes: int = 120,
         history_minutes: int = 30,
@@ -43,10 +43,12 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         fc2_output_features: int = 128,
         fc3_output_features: int = 64,
         output_variable: str = "gsp_yield",
-        embedding_dem: int = 0,
+        embedding_dem: int = 8,
         include_pv_yield_history: int = True,
         include_future_satellite: int = False,
         live_satellite_images: bool = True,
+        gsp_forecast_minutes: int = 480,
+        gsp_history_minutes: int = 120
     ):
         """
         3d conv model, that takes in different data streams
@@ -100,6 +102,11 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         self.live_satellite_images = live_satellite_images
         self.number_sat_channels = number_sat_channels
         self.image_size_pixels = image_size_pixels
+        self.gsp_forecast_minutes = gsp_forecast_minutes
+        self.gsp_history_minutes = gsp_history_minutes
+
+        self.gsp_forecast_length = self.gsp_forecast_minutes // 30
+        self.gsp_history_length = self.gsp_history_minutes // 30
 
         super().__init__()
 
@@ -199,7 +206,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         fc3_in_features = self.fc2_output_features
         if include_pv_or_gsp_yield_history:
-            fc3_in_features += self.number_of_samples_per_batch * (self.history_len_30 + 1)
+            fc3_in_features += self.number_of_samples_per_batch * (self.gsp_history_length + 1)
         if include_nwp:
             fc3_in_features += 128
         if self.embedding_dem:
@@ -250,7 +257,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         # add pv yield
         if self.include_pv_or_gsp_yield_history:
-            pv_yield_history = pv_data[:, : self.history_len_30 + 1].nan_to_num(nan=0.0).float()
+            pv_yield_history = pv_data[:, : self.gsp_history_length + 1].nan_to_num(nan=0.0).float()
 
             pv_yield_history = pv_yield_history.reshape(
                 pv_yield_history.shape[0], pv_yield_history.shape[1] * pv_yield_history.shape[2]
@@ -305,7 +312,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         out = F.relu(self.fc3(out))
         out = self.fc4(out)
 
-        out = out.reshape(batch_size, self.forecast_len)
+        out = out.reshape(batch_size, self.gsp_forecast_length)
 
         return out
 

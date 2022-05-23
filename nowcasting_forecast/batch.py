@@ -69,7 +69,8 @@ def make_batches(
     )
 
     # remove gsp as a datasource
-    manager.data_sources.pop("gsp")
+    if not manager.config.input_data.gsp.is_live:
+        manager.data_sources.pop("gsp")
 
     # make batches
     manager.create_batches()
