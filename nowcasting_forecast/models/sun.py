@@ -40,7 +40,7 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
         # check that any elevations are < 'ELEVATION_LIMIT'
         if (sun_df["elevation"] < ELEVATION_LIMIT).sum() > 0:
 
-            logger.debug(f'Got sun angle for {lat} {lon} {target_times}, and some are below zero')
+            logger.debug(f"Got sun angle for {lat} {lon} {target_times}, and some are below zero")
 
             # loop through target times
             for i in range(len(target_times)):
@@ -50,8 +50,8 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
                     forecast.forecast_values[i].expected_power_generation_megawatts = 0
 
         else:
-            logger.debug('No elevations below zero, so need to filter')
+            logger.debug("No elevations below zero, so need to filter")
 
-    logger.info('Done sun filtering')
+    logger.info("Done sun filtering")
 
     return forecasts
