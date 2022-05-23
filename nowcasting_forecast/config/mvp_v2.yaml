@@ -9,7 +9,6 @@ input_data:
     gsp_zarr_path: ./nowcasting_forecast
     history_minutes: 120
     forecast_minutes: 480
-    metadata_only: True
     log_level: "INFO"
     is_live: True
 
