@@ -7,7 +7,15 @@ import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_input_data_last_updated
-from nowcasting_datamodel.models import ForecastSQL, PVSystem, PVSystemSQL, PVYield, GSPYield, Location, LocationSQL
+from nowcasting_datamodel.models import (
+    ForecastSQL,
+    GSPYield,
+    Location,
+    LocationSQL,
+    PVSystem,
+    PVSystemSQL,
+    PVYield,
+)
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_osgb
@@ -227,8 +235,8 @@ def gsp_yields_and_systems(db_session):
     locations = []
     for i in range(10):
         location_sql_1: LocationSQL = Location(
-            gsp_id=i+1,
-            label=f'GSP_{i+1}',
+            gsp_id=i + 1,
+            label=f"GSP_{i+1}",
             installed_capacity_mw=123.0,
         ).to_orm()
 
