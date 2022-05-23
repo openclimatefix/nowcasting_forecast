@@ -3,7 +3,7 @@ sqlalchemy
 psycopg2-binary
 numpy
 click
-nowcasting_dataset==3.3.21
+nowcasting_dataset==3.3.22
 nowcasting_dataloader==1.8.38
 nowcasting_datamodel==1.0.2
 fsspec
