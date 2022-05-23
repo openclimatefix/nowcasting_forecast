@@ -64,7 +64,9 @@ def test_make_batches_mvp_v2_just_sat_data(sat_data):
         _ = Satellite(sat)
 
 
-def test_make_batches_mvp_v2(nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, gsp_yields_and_systems):
+def test_make_batches_mvp_v2(
+    nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, gsp_yields_and_systems
+):
 
     with tempfile.TemporaryDirectory() as temp_dir:
         # save nwp data
