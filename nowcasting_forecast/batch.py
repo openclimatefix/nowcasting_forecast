@@ -25,7 +25,7 @@ def make_batches(
     logger.info(f"Making batches using configuration file: {config_filename}")
 
     if t0_datetime_utc is None:
-        t0_datetime_utc = floor_minutes_dt(datetime.utcnow())  # add timezone
+        t0_datetime_utc = floor_minutes_dt(datetime.utcnow(), minutes=5)  # add timezone
 
     # load config
     manager = ManagerLive()

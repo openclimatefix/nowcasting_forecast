@@ -18,6 +18,7 @@ from nowcasting_dataset.dataset.batch import Batch
 
 import nowcasting_forecast
 from nowcasting_forecast.models.nwp_simple_trained.xr_utils import re_order_dims
+from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,7 @@ def nwp_irradiance_simple_trained_run_one_batch(
 
         for t_index in range(len(predictions[0])):
             # add timezone
-            target_time = t0_datetime_utc + timedelta(minutes=30) * t_index
+            target_time = floor_minutes_dt(t0_datetime_utc + timedelta(minutes=30) * t_index)
 
             forecasts.append(
                 dict(

@@ -16,6 +16,7 @@ import pandas as pd
 from nowcasting_dataloader.batch import BatchML
 
 import nowcasting_forecast
+from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ def cnn_run_one_batch(
 
         for t_index in range(len(predictions[0])):
             # add timezone
-            target_time = t0_datetime_utc + timedelta(minutes=30) * t_index
+            target_time = floor_minutes_dt(t0_datetime_utc + timedelta(minutes=30) * t_index)
 
             forecasts.append(
                 dict(
