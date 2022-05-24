@@ -215,7 +215,7 @@ def pv_yields_and_systems(db_session):
 def sat_data():
 
     # middle of the UK
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow(), minutes=5) - timedelta(hours=2)
 
     times = [t0_datetime_utc]
     # this means there will be about 30 mins of no data.
