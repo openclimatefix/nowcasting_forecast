@@ -66,7 +66,7 @@ def cnn_run_one_batch(
 
         for t_index in range(len(predictions[0])):
             # add timezone
-            target_time = t0_datetime_utc + timedelta(minutes=30) * t_index
+            target_time = t0_datetime_utc + timedelta(minutes=30) * (t_index+1)
 
             forecasts.append(
                 dict(
