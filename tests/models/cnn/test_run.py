@@ -24,7 +24,7 @@ def test_run(
 ):
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        temp_dir='./temp/'
+        temp_dir = "./temp/"
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
