@@ -269,9 +269,11 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         # add pv yield
         if self.include_pv_or_gsp_yield_history:
-            pv_yield_history \
-                = pv_data[:, : self.gsp_history_length, :self.number_of_samples_per_batch].\
-                nan_to_num(nan=0.0).float()
+            pv_yield_history = (
+                pv_data[:, : self.gsp_history_length, : self.number_of_samples_per_batch]
+                .nan_to_num(nan=0.0)
+                .float()
+            )
 
             pv_yield_history = pv_yield_history.reshape(
                 pv_yield_history.shape[0], pv_yield_history.shape[1] * pv_yield_history.shape[2]
