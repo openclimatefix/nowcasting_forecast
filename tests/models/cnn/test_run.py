@@ -14,10 +14,17 @@ from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 
 def test_run(
-    nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, db_session, input_data_last_updated
+    nwp_data,
+    pv_yields_and_systems,
+    sat_data,
+    hrv_sat_data,
+    db_session,
+    input_data_last_updated,
+    gsp_yields_and_systems,
 ):
 
     with tempfile.TemporaryDirectory() as temp_dir:
+        temp_dir='./temp/'
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
@@ -37,6 +44,9 @@ def test_run(
             ),
             temporary_dir=temp_dir,
         )
+
+        assert os.path.exists(f"{temp_dir}/live/satellite/000000.nc")
+        assert os.path.exists(f"{temp_dir}/live/satellite/000001.nc")
 
         dataloader = get_cnn_data_loader(
             src_path=os.path.join(temp_dir, "live"), tmp_path=os.path.join(temp_dir, "live")

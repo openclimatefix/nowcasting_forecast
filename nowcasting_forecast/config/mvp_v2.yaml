@@ -63,6 +63,7 @@ input_data:
 
   sun:
     load_live: True
+    elevation_limit: 0
 
 output_data:
   filepath: ./batches/
