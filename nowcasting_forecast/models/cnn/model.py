@@ -225,7 +225,9 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
             fc3_in_features += 16
 
         self.fc3 = nn.Linear(in_features=fc3_in_features, out_features=self.fc3_output_features)
-        self.fc4 = nn.Linear(in_features=self.fc3_output_features, out_features=self.gsp_forecast_length)
+        self.fc4 = nn.Linear(
+            in_features=self.fc3_output_features, out_features=self.gsp_forecast_length
+        )
         self.save_hyperparameters()
 
     def forward(self, batch: Union[BatchML, dict]):
