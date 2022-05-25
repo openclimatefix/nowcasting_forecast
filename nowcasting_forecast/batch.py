@@ -61,7 +61,7 @@ def make_batches(
 
     # make location file
     manager.initialize_data_sources(
-        names_of_selected_data_sources=["gsp", "nwp", "pv", "satellite", "hrvsatellite"]
+        names_of_selected_data_sources=["gsp", "nwp", "pv", "satellite", "hrvsatellite", "sun"]
     )
     manager.create_files_specifying_spatial_and_temporal_locations_of_each_example(
         t0_datetime=t0_datetime_utc,
@@ -69,7 +69,8 @@ def make_batches(
     )
 
     # remove gsp as a datasource
-    manager.data_sources.pop("gsp")
+    if not manager.config.input_data.gsp.is_live:
+        manager.data_sources.pop("gsp")
 
     # make batches
     manager.create_batches()

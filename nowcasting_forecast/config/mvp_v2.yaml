@@ -6,10 +6,11 @@ input_data:
   default_history_minutes: 30
   #---------------------- GSP -------------------
   gsp:
-    gsp_zarr_path: ./nowcasting_forecast # this is not needed
-    history_minutes: 90
-    metadata_only: True
+    gsp_zarr_path: ./nowcasting_forecast
+    history_minutes: 120
+    forecast_minutes: 480
     log_level: "INFO"
+    is_live: True
 
   #---------------------- NWP -------------------
   nwp:
@@ -59,6 +60,10 @@ input_data:
     is_live: True
     live_interpolate_minutes: 60
     live_load_extra_minutes: 30
+
+  sun:
+    load_live: True
+    elevation_limit: 0
 
 output_data:
   filepath: ./batches/

@@ -7,7 +7,15 @@ import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_input_data_last_updated
-from nowcasting_datamodel.models import ForecastSQL, PVSystem, PVSystemSQL, PVYield
+from nowcasting_datamodel.models import (
+    ForecastSQL,
+    GSPYield,
+    Location,
+    LocationSQL,
+    PVSystem,
+    PVSystemSQL,
+    PVYield,
+)
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_random_image_coords_osgb
@@ -58,6 +66,7 @@ def db_connection():
 
     url = os.getenv("DB_URL", "sqlite:///test.db")
     os.environ["DB_URL_PV"] = url
+    os.environ["DB_URL"] = url
 
     connection = DatabaseConnection(url=url)
     Base_Forecast.metadata.create_all(connection.engine)
@@ -208,6 +217,51 @@ def pv_yields_and_systems(db_session):
     return {
         "pv_yields": pv_yield_sqls,
         "pv_systems": [pv_system_sql_1, pv_system_sql_2],
+    }
+
+
+@pytest.fixture()
+def gsp_yields_and_systems(db_session):
+    """Create gsp yields and systems
+
+    gsp systems: One systems
+    GSP yields:
+        For system 1, gsp yields from 2 hours ago to 8 in the future at 30 minutes intervals
+        For system 2: 1 gsp yield at 16.00
+    """
+
+    # this pv systems has same coordiantes as the first gsp
+    gsp_yield_sqls = []
+    locations = []
+    for i in range(338):
+        location_sql_1: LocationSQL = Location(
+            gsp_id=i + 1,
+            label=f"GSP_{i+1}",
+            installed_capacity_mw=123.0,
+        ).to_orm()
+
+        t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+
+        gsp_yield_sqls = []
+        for hour in range(0, 10):
+            for minute in range(0, 60, 30):
+                datetime_utc = t0_datetime_utc + timedelta(hours=hour - 2, minutes=minute)
+                gsp_yield_1 = GSPYield(
+                    datetime_utc=datetime_utc,
+                    solar_generation_kw=20 + hour + minute,
+                ).to_orm()
+                gsp_yield_1.location = location_sql_1
+                gsp_yield_sqls.append(gsp_yield_1)
+                locations.append(location_sql_1)
+
+    # add to database
+    db_session.add_all(gsp_yield_sqls + locations)
+
+    db_session.commit()
+
+    return {
+        "gsp_yields": gsp_yield_sqls,
+        "gs_systems": locations,
     }
 
 
