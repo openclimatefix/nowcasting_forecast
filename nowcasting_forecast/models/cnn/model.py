@@ -322,7 +322,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         if self.include_sun:
 
-            sun = torch.cat((batch.sun.sun_azimuth_angle, x.sun.sun_elevation_angle), dim=1)
+            sun = torch.cat((batch.sun.sun_azimuth_angle, batch.sun.sun_elevation_angle), dim=1)
             out_sun = self.sun_fc1(sun)
             out = torch.cat((out, out_sun), dim=1)
 
