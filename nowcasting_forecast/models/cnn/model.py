@@ -49,6 +49,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         live_satellite_images: bool = True,
         gsp_forecast_minutes: int = 480,
         gsp_history_minutes: int = 120,
+        include_sun: bool = True,
     ):
         """
         3d conv model, that takes in different data streams
@@ -104,6 +105,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         self.image_size_pixels = image_size_pixels
         self.gsp_forecast_minutes = gsp_forecast_minutes
         self.gsp_history_minutes = gsp_history_minutes
+        self.include_sun = include_sun
 
         self.gsp_forecast_length = self.gsp_forecast_minutes // 30
         self.gsp_history_length = self.gsp_history_minutes // 30
@@ -117,8 +119,9 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
             self.forecast_minutes // 60
         )  # the number of forecast timestemps for 60 minutes data
         self.forecast_len = self.forecast_minutes // 30
+        self.forecast_len_5 = self.forecast_minutes // 5
         self.number_of_pv_samples_per_batch = 128
-        self.number_of_samples_per_batch = 128
+        self.number_of_samples_per_batch = 32
         self.batch_size = 32
 
         conv3d_channels = conv3d_channels
@@ -203,19 +206,26 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
                 in_features=self.number_of_pv_samples_per_batch * (self.history_len_5 + 1),
                 out_features=128,
             )
+        if self.include_sun:
+            self.sun_fc1 = nn.Linear(
+                in_features=2 * (self.forecast_len_5 + self.history_len_5 + 1),
+                out_features=16,
+            )
 
         fc3_in_features = self.fc2_output_features
         if include_pv_or_gsp_yield_history:
-            fc3_in_features += self.number_of_samples_per_batch * (self.gsp_history_length + 1)
+            fc3_in_features += self.number_of_samples_per_batch * self.gsp_history_length
         if include_nwp:
             fc3_in_features += 128
         if self.embedding_dem:
             fc3_in_features += self.embedding_dem
         if self.include_pv_yield_history:
             fc3_in_features += 128
+        if self.include_sun:
+            fc3_in_features += 16
 
         self.fc3 = nn.Linear(in_features=fc3_in_features, out_features=self.fc3_output_features)
-        self.fc4 = nn.Linear(in_features=self.fc3_output_features, out_features=self.forecast_len)
+        self.fc4 = nn.Linear(in_features=self.fc3_output_features, out_features=self.gsp_forecast_length)
         self.save_hyperparameters()
 
     def forward(self, batch: Union[BatchML, dict]):
@@ -308,6 +318,12 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
             id_embedding = self.pv_system_id_embedding(id)
             out = torch.cat((out, id_embedding), dim=1)
 
+        if self.include_sun:
+
+            sun = torch.cat((batch.sun.sun_azimuth_angle, x.sun.sun_elevation_angle), dim=1)
+            out_sun = self.sun_fc1(sun)
+            out = torch.cat((out, out_sun), dim=1)
+
         # Fully connected layers.
         out = F.relu(self.fc3(out))
         out = self.fc4(out)
@@ -327,7 +343,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         if use_hf:
             _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_cnn" ')
-            model = Model.from_pretrained("openclimatefix/nowcasting_cnn")
+            model = Model.from_pretrained("openclimatefix/nowcasting_cnn_v2")
             _LOG.debug("Loading mode from Hugging Face: done")
             return model
         else:
