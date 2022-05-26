@@ -101,5 +101,10 @@ def test_general_run_all_batches_check_locations(
 
         assert len(db_session.query(LocationSQL).all()) == batch.metadata.batch_size
         assert len(db_session.query(InputDataLastUpdatedSQL).all()) == 1
-        assert len(db_session.query(ForecastSQL).all()) == batch.metadata.batch_size * 2
+
+        # run the forecast twice, so should be 2 lots of batch_size
+        assert (
+            len(db_session.query(ForecastSQL).filter(ForecastSQL.historic == False).all())
+            == batch.metadata.batch_size * 2
+        )
         assert len(db_session.query(MLModelSQL).all()) == 1

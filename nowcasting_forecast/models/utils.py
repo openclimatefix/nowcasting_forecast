@@ -191,6 +191,7 @@ def convert_one_gsp_id_to_forecast_sql(
         forecast_creation_time=forecast_creation_time,
         forecast_values=forecast_values,
         input_data_last_updated=input_data_last_updated,
+        historic=False,
     )
 
     # validate
