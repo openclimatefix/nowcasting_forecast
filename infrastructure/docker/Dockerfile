@@ -1,6 +1,6 @@
 FROM python:3.9-slim as build
 
-ARG TESTING=1
+ARG TESTING=0
 
 # make sure it doesnt fail if the docker file doesnt know the git commit
 ARG GIT_PYTHON_REFRESH=quiet

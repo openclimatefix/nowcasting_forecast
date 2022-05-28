@@ -28,11 +28,12 @@ zarr = "^2.11.3"
 huggingface-hub = "^0.7.0"
 pvlib = "^0.9.1"
 protobuf = "^3.20"
+s3fs = "^2022.5.0"
 
 pytest = {version = "^7.1.2", optional = true}
 pytest-cov = {version = "^3.0.0", optional=true}
 coverage = {version = "^6.0", optional=true}
-s3fs = "^2022.5.0"
+
 
 
 [tool.poetry.extras]
