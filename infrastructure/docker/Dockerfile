@@ -1,30 +1,44 @@
-FROM python:3.9-slim
+FROM python:3.9-slim as build
 
-ARG TESTING=0
+ARG TESTING=1
 
 # make sure it doesnt fail if the docker file doesnt know the git commit
 ARG GIT_PYTHON_REFRESH=quiet
 
-RUN apt-get update
+WORKDIR /app
+ENV PATH="/root/.local/bin:/opt/venv/:$PATH" VIRTUAL_ENV="/opt/venv"
 
-# copy files
-COPY setup.py app/setup.py
-COPY README.md app/README.md
-COPY requirements.txt app/requirements.txt
+RUN apt-get update  \
+    && apt-get install --no-install-recommends -y \
+    curl \
+    git  \
+    && rm -rf /var/lib/apt/lists/*
 
-# install requirements
-RUN pip install -r app/requirements.txt
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
-# copy library files
-COPY nowcasting_forecast/ app/nowcasting_forecast/
-COPY tests/ app/tests/
+RUN poetry config virtualenvs.create false
 
-# change to app folder
+RUN python3 -m venv /opt/venv
+
+COPY pyproject.toml poetry.lock README.md /app/
+COPY nowcasting_forecast/ /app/nowcasting_forecast/
+
+RUN poetry install
+
+RUN if [ "$TESTING" -eq 1 ]; then\
+    poetry install --extras test;\
+  fi
+
+FROM python:3.9-slim as runtime
+
 WORKDIR /app
 
-# install library
-RUN pip install -e .
+ENV PATH="/opt/venv/bin:$PATH" VIRTUAL_ENV="/opt/venv"
 
-RUN if [ "$TESTING" = 1 ]; then pip install pytest pytest-cov coverage; fi
+COPY --from=build /opt/venv /opt/venv
+COPY nowcasting_forecast/ /app/nowcasting_forecast/
+COPY tests/ /app/tests/
 
-CMD ["python", "-u","nowcasting_forecast/app.py"]
+ENV PYTHONPATH="/app/nowcasting_forecast"
+
+CMD ["python3","-u", "nowcasting_forecast/app.py"]
