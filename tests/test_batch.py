@@ -1,14 +1,18 @@
 import os
 import tempfile
+from datetime import datetime, timezone
 
+import pandas as pd
 import xarray as xr
 import zarr
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.config.save import save_yaml_configuration
+from nowcasting_dataset.data_sources.gsp.gsp_model import GSP
 from nowcasting_dataset.data_sources.pv.pv_model import PV
 from nowcasting_dataset.data_sources.satellite.satellite_model import Satellite
 
 from nowcasting_forecast.batch import make_batches
+from nowcasting_forecast.utils import floor_minutes_dt
 
 
 def test_make_batches(nwp_data):
@@ -99,3 +103,11 @@ def test_make_batches_mvp_v2(
         pv = xr.load_dataset(f"{temp_dir}/live/pv/000000.nc", engine="h5netcdf")
         pv = PV(pv)
         assert pv.power_mw.max() > 0
+
+        gsp = xr.load_dataset(f"{temp_dir}/live/gsp/000000.nc", engine="h5netcdf")
+        gsp = GSP(gsp)
+        assert len(gsp.time.values[0]) == 5
+        assert (
+            pd.to_datetime(gsp.time.values[0, -1]).isoformat()
+            == floor_minutes_dt(datetime.now(tz=timezone.utc)).replace(tzinfo=None).isoformat()
+        )
