@@ -2,13 +2,13 @@ import os
 import tempfile
 from datetime import datetime, timezone
 
-import xarray as xr
 import pandas as pd
+import xarray as xr
 import zarr
 from nowcasting_dataset.config.load import load_yaml_configuration
 from nowcasting_dataset.config.save import save_yaml_configuration
-from nowcasting_dataset.data_sources.pv.pv_model import PV
 from nowcasting_dataset.data_sources.gsp.gsp_model import GSP
+from nowcasting_dataset.data_sources.pv.pv_model import PV
 from nowcasting_dataset.data_sources.satellite.satellite_model import Satellite
 
 from nowcasting_forecast.batch import make_batches
