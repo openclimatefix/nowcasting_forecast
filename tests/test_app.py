@@ -20,7 +20,7 @@ def test_fake(db_connection: DatabaseConnection):
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
-        assert len(forecasts) == N_GSP + 1  # 338 gsp + national
+        assert len(forecasts) == (N_GSP + 1) * 2  # 338 gsp + national, x2 for historic ones too
 
         locations = session.query(LocationSQL).all()
         assert len(locations) == N_GSP + 1
@@ -36,7 +36,7 @@ def test_fake_twice(db_connection: DatabaseConnection):
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
 
-        assert len(forecasts) == (N_GSP + 1)  # 338 gsp + national
+        assert len(forecasts) == (N_GSP + 1) * 2  # 338 gsp + national, x2 for historic ones too
 
         locations = session.query(LocationSQL).all()
         assert len(locations) == N_GSP + 1
@@ -47,11 +47,9 @@ def test_fake_twice(db_connection: DatabaseConnection):
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
-        assert len(forecasts) == (N_GSP + 1) * 2  # 338 gsp + national
+        assert len(forecasts) == (N_GSP + 1) * 3  # 338 gsp + national
 
         locations = session.query(LocationSQL).all()
-        for l in locations:
-            print(l.__dict__)
         assert len(locations) == N_GSP + 1
 
 
@@ -73,7 +71,7 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input
         with db_connection.get_session() as session:
             forecasts = session.query(ForecastSQL).all()
             _ = Forecast.from_orm(forecasts[0])
-            assert len(forecasts) == N_GSP + 1  # 338 gsp + national
+            assert len(forecasts) == (N_GSP + 1) * 2  # 338 gsp + national, x2 for historic ones too
             assert len(forecasts[0].forecast_values) > 1
 
 
