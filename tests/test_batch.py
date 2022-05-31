@@ -99,3 +99,8 @@ def test_make_batches_mvp_v2(
         pv = xr.load_dataset(f"{temp_dir}/live/pv/000000.nc", engine="h5netcdf")
         pv = PV(pv)
         assert pv.power_mw.max() > 0
+
+        gsp = xr.load_dataset(f"{temp_dir}/live/gsp/000000.nc", engine="h5netcdf")
+        gsp = GSP(gsp)
+        assert len(gsp.time.values[0]) == 5
+        assert gsp.time.values[0,-1] == floor_minutes_dt(datetime.now(tz=timezone.utc))
