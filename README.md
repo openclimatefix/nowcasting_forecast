@@ -72,6 +72,10 @@ Training run: https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRE
 
 configuration: mvp_v1.yaml
 
+### CNN
+
+# TODO
+
 ## 🩺 Testing
 
 Tests are run by using the following command
