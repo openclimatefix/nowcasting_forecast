@@ -60,6 +60,7 @@ input_data:
     is_live: True
     live_interpolate_minutes: 60
     live_load_extra_minutes: 30
+    forecast_minutes: 0
 
   sun:
     load_live: True
