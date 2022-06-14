@@ -18,7 +18,7 @@ input_data:
       - dswrf
     nwp_image_size_pixels_height: 64
     nwp_image_size_pixels_width: 64
-    nwp_zarr_path: s3://nowcasting-nwp-${ENVIRONMENT}/data/latest.netcdf
+    nwp_zarr_path: s3://nowcasting-nwp/data/latest.netcdf
     forecast_minutes: 120
     history_minutes: 60
 
@@ -40,7 +40,7 @@ input_data:
     satellite_image_size_pixels_width: 24
     history_minutes: 60
     forecast_minutes: 0
-    satellite_zarr_path: s3://nowcasting-sat-${ENVIRONMENT}/data/latest/latest.zarr.zip
+    satellite_zarr_path: s3://nowcasting-sat/data/latest/latest.zarr.zip
     keep_dawn_dusk_hours: 2
     is_live: True
 
@@ -52,7 +52,7 @@ input_data:
     hrvsatellite_image_size_pixels_width: 24
     history_minutes: 60
     forecast_minutes: 0
-    hrvsatellite_zarr_path: s3://nowcasting-sat-${ENVIRONMENT}/data/latest/hrv_latest.zarr.zip
+    hrvsatellite_zarr_path: s3://nowcasting-sat/data/latest/hrv_latest.zarr.zip
     is_live: True
 
   #--------- PV --------
