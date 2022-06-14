@@ -18,7 +18,7 @@ input_data:
       - dswrf
     nwp_image_size_pixels_height: 64
     nwp_image_size_pixels_width: 64
-    nwp_zarr_path: ${NWP_ZARR_PATH}
+    nwp_zarr_path: !ENV ${NWP_ZARR_PATH}
     forecast_minutes: 120
     history_minutes: 60
 
@@ -40,7 +40,7 @@ input_data:
     satellite_image_size_pixels_width: 24
     history_minutes: 60
     forecast_minutes: 0
-    satellite_zarr_path: ${SATELLITE_ZARR_PATH}
+    satellite_zarr_path: !ENV ${SATELLITE_ZARR_PATH}
     keep_dawn_dusk_hours: 2
     is_live: True
 
@@ -52,7 +52,7 @@ input_data:
     hrvsatellite_image_size_pixels_width: 24
     history_minutes: 60
     forecast_minutes: 0
-    hrvsatellite_zarr_path: ${HRV_SATELLITE_ZARR_PATH}
+    hrvsatellite_zarr_path: !ENV ${HRV_SATELLITE_ZARR_PATH}
     is_live: True
 
   #--------- PV --------
