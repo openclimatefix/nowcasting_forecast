@@ -5,7 +5,7 @@ numpy
 click
 nowcasting_dataset==3.5.7
 nowcasting_dataloader==1.8.38
-nowcasting_datamodel==1.0.22
+nowcasting_datamodel==1.1.7
 fsspec
 s3fs
 torch
