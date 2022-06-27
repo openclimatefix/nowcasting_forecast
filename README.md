@@ -19,6 +19,9 @@ mamba env create -f environment.yml
 conda activate nowcasting_forecast
 pip install -e .
 
+# Installing fastai inside environment.yml is currently broken. So install separately:
+mamba install -c fastchan fastai
+
 # You need to manually install nowcasting_dataset, nowcasting_datamodel,
 # and nowcasting_dataloader. This can be done via pypi or by git cloning
 # the repo and using:

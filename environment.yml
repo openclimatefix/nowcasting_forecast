@@ -31,6 +31,14 @@ dependencies:
   - pyproj
   - einops
 
+  # Some power_perceiver dependencies that are needed for now, but
+  # could probably be removed if necessary:
+  - wandb
+  - pip
+  - cartopy
+  - pip:
+      - pytorch_msssim
+
   # Dependencies for nowcasting_dataset, nowcasting_datamodel, nowcasting_dataloader:
   - gitpython
   - geopandas
