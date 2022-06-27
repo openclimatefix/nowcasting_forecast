@@ -26,6 +26,7 @@ pip install -e <path_to_directory>
 
 # You may also want to install dev tools:
 mamba install pytest flake8 black pre-commit pydocstyle isort mypy
+pre-commit install
 ```
 
 ## Directories and files
