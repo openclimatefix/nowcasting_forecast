@@ -37,7 +37,7 @@ dependencies:
   - pip
   - cartopy
   - pip:
-      - pytorch_msssim
+      - pytorch-msssim
 
   # Dependencies for nowcasting_dataset, nowcasting_datamodel, nowcasting_dataloader:
   - gitpython
