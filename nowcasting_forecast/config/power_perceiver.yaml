@@ -1,6 +1,6 @@
 general:
   description: Config for producing batches on for live forecasts.
-  name: helios
+  name: power_perceiver
 input_data:
   #---------------------- GSP -------------------
   gsp:
