@@ -17,15 +17,17 @@ python nowcasting_forecast/app.py --db-url='sqlite:///test.db'
 ```shell
 mamba env create -f environment.yml
 conda activate nowcasting_forecast
-pip install -e .
 
 # Installing fastai inside environment.yml is currently broken. So install separately:
 mamba install -c fastchan fastai
 
 # You need to manually install nowcasting_dataset, nowcasting_datamodel,
-# and nowcasting_dataloader. This can be done via pypi or by git cloning
-# the repo and using:
+# nowcasting_dataloader, and power_perceiver. This can be done via pypi (for all except
+# power_perceiver) or by git cloning the repo and using:
 pip install -e <path_to_directory>
+
+# Install nowcasting_forecast
+pip install -e .
 
 # You may also want to install dev tools:
 mamba install pytest flake8 black pre-commit pydocstyle isort mypy
