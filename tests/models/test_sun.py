@@ -5,9 +5,9 @@ from nowcasting_datamodel.models.models import StatusSQL
 from nowcasting_datamodel.read.read import get_latest_status
 
 from nowcasting_forecast.models.sun import (
+    WARNING_MESSAGE,
     drop_forecast_on_sun_elevation,
     filter_forecasts_on_sun_elevation,
-    WARNING_MESSAGE,
 )
 
 
