@@ -2,6 +2,8 @@
 import logging
 from typing import List
 from datetime import datetime, timezone
+from sqlalchemy.orm.session import Session
+
 
 
 from nowcasting_datamodel.models import ForecastSQL, StatusSQL
@@ -13,10 +15,8 @@ ELEVATION_LIMIT = 0
 DROP_ELEVATION_LIMIT = 0
 logger = logging.getLogger(__name__)
 
-warning_message = 'The forecast is currently offline. ' \
-                  'It be back working again in the morning. ' \
-                  'We will soon have a fix that will allow forecasts to be made in the night.'
-
+warning_message = 'New forecasts are offline until sunrise.  ' \
+                  'We are working on a fix that will deliver forecasts in the pre-sunrise hours.'
 
 
 def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[ForecastSQL]:
@@ -66,7 +66,7 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
     return forecasts
 
 
-def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session):
+def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session:Session):
     """
     Drop forecast is UK centroid elevation is below a limit
 
@@ -91,7 +91,7 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session):
         forecasts = []
 
         # set status
-        logger.debug(f'Setting staus to warning')
+        logger.debug(f'Setting status to warning')
         status = StatusSQL(message=warning_message,status='warning')
         session.add(status)
         session.commit()
@@ -100,16 +100,14 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session):
 
         # get status
         status = get_latest_status(session=session)
-        logger.debug(f'status is {status.__dict__}')
+        logger.debug(f'Status is {status.__dict__}')
 
         # set status to ok
         if (status.status == "warning") and (status.message == warning_message):
 
-            logger.debug(f'Setting staus to ok')
-            status = StatusSQL(message="message", status="ok")
+            logger.debug(f'Setting status to ok')
+            status = StatusSQL(message="", status="ok")
             session.add(status)
             session.commit()
-
-
 
     return forecasts
