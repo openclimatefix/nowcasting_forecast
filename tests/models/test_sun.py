@@ -7,7 +7,7 @@ from nowcasting_datamodel.read.read import get_latest_status
 from nowcasting_forecast.models.sun import (
     drop_forecast_on_sun_elevation,
     filter_forecasts_on_sun_elevation,
-    warning_message,
+    WARNING_MESSAGE,
 )
 
 
@@ -59,12 +59,12 @@ def test_drop_forecast_on_sun_elevation_night(db_session):
     assert len(statuses) == 2
     assert statuses[0].status == "ok"
     assert statuses[1].status == "warning"
-    assert statuses[1].message == warning_message
+    assert statuses[1].message == WARNING_MESSAGE
 
 
 @freeze_time("2022-01-01 12:00:00")
 def test_drop_forecast_on_sun_elevation_first_day(db_session):
-    status = StatusSQL(message=warning_message, status="warning")
+    status = StatusSQL(message=WARNING_MESSAGE, status="warning")
     db_session.add(status)
 
     forecasts = [1, 2, 3]

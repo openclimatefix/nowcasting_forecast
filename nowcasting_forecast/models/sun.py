@@ -13,7 +13,7 @@ ELEVATION_LIMIT = 0
 DROP_ELEVATION_LIMIT = 5
 logger = logging.getLogger(__name__)
 
-warning_message = (
+WARNING_MESSAGE = (
     "New forecasts are offline until sunrise.  "
     "We are working on a fix that will deliver forecasts in the pre-sunrise hours."
 )
@@ -92,7 +92,7 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
 
         # set status
         logger.debug("Setting status to warning")
-        status = StatusSQL(message=warning_message, status="warning")
+        status = StatusSQL(message=WARNING_MESSAGE, status="warning")
         session.add(status)
         session.commit()
 
@@ -104,7 +104,7 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
             logger.debug(f"Status is {status.__dict__}")
 
             # set status to ok
-            if (status.status == "warning") and (status.message == warning_message):
+            if (status.status == "warning") and (status.message == WARNING_MESSAGE):
 
                 logger.debug("Setting status to ok")
                 status = StatusSQL(message="", status="ok")
