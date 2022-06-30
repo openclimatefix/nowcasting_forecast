@@ -5,18 +5,19 @@ from datetime import datetime, timezone
 from sqlalchemy.orm.session import Session
 
 
-
 from nowcasting_datamodel.models import ForecastSQL, StatusSQL
 from nowcasting_datamodel.read.read import get_latest_status
 from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from nowcasting_dataset.geospatial import calculate_azimuth_and_elevation_angle
 
 ELEVATION_LIMIT = 0
-DROP_ELEVATION_LIMIT = 0
+DROP_ELEVATION_LIMIT = 5
 logger = logging.getLogger(__name__)
 
-warning_message = 'New forecasts are offline until sunrise.  ' \
-                  'We are working on a fix that will deliver forecasts in the pre-sunrise hours.'
+warning_message = (
+    "New forecasts are offline until sunrise.  "
+    "We are working on a fix that will deliver forecasts in the pre-sunrise hours."
+)
 
 
 def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[ForecastSQL]:
@@ -66,7 +67,7 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
     return forecasts
 
 
-def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session:Session):
+def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Session):
     """
     Drop forecast is UK centroid elevation is below a limit
 
@@ -79,20 +80,20 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session:Session
 
     # lat and lon of Oxford
     lat = 51.7520
-    lon= -1.2577
+    lon = -1.2577
 
     now = datetime.now(tz=timezone.utc)
 
     sun = calculate_azimuth_and_elevation_angle(latitude=lat, longitude=lon, datestamps=[now])
-    sun_elevation = sun['elevation'].iloc[0]
+    sun_elevation = sun["elevation"].iloc[0]
 
     if sun_elevation < DROP_ELEVATION_LIMIT:
-        logger.debug(f'Dropping all forecasts as sun elevation is {sun_elevation}')
+        logger.debug(f"Dropping all forecasts as sun elevation is {sun_elevation}")
         forecasts = []
 
         # set status
-        logger.debug(f'Setting status to warning')
-        status = StatusSQL(message=warning_message,status='warning')
+        logger.debug(f"Setting status to warning")
+        status = StatusSQL(message=warning_message, status="warning")
         session.add(status)
         session.commit()
 
@@ -100,12 +101,12 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session:Session
 
         # get status
         status = get_latest_status(session=session)
-        logger.debug(f'Status is {status.__dict__}')
+        logger.debug(f"Status is {status.__dict__}")
 
         # set status to ok
         if (status.status == "warning") and (status.message == warning_message):
 
-            logger.debug(f'Setting status to ok')
+            logger.debug(f"Setting status to ok")
             status = StatusSQL(message="", status="ok")
             session.add(status)
             session.commit()
