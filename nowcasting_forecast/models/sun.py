@@ -100,14 +100,15 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
 
         # get status
         status = get_latest_status(session=session)
-        logger.debug(f"Status is {status.__dict__}")
+        if status is not None:
+            logger.debug(f"Status is {status.__dict__}")
 
-        # set status to ok
-        if (status.status == "warning") and (status.message == warning_message):
+            # set status to ok
+            if (status.status == "warning") and (status.message == warning_message):
 
-            logger.debug("Setting status to ok")
-            status = StatusSQL(message="", status="ok")
-            session.add(status)
-            session.commit()
+                logger.debug("Setting status to ok")
+                status = StatusSQL(message="", status="ok")
+                session.add(status)
+                session.commit()
 
     return forecasts
