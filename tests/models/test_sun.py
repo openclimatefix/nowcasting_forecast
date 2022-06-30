@@ -1,13 +1,14 @@
 from datetime import datetime
+
 from freezegun import freeze_time
+from nowcasting_datamodel.models.models import StatusSQL
+from nowcasting_datamodel.read.read import get_latest_status
 
 from nowcasting_forecast.models.sun import (
-    filter_forecasts_on_sun_elevation,
     drop_forecast_on_sun_elevation,
+    filter_forecasts_on_sun_elevation,
     warning_message,
 )
-from nowcasting_datamodel.read.read import get_latest_status
-from nowcasting_datamodel.models.models import StatusSQL
 
 
 def test_filter_forecasts_on_sun_elevation(forecasts):

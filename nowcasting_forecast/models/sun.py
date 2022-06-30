@@ -1,14 +1,13 @@
 """ functions to filter forecasts on the sun """
 import logging
-from typing import List
 from datetime import datetime, timezone
-from sqlalchemy.orm.session import Session
-
+from typing import List
 
 from nowcasting_datamodel.models import ForecastSQL, StatusSQL
 from nowcasting_datamodel.read.read import get_latest_status
 from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from nowcasting_dataset.geospatial import calculate_azimuth_and_elevation_angle
+from sqlalchemy.orm.session import Session
 
 ELEVATION_LIMIT = 0
 DROP_ELEVATION_LIMIT = 5
