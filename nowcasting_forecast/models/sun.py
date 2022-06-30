@@ -1,13 +1,22 @@
 """ functions to filter forecasts on the sun """
 import logging
 from typing import List
+from datetime import datetime, timezone
 
-from nowcasting_datamodel.models import ForecastSQL
+
+from nowcasting_datamodel.models import ForecastSQL, StatusSQL
+from nowcasting_datamodel.read.read import get_latest_status
 from nowcasting_dataset.data_sources.gsp.eso import get_gsp_metadata_from_eso
 from nowcasting_dataset.geospatial import calculate_azimuth_and_elevation_angle
 
 ELEVATION_LIMIT = 0
+DROP_ELEVATION_LIMIT = 0
 logger = logging.getLogger(__name__)
+
+warning_message = 'The forecast is currently offline. ' \
+                  'It be back working again in the morning. ' \
+                  'We will soon have a fix that will allow forecasts to be made in the night.'
+
 
 
 def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[ForecastSQL]:
@@ -53,5 +62,54 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
             logger.debug("No elevations below zero, so need to filter")
 
     logger.info("Done sun filtering")
+
+    return forecasts
+
+
+def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session):
+    """
+    Drop forecast is UK centroid elevation is below a limit
+
+    Idea is that right now the models have not be trained at night.
+    Lets not save any forecast to the database while the
+    model does know how to do night time.
+    In addition lets set the status to warning with a message
+
+    """
+
+    # lat and lon of Oxford
+    lat = 51.7520
+    lon= -1.2577
+
+    now = datetime.now(tz=timezone.utc)
+
+    sun = calculate_azimuth_and_elevation_angle(latitude=lat, longitude=lon, datestamps=[now])
+    sun_elevation = sun['elevation'].iloc[0]
+
+    if sun_elevation < DROP_ELEVATION_LIMIT:
+        logger.debug(f'Dropping all forecasts as sun elevation is {sun_elevation}')
+        forecasts = []
+
+        # set status
+        logger.debug(f'Setting staus to warning')
+        status = StatusSQL(message=warning_message,status='warning')
+        session.add(status)
+        session.commit()
+
+    else:
+
+        # get status
+        status = get_latest_status(session=session)
+        logger.debug(f'status is {status.__dict__}')
+
+        # set status to ok
+        if (status.status == "warning") and (status.message == warning_message):
+
+            logger.debug(f'Setting staus to ok')
+            status = StatusSQL(message="message", status="ok")
+            session.add(status)
+            session.commit()
+
+
 
     return forecasts
