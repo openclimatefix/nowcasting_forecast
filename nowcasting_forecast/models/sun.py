@@ -91,7 +91,7 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
         forecasts = []
 
         # set status
-        logger.debug(f"Setting status to warning")
+        logger.debug("Setting status to warning")
         status = StatusSQL(message=warning_message, status="warning")
         session.add(status)
         session.commit()
@@ -105,7 +105,7 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
         # set status to ok
         if (status.status == "warning") and (status.message == warning_message):
 
-            logger.debug(f"Setting status to ok")
+            logger.debug("Setting status to ok")
             status = StatusSQL(message="", status="ok")
             session.add(status)
             session.commit()
