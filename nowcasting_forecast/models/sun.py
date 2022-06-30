@@ -68,7 +68,7 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
 
 def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Session):
     """
-    Drop forecast is UK centroid elevation is below a limit
+    Drop forecast if UK centroid elevation is below a limit
 
     Idea is that right now the models have not be trained at night.
     Lets not save any forecast to the database while the
