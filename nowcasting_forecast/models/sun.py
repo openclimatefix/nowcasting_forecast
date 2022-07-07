@@ -102,7 +102,7 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
             session.commit()
 
         else:
-            logger.debug(f'Warning already set to {WARNING_MESSAGE}')
+            logger.debug(f"Warning already set to {WARNING_MESSAGE}")
 
     else:
 
