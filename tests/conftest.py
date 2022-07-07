@@ -17,12 +17,19 @@ from nowcasting_datamodel.models import (
     PVYield,
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
+from nowcasting_datamodel.models.models import StatusSQL
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_image_coords_osgb
 from nowcasting_dataset.dataset.batch import Batch
 
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.utils import floor_minutes_dt
+
+
+@pytest.fixture
+def status(db_session):
+    status = StatusSQL(message="",status="ok")
+    db_session.add(status)
 
 
 @pytest.fixture
