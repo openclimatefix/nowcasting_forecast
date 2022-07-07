@@ -28,7 +28,7 @@ from nowcasting_forecast.utils import floor_minutes_dt
 
 @pytest.fixture
 def status(db_session):
-    status = StatusSQL(message="",status="ok")
+    status = StatusSQL(message="", status="ok")
     db_session.add(status)
 
 

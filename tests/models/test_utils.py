@@ -1,7 +1,7 @@
 import os
 import tempfile
-from freezegun import freeze_time
 
+from freezegun import freeze_time
 from nowcasting_datamodel.models import (
     ForecastSQL,
     InputDataLastUpdatedSQL,
@@ -40,7 +40,9 @@ def test_general_run_all_batches(batch, configuration, db_session, input_data_la
 
 
 @freeze_time("2022-01-01 12:00:00")
-def test_general_batches_and_national(batch, configuration, db_session, input_data_last_updated, status):
+def test_general_batches_and_national(
+    batch, configuration, db_session, input_data_last_updated, status
+):
 
     n_gsps = configuration.process.batch_size
 
