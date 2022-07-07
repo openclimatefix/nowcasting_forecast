@@ -90,11 +90,19 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
         logger.debug(f"Dropping all forecasts as sun elevation is {sun_elevation}")
         forecasts = []
 
-        # set status
-        logger.debug("Setting status to warning")
-        status = StatusSQL(message=WARNING_MESSAGE, status="warning")
-        session.add(status)
-        session.commit()
+        # get status
+        status = get_latest_status(session=session)
+
+        if (status.status != "warning") and (status.message != WARNING_MESSAGE):
+
+            # set status
+            logger.debug("Setting status to warning")
+            status = StatusSQL(message=WARNING_MESSAGE, status="warning")
+            session.add(status)
+            session.commit()
+            
+        else:
+            logger.debug(f'Warning already set to {WARNING_MESSAGE}')
 
     else:
 
