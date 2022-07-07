@@ -62,6 +62,23 @@ def test_drop_forecast_on_sun_elevation_night(db_session):
     assert statuses[1].message == WARNING_MESSAGE
 
 
+@freeze_time("2022-01-01 00:00:00")
+def test_drop_forecast_on_sun_elevation_night_twice(db_session):
+    status = StatusSQL(message=WARNING_MESSAGE, status="warning")
+    db_session.add(status)
+
+    forecasts = [1, 2, 3]
+
+    filter_forecast = drop_forecast_on_sun_elevation(session=db_session, forecasts=forecasts)
+
+    statuses = db_session.query(StatusSQL).all()
+
+    assert len(filter_forecast) == 0
+    assert len(statuses) == 1
+    assert statuses[0].status == "warning"
+    assert statuses[0].message == WARNING_MESSAGE
+
+
 @freeze_time("2022-01-01 12:00:00")
 def test_drop_forecast_on_sun_elevation_first_day(db_session):
     status = StatusSQL(message=WARNING_MESSAGE, status="warning")
