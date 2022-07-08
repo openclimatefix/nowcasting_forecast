@@ -65,7 +65,7 @@ input_data:
       - label: pvoutput.org
         pv_filename: /not_needed_for_live/
         pv_metadata_filename: /not_needed_for_live/
-      - label: passiv
+      - label: solar_sheffield_passiv
         pv_filename: /not_needed_for_live/
         pv_metadata_filename: /not_needed_for_live/
 
