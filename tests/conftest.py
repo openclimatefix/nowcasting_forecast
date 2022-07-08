@@ -17,12 +17,19 @@ from nowcasting_datamodel.models import (
     PVYield,
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
+from nowcasting_datamodel.models.models import StatusSQL
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_image_coords_osgb
 from nowcasting_dataset.dataset.batch import Batch
 
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.utils import floor_minutes_dt
+
+
+@pytest.fixture
+def status(db_session):
+    status = StatusSQL(message="", status="ok")
+    db_session.add(status)
 
 
 @pytest.fixture
@@ -178,6 +185,7 @@ def pv_yields_and_systems(db_session):
         longitude=-1.293,
         latitude=51.76,
         installed_capacity_kw=123,
+        ml_capacity_kw=123,
     ).to_orm()
     pv_system_sql_2: PVSystemSQL = PVSystem(
         pv_system_id=2,
@@ -186,6 +194,7 @@ def pv_yields_and_systems(db_session):
         longitude=0,
         latitude=56,
         installed_capacity_kw=124,
+        ml_capacity_kw=124,
     ).to_orm()
 
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
