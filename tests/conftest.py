@@ -15,6 +15,7 @@ from nowcasting_datamodel.models import (
     PVSystem,
     PVSystemSQL,
     PVYield,
+    solar_sheffield_passiv,
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
 from nowcasting_datamodel.models.models import StatusSQL
@@ -180,7 +181,7 @@ def pv_yields_and_systems(db_session):
     # this pv systems has same coordiantes as the first gsp
     pv_system_sql_1: PVSystemSQL = PVSystem(
         pv_system_id=1,
-        provider="pvoutput.org",
+        provider=solar_sheffield_passiv,
         status_interval_minutes=5,
         longitude=-1.293,
         latitude=51.76,
