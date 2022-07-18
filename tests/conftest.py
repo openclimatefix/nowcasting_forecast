@@ -15,7 +15,7 @@ from nowcasting_datamodel.models import (
     PVSystem,
     PVSystemSQL,
     PVYield,
-    solar_sheffield_passiv
+    solar_sheffield_passiv,
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
 from nowcasting_datamodel.models.models import StatusSQL
