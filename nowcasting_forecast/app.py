@@ -28,7 +28,7 @@ logging.basicConfig(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
     format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
 )
-formatter = logging.Formatter('%(levelname)-8s %(name) %(lineno)d} %(message)s')
+formatter = logging.Formatter("%(levelname)-8s %(name) %(lineno)d} %(message)s")
 
 logger = logging.getLogger(__name__)
 logger.setLevel(
