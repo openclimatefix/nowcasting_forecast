@@ -28,6 +28,8 @@ logging.basicConfig(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
     format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
 )
+formatter = logging.Formatter('%(levelname)-8s %(name) %(lineno)d} %(message)s')
+
 logger = logging.getLogger(__name__)
 logger.setLevel(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
@@ -58,7 +60,7 @@ logging.getLogger("nowcasting_dataset").setLevel(
 )
 @click.option(
     "--model-name",
-    default="nwp_simple",
+    default="cnn",
     envvar="MODEL_NAME",
     help="Select which model to use",
     type=click.STRING,

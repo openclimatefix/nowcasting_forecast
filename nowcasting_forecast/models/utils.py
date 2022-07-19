@@ -69,11 +69,11 @@ class MLResult(BaseModel):
             v = 0
         return v
 
-    # validate gsp id >=0 <= 338
+    # validate gsp id >=0 <= 317
     @validator("gsp_id")
     def validate_gsp_id(cls, v):
         """Validate the gsp id field"""
-        if v < 0 or v > 388:
+        if v < 0 or v > 317:
             raise Exception(f"gsp_id ({v}) is not in valid range")
         return v
 
@@ -285,7 +285,7 @@ def general_forecast_run_all_batches(
     # filter forecast for sun
     forecast_sql = filter_forecasts_on_sun_elevation(forecasts=forecast_sql)
 
-    # select first 338 forecast
+    # select first 317 forecast
     if len(forecast_sql) > N_GSP:
         logger.debug(
             f"There are more than {N_GSP} forecasts ({len(forecast_sql)}), "
