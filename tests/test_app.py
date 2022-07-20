@@ -71,7 +71,7 @@ def test_not_fake(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input
         with db_connection.get_session() as session:
             forecasts = session.query(ForecastSQL).all()
             _ = Forecast.from_orm(forecasts[0])
-            assert len(forecasts) == (N_GSP + 1) * 2  # 338 gsp + national, x2 for historic ones too
+            assert len(forecasts) == (N_GSP + 1) * 2  # 317 gsp + national, x2 for historic ones too
             assert len(forecasts[0].forecast_values) > 1
 
 

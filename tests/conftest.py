@@ -243,7 +243,7 @@ def gsp_yields_and_systems(db_session):
     # this pv systems has same coordiantes as the first gsp
     gsp_yield_sqls = []
     locations = []
-    for i in range(317):
+    for i in range(N_GSP):
         location_sql_1: LocationSQL = Location(
             gsp_id=i + 1,
             label=f"GSP_{i+1}",
