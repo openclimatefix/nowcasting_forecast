@@ -205,7 +205,7 @@ def general_forecast_run_all_batches(
     callable_function_for_on_batch,
     model_name: str,
     configuration_file: Optional[str] = None,
-    n_batches: int = 11,
+    n_batches: int = 10,
     add_national_forecast: bool = True,
     n_gsps: int = N_GSP,
     batches_dir: Optional[str] = None,
