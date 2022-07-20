@@ -3,13 +3,13 @@ import tempfile
 
 import pytest
 import xarray as xr
+import zarr
 from click.testing import CliRunner
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.models import Forecast, ForecastSQL, LocationSQL
 
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.app import run
-import zarr
 
 
 def test_fake(db_connection: DatabaseConnection):
