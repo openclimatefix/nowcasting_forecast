@@ -10,6 +10,8 @@ from nowcasting_forecast.models.sun import (
     filter_forecasts_on_sun_elevation,
 )
 
+from nowcasting_forecast import N_GSP
+
 
 def test_filter_forecasts_on_sun_elevation(forecasts):
 
@@ -21,7 +23,7 @@ def test_filter_forecasts_on_sun_elevation(forecasts):
     forecasts[0].forecast_values[1].target_time = datetime(2022, 1, 1, 12)
     forecasts[0].forecast_values[1].expected_power_generation_megawatts = 1
 
-    forecasts[-1].location.gsp_id = 338
+    forecasts[-1].location.gsp_id = N_GSP
 
     _ = filter_forecasts_on_sun_elevation(forecasts)
 
