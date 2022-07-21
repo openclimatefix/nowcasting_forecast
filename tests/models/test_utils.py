@@ -28,7 +28,7 @@ def test_general_run_all_batches(batch, configuration, db_session, input_data_la
         save_yaml_configuration(configuration=configuration)
 
         f = general_forecast_run_all_batches(
-            n_batches=1,
+            n_gsps=4,
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
@@ -56,7 +56,6 @@ def test_general_batches_and_national(
 
         f = general_forecast_run_all_batches(
             session=db_session,
-            n_batches=1,
             configuration_file=configuration_file,
             add_national_forecast=True,
             n_gsps=n_gsps,
@@ -80,7 +79,7 @@ def test_general_run_all_batches_check_locations(
         save_yaml_configuration(configuration=configuration)
 
         f = general_forecast_run_all_batches(
-            n_batches=1,
+            n_gsps=4,
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
@@ -92,7 +91,7 @@ def test_general_run_all_batches_check_locations(
         db_session.commit()
 
         f = general_forecast_run_all_batches(
-            n_batches=1,
+            n_gsps=4,
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
