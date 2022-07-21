@@ -23,7 +23,7 @@ def test_make_batches(nwp_data):
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
         os.environ["NWP_PATH"] = nwp_path
 
-        make_batches(temporary_dir=temp_dir)
+        make_batches(temporary_dir=temp_dir,n_gsps=10)
 
 
 def test_make_batches_mvp_v1(nwp_data, pv_yields_and_systems):
@@ -35,7 +35,7 @@ def test_make_batches_mvp_v1(nwp_data, pv_yields_and_systems):
         os.environ["NWP_PATH"] = nwp_path
 
         make_batches(
-            config_filename="nowcasting_forecast/config/mvp_v1.yaml", temporary_dir=temp_dir
+            config_filename="nowcasting_forecast/config/mvp_v1.yaml", temporary_dir=temp_dir,n_gsps=10
         )
 
 
@@ -60,7 +60,7 @@ def test_make_batches_mvp_v2_just_sat_data(sat_data):
             sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
 
-        make_batches(config_filename=filename, temporary_dir=temp_dir)
+        make_batches(config_filename=filename, temporary_dir=temp_dir, n_gsps=10)
 
         # open pv files and check there is something in there
         assert os.path.exists(f"{temp_dir}/live")
@@ -89,7 +89,7 @@ def test_make_batches_mvp_v2(
         os.environ["SAT_PATH"] = sat_path
 
         make_batches(
-            config_filename="nowcasting_forecast/config/mvp_v2.yaml", temporary_dir=temp_dir
+            config_filename="nowcasting_forecast/config/mvp_v2.yaml", temporary_dir=temp_dir, n_gsps=10
         )
 
         # open pv files and check there is something in there
