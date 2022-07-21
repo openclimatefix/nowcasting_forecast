@@ -205,7 +205,6 @@ def general_forecast_run_all_batches(
     callable_function_for_on_batch,
     model_name: str,
     configuration_file: Optional[str] = None,
-    n_batches: int = 10,
     add_national_forecast: bool = True,
     n_gsps: int = N_GSP,
     batches_dir: Optional[str] = None,
@@ -231,6 +230,8 @@ def general_forecast_run_all_batches(
     configuration = load_yaml_configuration(filename=configuration_file)
     batch_size = configuration.process.batch_size
 
+    n_batches = int(np.ceil(n_gsps / batch_size))
+
     if batches_dir is not None:
         configuration.output_data.filepath = Path(batches_dir)
 
@@ -255,7 +256,7 @@ def general_forecast_run_all_batches(
         logger.debug(f"Running batch {i} into model")
 
         # calculate how many examples are needed
-        n_examples = np.min([N_GSP - i * batch_size, batch_size])
+        n_examples = np.min([n_gsps - i * batch_size, batch_size])
         batch = next(dataloader)
 
         callbacks_args = dict(batch=batch, n_examples=n_examples)
@@ -286,14 +287,14 @@ def general_forecast_run_all_batches(
     forecast_sql = filter_forecasts_on_sun_elevation(forecasts=forecast_sql)
 
     # select first 317 forecast
-    if len(forecast_sql) > N_GSP:
+    if len(forecast_sql) > n_gsps:
         logger.debug(
-            f"There are more than {N_GSP} forecasts ({len(forecast_sql)}), "
-            f"so just taking the first {N_GSP}. "
+            f"There are more than {n_gsps} forecasts ({len(forecast_sql)}), "
+            f"so just taking the first {n_gsps}. "
             "This can happen due to rounding up the examples to fit in batches"
         )
-        forecast_sql = forecast_sql[0:N_GSP]
-        assert len(forecast_sql) == N_GSP
+        forecast_sql = forecast_sql[0:n_gsps]
+        assert len(forecast_sql) == n_gsps
 
     if add_national_forecast:
         # add national forecast

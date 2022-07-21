@@ -15,43 +15,43 @@ from nowcasting_forecast.app import run
 def test_fake(db_connection: DatabaseConnection):
 
     runner = CliRunner()
-    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true"])
+    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true","--n-gsps","10"])
     assert response.exit_code == 0
 
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
-        assert len(forecasts) == (N_GSP + 1) * 2  # 317 gsp + national, x2 for historic ones too
+        assert len(forecasts) == (10 + 1) * 2  # 10 gsp + national, x2 for historic ones too
 
         locations = session.query(LocationSQL).all()
-        assert len(locations) == N_GSP + 1
+        assert len(locations) == 10 + 1
 
 
 def test_fake_twice(db_connection: DatabaseConnection):
 
     runner = CliRunner()
-    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true"])
+    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true","--n-gsps","10"])
     assert response.exit_code == 0
 
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
 
-        assert len(forecasts) == (N_GSP + 1) * 2  # 338 gsp + national, x2 for historic ones too
+        assert len(forecasts) == (10 + 1) * 2  # 338 gsp + national, x2 for historic ones too
 
         locations = session.query(LocationSQL).all()
-        assert len(locations) == N_GSP + 1
+        assert len(locations) == 10 + 1
 
-    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true"])
+    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true","--n-gsps","10"])
     assert response.exit_code == 0
 
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
-        assert len(forecasts) == (N_GSP + 1) * 3  # 338 gsp + national
+        assert len(forecasts) == (10 + 1) * 3  # 338 gsp + national
 
         locations = session.query(LocationSQL).all()
-        assert len(locations) == N_GSP + 1
+        assert len(locations) == 10 + 1
 
 
 def test_not_fake(
@@ -80,13 +80,13 @@ def test_not_fake(
         os.environ["SAT_PATH"] = sat_path
 
         runner = CliRunner()
-        response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "false"])
+        response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "false","--n-gsps","10"])
         assert response.exit_code == 0, response
 
         with db_connection.get_session() as session:
             forecasts = session.query(ForecastSQL).all()
             _ = Forecast.from_orm(forecasts[0])
-            assert len(forecasts) == (N_GSP + 1) * 2  # 317 gsp + national, x2 for historic ones too
+            assert len(forecasts) == (10 + 1) * 2  # 317 gsp + national, x2 for historic ones too
             assert len(forecasts[0].forecast_values) > 1
 
 
@@ -110,6 +110,8 @@ def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_da
                 "false",
                 "--model-name",
                 "nwp_simple_trained",
+                "--n-gsps",
+                "10"
             ],
         )
         assert response.exit_code == 0, response
@@ -117,5 +119,5 @@ def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_da
         with db_connection.get_session() as session:
             forecasts = session.query(ForecastSQL).all()
             _ = Forecast.from_orm(forecasts[0])
-            assert len(forecasts) == N_GSP + 1  # 338 gsp + national
+            assert len(forecasts) == 10 + 1  # 338 gsp + national
             assert len(forecasts[0].forecast_values) > 1

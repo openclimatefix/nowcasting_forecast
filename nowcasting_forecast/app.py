@@ -72,11 +72,19 @@ logging.getLogger("nowcasting_dataset").setLevel(
     help="Optional directory to save first bacth to",
     type=click.STRING,
 )
+@click.option(
+    "--n-gsps",
+    default=N_GSP,
+    envvar="N_GSPS",
+    help="Optional number of GSPs to run. Default is N_GSP",
+    type=click.INT,
+)
 def run(
     db_url: str,
     fake: bool = False,
     model_name: str = "nwp_simple",
     batch_save_dir: Optional[str] = None,
+    n_gsps: Optional[int] = N_GSP,
 ):
     """
     Run main app.
@@ -90,7 +98,7 @@ def run(
     with connection.get_session() as session:
 
         if fake:
-            forecasts = make_dummy_forecasts(session=session)
+            forecasts = make_dummy_forecasts(session=session, n_gsps=n_gsps)
         else:
 
             if model_name == "nwp_simple":
@@ -109,6 +117,7 @@ def run(
                     temporary_dir=temporary_dir,
                     config_filename=config_filename,
                     batch_save_dir=save_dir,
+                    n_gsps=n_gsps,
                 )
 
                 # make forecasts
@@ -118,6 +127,7 @@ def run(
                         batches_dir=temporary_dir,
                         callable_function_for_on_batch=nwp_irradiance_simple_run_one_batch,
                         model_name="nwp_simple",
+                        n_gsps=n_gsps,
                     )
 
                 elif model_name == "nwp_simple_trained":
@@ -127,6 +137,7 @@ def run(
                         callable_function_for_on_batch=nwp_irradiance_simple_trained_run_one_batch,
                         model_name="nwp_simple_trained",
                         ml_model=Model,
+                        n_gsps=n_gsps,
                     )
                 elif model_name == "cnn":
                     dataloader = get_cnn_data_loader(
@@ -143,6 +154,7 @@ def run(
                         dataloader=dataloader,
                         use_hf=True,
                         configuration_file="nowcasting_forecast/config/mvp_v2.yaml",
+                        n_gsps=n_gsps,
                     )
                 else:
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
@@ -151,7 +163,7 @@ def run(
         save(forecasts=forecasts, session=session)
 
 
-def make_dummy_forecasts(session: Session):
+def make_dummy_forecasts(session: Session, n_gsps: Optional[int] = N_GSP):
     """Make dummy forecasts
 
     Dummy forecasts are made for all gsps and for several forecast horizons
@@ -161,7 +173,7 @@ def make_dummy_forecasts(session: Session):
 
     # make gsp fake results
     forecasts = make_fake_forecasts(
-        gsp_ids=list(range(1, N_GSP + 1)), t0_datetime_utc=t0_datetime_utc, session=session
+        gsp_ids=list(range(1, n_gsps + 1)), t0_datetime_utc=t0_datetime_utc, session=session
     )
 
     # add national forecast
