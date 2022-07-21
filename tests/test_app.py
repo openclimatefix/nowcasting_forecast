@@ -60,6 +60,7 @@ def test_not_fake(
     input_data_last_updated,
     sat_data,
     hrv_sat_data,
+    gsp_yields_and_systems,
 ):
 
     with tempfile.TemporaryDirectory() as temp_dir:
