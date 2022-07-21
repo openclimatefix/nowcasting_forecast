@@ -329,6 +329,10 @@ def sat_data():
 
     area_attr = np.load(f"{local_path}/sat_data/area.npy")
     sat.attrs["area"] = area_attr
+
+    sat["x_osgb"] = sat.x_geostationary
+    sat["y_osgb"] = sat.y_geostationary
+
     return sat.to_dataset(name="data").sortby("time")
 
 
@@ -365,6 +369,8 @@ def hrv_sat_data():
     )  # Fake data for testing!
     area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
+    sat["x_osgb"] = sat.x_geostationary
+    sat["y_osgb"] = sat.y_geostationary
     return sat.to_dataset(name="data").sortby("time")
 
 
