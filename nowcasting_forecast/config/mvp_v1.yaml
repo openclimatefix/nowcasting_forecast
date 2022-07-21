@@ -1,6 +1,6 @@
 general:
   description: Config for producing batches on for live forecasts.
-  name: mvp_v0
+  name: mvp_v1
 input_data:
   default_forecast_minutes: 60
   default_history_minutes: 120
@@ -15,8 +15,9 @@ input_data:
   nwp:
     nwp_channels:
       - dswrf
-    nwp_image_size_pixels: 64
-    nwp_zarr_path: s3://nowcasting-nwp-development/data/latest.netcdf
+    nwp_image_size_pixels_height: 64
+    nwp_image_size_pixels_width: 64
+    nwp_zarr_path: !ENV ${NWP_ZARR_PATH}
     forecast_minutes: 120
     history_minutes: 60
 

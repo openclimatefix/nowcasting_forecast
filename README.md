@@ -12,6 +12,28 @@ You can run the application locally by:
 python nowcasting_forecast/app.py --db-url='sqlite:///test.db'
 ```
 
+## Installation with conda
+
+```shell
+mamba env create -f environment.yml
+conda activate nowcasting_forecast
+
+# Installing fastai inside environment.yml is currently broken. So install separately:
+mamba install -c fastchan fastai
+
+# You need to manually install nowcasting_dataset, nowcasting_datamodel,
+# nowcasting_dataloader, and power_perceiver. This can be done via pypi (for all except
+# power_perceiver) or by git cloning the repo and using:
+pip install -e <path_to_directory>
+
+# Install nowcasting_forecast
+pip install -e .
+
+# You may also want to install dev tools:
+mamba install pytest flake8 black pre-commit pydocstyle isort mypy
+pre-commit install
+```
+
 ## Directories and files
 The following shows the main files
 
@@ -71,6 +93,10 @@ CNN model of 'dswrf' channel in NWP. 6 CNN layers then 4 fully connected layers.
 Training run: https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRED-951/charts
 
 configuration: mvp_v1.yaml
+
+### CNN
+
+# TODO
 
 ## 🩺 Testing
 

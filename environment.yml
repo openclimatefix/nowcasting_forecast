@@ -1,0 +1,44 @@
+name: nowcasting_forecast
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  # Direct dependencies for nowcasting_forecast:
+  - python>=3.10
+  - pydantic
+  - sqlalchemy
+  - psycopg2-binary
+  - numpy
+  - click
+  - fsspec
+  - s3fs
+  - pytorch::pytorch
+  - cpuonly # Enable when installing on a platform without a GPU.
+  - pytorch-lightning
+  - xarray
+  - zarr
+  - huggingface_hub
+  - protobuf<4.21.0
+
+  # Dependencies for power_perceiver:
+  - pandas
+  - h5netcdf
+  - pathy
+  - gcsfs
+  - pyresample
+  - bottleneck
+  - rioxarray
+  - pyproj
+  - einops
+
+  # Some power_perceiver dependencies that are needed for now, but
+  # could probably be removed if necessary:
+  - wandb
+  - pip
+  - cartopy
+  - pip:
+      - pytorch-msssim
+
+  # Dependencies for nowcasting_dataset, nowcasting_datamodel, nowcasting_dataloader:
+  - gitpython
+  - geopandas

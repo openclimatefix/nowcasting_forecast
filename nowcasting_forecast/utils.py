@@ -1,10 +1,11 @@
 """ Utils functions """
 from datetime import timedelta
+from typing import Optional
 
 import numpy as np
 
 
-def floor_30_minutes_dt(dt):
+def floor_minutes_dt(dt, minutes: Optional[int] = 30):
     """
     Floor a datetime by 30 mins.
 
@@ -15,7 +16,7 @@ def floor_30_minutes_dt(dt):
     :param dt:
     :return:
     """
-    approx = np.floor(dt.minute / 30.0) * 30
+    approx = np.floor(dt.minute / float(minutes)) * minutes
     dt = dt.replace(minute=0)
     dt = dt.replace(second=0)
     dt = dt.replace(microsecond=0)
