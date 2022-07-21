@@ -61,6 +61,7 @@ def test_not_fake(
     sat_data,
     hrv_sat_data,
     gsp_yields_and_systems,
+    pv_yields_and_systems,
 ):
 
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -80,7 +81,7 @@ def test_not_fake(
 
         runner = CliRunner()
         response = runner.invoke(
-            run, ["--db-url", db_connection.url, "--fake", "false", "--batch-save-dir", temp_dir]
+            run, ["--db-url", db_connection.url, "--fake", "false"]
         )
         assert response.exit_code == 0, response
 
