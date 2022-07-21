@@ -1,6 +1,6 @@
 """Dataloader for the CNN forecaster"""
-import os
 import logging
+import os
 from typing import Optional
 
 from nowcasting_dataloader.datasets import NetCDFDataset
