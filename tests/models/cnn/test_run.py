@@ -45,7 +45,6 @@ def test_run(
         )
 
         assert os.path.exists(f"{temp_dir}/live/satellite/000000.nc")
-        assert os.path.exists(f"{temp_dir}/live/satellite/000001.nc")
 
         dataloader = get_cnn_data_loader(
             src_path=os.path.join(temp_dir, "live"), tmp_path=os.path.join(temp_dir, "live")

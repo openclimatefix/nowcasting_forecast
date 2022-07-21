@@ -111,7 +111,7 @@ def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_da
                 "--model-name",
                 "nwp_simple_trained",
                 "--n-gsps",
-                "1"
+                "10"
             ],
         )
         assert response.exit_code == 0, response
@@ -119,5 +119,5 @@ def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_da
         with db_connection.get_session() as session:
             forecasts = session.query(ForecastSQL).all()
             _ = Forecast.from_orm(forecasts[0])
-            assert len(forecasts) == N_GSP + 1  # 338 gsp + national
+            assert len(forecasts) == 10 + 1  # 338 gsp + national
             assert len(forecasts[0].forecast_values) > 1
