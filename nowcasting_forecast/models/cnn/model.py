@@ -241,6 +241,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         sat_data = batch.satellite.data.float()
         nwp_data = batch.nwp.data.float()
         pv_data = batch.pv.pv_yield.float()
+        gsp_data = batch.gsp.gsp_yield.float()
 
         # ******************* Satellite imagery *************************
         # Shape: batch_size, channel, seq_length, height, width
@@ -266,19 +267,19 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         out = F.relu(self.fc2(out))
         # which has shape (batch_size, 128)
 
-        # add pv yield
+        # add gsp yield
         if self.include_pv_or_gsp_yield_history:
-            pv_yield_history = (
-                pv_data[:, : self.gsp_history_length, : self.number_of_samples_per_batch]
+            gsp_yield_history = (
+                gsp_data[:, : self.gsp_history_length, : self.number_of_samples_per_batch]
                 .nan_to_num(nan=0.0)
                 .float()
             )
 
-            pv_yield_history = pv_yield_history.reshape(
-                pv_yield_history.shape[0], pv_yield_history.shape[1] * pv_yield_history.shape[2]
+            gsp_yield_history = gsp_yield_history.reshape(
+                gsp_yield_history.shape[0], gsp_yield_history.shape[1] * gsp_yield_history.shape[2]
             )
             # join up
-            out = torch.cat((out, pv_yield_history), dim=1)
+            out = torch.cat((out, gsp_yield_history), dim=1)
 
         # add the pv yield history. This can be used if trying to predict gsp
         if self.include_pv_yield_history:
