@@ -23,7 +23,7 @@ def get_cnn_data_loader(
 
     configuration_file:
     """
-    logger.debug('Making CNN data loader')
+    logger.debug("Making CNN data loader")
 
     # make configuration
     if configuration_file is None:
@@ -49,6 +49,6 @@ def get_cnn_data_loader(
         else None,
     )
 
-    logger.debug('Done making CNN data loader.')
+    logger.debug("Done making CNN data loader.")
 
     return iter(data_loader)

@@ -80,9 +80,7 @@ def test_not_fake(
         os.environ["SAT_PATH"] = sat_path
 
         runner = CliRunner()
-        response = runner.invoke(
-            run, ["--db-url", db_connection.url, "--fake", "false"]
-        )
+        response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "false"])
         assert response.exit_code == 0, response
 
         with db_connection.get_session() as session:
