@@ -98,7 +98,7 @@ def run(
     with connection.get_session() as session:
 
         if fake:
-            forecasts = make_dummy_forecasts(session=session,n_gsps=n_gsps)
+            forecasts = make_dummy_forecasts(session=session, n_gsps=n_gsps)
         else:
 
             if model_name == "nwp_simple":
