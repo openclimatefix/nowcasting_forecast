@@ -15,14 +15,22 @@ from nowcasting_datamodel.models import (
     PVSystem,
     PVSystemSQL,
     PVYield,
+    solar_sheffield_passiv,
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
+from nowcasting_datamodel.models.models import StatusSQL
 from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_image_coords_osgb
 from nowcasting_dataset.dataset.batch import Batch
 
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.utils import floor_minutes_dt
+
+
+@pytest.fixture
+def status(db_session):
+    status = StatusSQL(message="", status="ok")
+    db_session.add(status)
 
 
 @pytest.fixture
@@ -173,11 +181,12 @@ def pv_yields_and_systems(db_session):
     # this pv systems has same coordiantes as the first gsp
     pv_system_sql_1: PVSystemSQL = PVSystem(
         pv_system_id=1,
-        provider="pvoutput.org",
+        provider=solar_sheffield_passiv,
         status_interval_minutes=5,
         longitude=-1.293,
         latitude=51.76,
         installed_capacity_kw=123,
+        ml_capacity_kw=123,
     ).to_orm()
     pv_system_sql_2: PVSystemSQL = PVSystem(
         pv_system_id=2,
@@ -186,6 +195,7 @@ def pv_yields_and_systems(db_session):
         longitude=0,
         latitude=56,
         installed_capacity_kw=124,
+        ml_capacity_kw=124,
     ).to_orm()
 
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
@@ -233,7 +243,7 @@ def gsp_yields_and_systems(db_session):
     # this pv systems has same coordiantes as the first gsp
     gsp_yield_sqls = []
     locations = []
-    for i in range(338):
+    for i in range(N_GSP):
         location_sql_1: LocationSQL = Location(
             gsp_id=i + 1,
             label=f"GSP_{i+1}",
@@ -319,6 +329,10 @@ def sat_data():
 
     area_attr = np.load(f"{local_path}/sat_data/area.npy")
     sat.attrs["area"] = area_attr
+
+    sat["x_osgb"] = sat.x_geostationary
+    sat["y_osgb"] = sat.y_geostationary
+
     return sat.to_dataset(name="data").sortby("time")
 
 
@@ -355,6 +369,8 @@ def hrv_sat_data():
     )  # Fake data for testing!
     area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
+    sat["x_osgb"] = sat.x_geostationary
+    sat["y_osgb"] = sat.y_geostationary
     return sat.to_dataset(name="data").sortby("time")
 
 

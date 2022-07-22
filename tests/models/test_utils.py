@@ -1,6 +1,7 @@
 import os
 import tempfile
 
+from freezegun import freeze_time
 from nowcasting_datamodel.models import (
     ForecastSQL,
     InputDataLastUpdatedSQL,
@@ -16,7 +17,8 @@ from nowcasting_forecast.models.nwp_solar_simple import (
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 
-def test_general_run_all_batches(batch, configuration, db_session, input_data_last_updated):
+@freeze_time("2022-01-01 12:00:00")
+def test_general_run_all_batches(batch, configuration, db_session, input_data_last_updated, status):
 
     with tempfile.TemporaryDirectory() as tempdir:
         batch.save_netcdf(batch_i=0, path=os.path.join(tempdir, "live"))
@@ -26,7 +28,7 @@ def test_general_run_all_batches(batch, configuration, db_session, input_data_la
         save_yaml_configuration(configuration=configuration)
 
         f = general_forecast_run_all_batches(
-            n_batches=1,
+            n_gsps=4,
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
@@ -37,7 +39,10 @@ def test_general_run_all_batches(batch, configuration, db_session, input_data_la
         assert len(f) == 4
 
 
-def test_general_batches_and_national(batch, configuration, db_session, input_data_last_updated):
+@freeze_time("2022-01-01 12:00:00")
+def test_general_batches_and_national(
+    batch, configuration, db_session, input_data_last_updated, status
+):
 
     n_gsps = configuration.process.batch_size
 
@@ -51,7 +56,6 @@ def test_general_batches_and_national(batch, configuration, db_session, input_da
 
         f = general_forecast_run_all_batches(
             session=db_session,
-            n_batches=1,
             configuration_file=configuration_file,
             add_national_forecast=True,
             n_gsps=n_gsps,
@@ -62,8 +66,9 @@ def test_general_batches_and_national(batch, configuration, db_session, input_da
         assert len(f) == n_gsps + 1
 
 
+@freeze_time("2022-01-01 12:00:00")
 def test_general_run_all_batches_check_locations(
-    batch, configuration, db_session, input_data_last_updated
+    batch, configuration, db_session, input_data_last_updated, status
 ):
 
     with tempfile.TemporaryDirectory() as tempdir:
@@ -74,7 +79,7 @@ def test_general_run_all_batches_check_locations(
         save_yaml_configuration(configuration=configuration)
 
         f = general_forecast_run_all_batches(
-            n_batches=1,
+            n_gsps=4,
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,
@@ -86,7 +91,7 @@ def test_general_run_all_batches_check_locations(
         db_session.commit()
 
         f = general_forecast_run_all_batches(
-            n_batches=1,
+            n_gsps=4,
             configuration_file=configuration_file,
             add_national_forecast=False,
             session=db_session,

@@ -41,11 +41,10 @@ def test_run(
             config_filename=os.path.join(
                 os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v2.yaml"
             ),
-            temporary_dir=temp_dir,
+            temporary_dir=temp_dir, n_gsps=10
         )
 
         assert os.path.exists(f"{temp_dir}/live/satellite/000000.nc")
-        assert os.path.exists(f"{temp_dir}/live/satellite/000001.nc")
 
         dataloader = get_cnn_data_loader(
             src_path=os.path.join(temp_dir, "live"), tmp_path=os.path.join(temp_dir, "live")
@@ -58,4 +57,5 @@ def test_run(
             ml_model=Model,
             dataloader=dataloader,
             use_hf=True,
+            n_gsps=10
         )

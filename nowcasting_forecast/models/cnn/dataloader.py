@@ -1,4 +1,5 @@
 """Dataloader for the CNN forecaster"""
+import logging
 import os
 from typing import Optional
 
@@ -6,6 +7,8 @@ from nowcasting_dataloader.datasets import NetCDFDataset
 from nowcasting_dataset.config.load import load_yaml_configuration
 
 import nowcasting_forecast
+
+logger = logging.getLogger(__name__)
 
 
 def get_cnn_data_loader(
@@ -20,6 +23,8 @@ def get_cnn_data_loader(
 
     configuration_file:
     """
+    logger.debug("Making CNN data loader")
+
     # make configuration
     if configuration_file is None:
         configuration_file = os.path.join(
@@ -43,5 +48,7 @@ def get_cnn_data_loader(
         if batch_save_dir is not None
         else None,
     )
+
+    logger.debug("Done making CNN data loader.")
 
     return iter(data_loader)
