@@ -15,7 +15,9 @@ from nowcasting_forecast.app import run
 def test_fake(db_connection: DatabaseConnection):
 
     runner = CliRunner()
-    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true","--n-gsps","10"])
+    response = runner.invoke(
+        run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
+    )
     assert response.exit_code == 0
 
     with db_connection.get_session() as session:
@@ -30,7 +32,9 @@ def test_fake(db_connection: DatabaseConnection):
 def test_fake_twice(db_connection: DatabaseConnection):
 
     runner = CliRunner()
-    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true","--n-gsps","10"])
+    response = runner.invoke(
+        run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
+    )
     assert response.exit_code == 0
 
     with db_connection.get_session() as session:
@@ -42,7 +46,9 @@ def test_fake_twice(db_connection: DatabaseConnection):
         locations = session.query(LocationSQL).all()
         assert len(locations) == 10 + 1
 
-    response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "true","--n-gsps","10"])
+    response = runner.invoke(
+        run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
+    )
     assert response.exit_code == 0
 
     with db_connection.get_session() as session:
@@ -80,7 +86,9 @@ def test_not_fake(
         os.environ["SAT_PATH"] = sat_path
 
         runner = CliRunner()
-        response = runner.invoke(run, ["--db-url", db_connection.url, "--fake", "false","--n-gsps","10"])
+        response = runner.invoke(
+            run, ["--db-url", db_connection.url, "--fake", "false", "--n-gsps", "10"]
+        )
         assert response.exit_code == 0, response
 
         with db_connection.get_session() as session:
@@ -111,7 +119,7 @@ def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_da
                 "--model-name",
                 "nwp_simple_trained",
                 "--n-gsps",
-                "10"
+                "10",
             ],
         )
         assert response.exit_code == 0, response
