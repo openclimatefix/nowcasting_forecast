@@ -15,8 +15,9 @@ secret = json.loads(response["SecretString"])
 """ We have used a ssh tunnel to 'localhost' """
 db_url = f'postgresql://{secret["username"]}:{secret["password"]}@localhost:5433/{secret["dbname"]}'
 
-creation_utc = '2022-06-30 07:00:00'
+creation_utc = '2022-07-22 03:00:00'
 gsp_id = 0
+creation_utc_init = datetime(2022,7,22,0)
 
 
 # get forecast from database
@@ -27,7 +28,7 @@ with connection.get_session() as session:
     # get forecast for 3 hours
     for minutes in range(0,30*2*3, 30):
 
-        creation_utc = datetime(2022,6,30,4) + timedelta(minutes=minutes)
+        creation_utc = creation_utc_init + timedelta(minutes=minutes)
         print(f'Getting forecast for {creation_utc}')
 
         query = session.query(ForecastValueSQL)
@@ -49,7 +50,7 @@ with connection.get_session() as session:
         forecasts.append([forecast_values, creation_utc])
 
 with connection.get_session() as session:
-    creation_utc = datetime(2022, 6, 30,4)
+    creation_utc = creation_utc_init
 
     query = session.query(GSPYieldSQL)
     query = query.join(LocationSQL)
