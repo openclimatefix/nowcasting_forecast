@@ -17,7 +17,7 @@ def get_power_perceiver_dataset(
     batch_save_dir: Optional[str] = None,
 ) -> Iterable[torch.utils.data.Dataset]:
     """
-    Get data loader for Power Perceiver ML model.
+    Get Dataset for Power Perceiver ML model.
     """
     # make configuration
     if configuration_file is None:
