@@ -1,11 +1,12 @@
-import boto3
 import json
+from datetime import datetime, timedelta
+
+import boto3
+import plotly.graph_objects as go
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.models.base import Base_Forecast
-from nowcasting_datamodel.models.models import ForecastValueSQL, ForecastSQL
-from nowcasting_datamodel.models.gsp import LocationSQL, GSPYieldSQL
-from datetime import datetime, timedelta
-import plotly.graph_objects as go
+from nowcasting_datamodel.models.gsp import GSPYieldSQL, LocationSQL
+from nowcasting_datamodel.models.models import ForecastSQL, ForecastValueSQL
 
 client = boto3.client("secretsmanager")
 response = client.get_secret_value(
@@ -15,9 +16,9 @@ secret = json.loads(response["SecretString"])
 """ We have used a ssh tunnel to 'localhost' """
 db_url = f'postgresql://{secret["username"]}:{secret["password"]}@localhost:5433/{secret["dbname"]}'
 
-creation_utc = '2022-07-22 03:00:00'
+creation_utc = "2022-07-22 03:00:00"
 gsp_id = 0
-creation_utc_init = datetime(2022,7,22,0)
+creation_utc_init = datetime(2022, 7, 22, 0)
 
 
 # get forecast from database
@@ -26,10 +27,10 @@ connection = DatabaseConnection(url=db_url, base=Base_Forecast, echo=True)
 with connection.get_session() as session:
 
     # get forecast for 3 hours
-    for minutes in range(0,30*2*3, 30):
+    for minutes in range(0, 30 * 2 * 3, 30):
 
         creation_utc = creation_utc_init + timedelta(minutes=minutes)
-        print(f'Getting forecast for {creation_utc}')
+        print(f"Getting forecast for {creation_utc}")
 
         query = session.query(ForecastValueSQL)
 
@@ -66,16 +67,14 @@ for forecast_values, creation_utc in forecasts:
     datetimes = [value.target_time for value in forecast_values]
     forecasts = [value.expected_power_generation_megawatts for value in forecast_values]
 
-    traces.append(go.Scatter(x=datetimes, y=forecasts, name=f'forecast ({creation_utc})'))
+    traces.append(go.Scatter(x=datetimes, y=forecasts, name=f"forecast ({creation_utc})"))
 
 datetimes_pvlive = [value.datetime_utc for value in estimates]
-estimates_pvlive = [value.solar_generation_kw/1000 for value in estimates]
-traces.append(go.Scatter(x=datetimes_pvlive,y=estimates_pvlive, name='pvlive'))
+estimates_pvlive = [value.solar_generation_kw / 1000 for value in estimates]
+traces.append(go.Scatter(x=datetimes_pvlive, y=estimates_pvlive, name="pvlive"))
 
 # Plot
 
 
 fig = go.Figure(data=traces)
-fig.show(renderer='browser')
-
-
+fig.show(renderer="browser")
