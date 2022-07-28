@@ -33,7 +33,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         include_nwp: bool = True,
         forecast_minutes: int = 120,
         history_minutes: int = 30,
-        number_of_conv3d_layers: int = 4,
+        number_of_conv3d_layers: int = 6,
         conv3d_channels: int = 32,
         image_size_pixels: int = 24,
         nwp_image_size_pixels: int = 64,
@@ -350,7 +350,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         if use_hf:
             _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_cnn" ')
-            model = Model.from_pretrained("openclimatefix/nowcasting_cnn_v3")
+            model = Model.from_pretrained("openclimatefix/nowcasting_cnn_v4")
             _LOG.debug("Loading mode from Hugging Face: done")
             return model
         else:
