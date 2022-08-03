@@ -6,7 +6,6 @@ ARG TESTING=0
 ARG GIT_PYTHON_REFRESH=quiet
 
 RUN apt-get update
-RUN apt-get install git -y
 
 # copy files
 COPY setup.py app/setup.py
@@ -15,7 +14,6 @@ COPY requirements.txt app/requirements.txt
 
 # install requirements
 RUN pip install -r app/requirements.txt
-RUN pip install git+https://github.com/SheffieldSolar/PV_Live-API#pvlive_api
 
 # copy library files
 COPY nowcasting_forecast/ app/nowcasting_forecast/
