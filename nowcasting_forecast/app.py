@@ -180,7 +180,7 @@ def run(
             forecasts=forecasts,
             session=session,
             update_national=update_national,
-            update_gsps=update_gsps,
+            update_gsp=update_gsps,
         )
 
 
