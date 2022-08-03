@@ -14,6 +14,7 @@ COPY requirements.txt app/requirements.txt
 
 # install requirements
 RUN pip install -r app/requirements.txt
+RUN pip install git+https://github.com/SheffieldSolar/PV_Live-API#pvlive_api
 
 # copy library files
 COPY nowcasting_forecast/ app/nowcasting_forecast/
