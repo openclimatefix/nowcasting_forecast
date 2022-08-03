@@ -79,12 +79,28 @@ logging.getLogger("nowcasting_dataset").setLevel(
     help="Optional number of GSPs to run. Default is N_GSP",
     type=click.INT,
 )
+@click.option(
+    "--update-national",
+    default=True,
+    envvar="UPDATE_NATIONAL",
+    help="Update the national forecast in the latest table",
+    type=click.BOOL,
+)
+@click.option(
+    "--update-gsps",
+    default=True,
+    envvar="UPDATE_GSPS",
+    help="Update the GSPS forecast in the latest table",
+    type=click.BOOL,
+)
 def run(
     db_url: str,
     fake: bool = False,
     model_name: str = "nwp_simple",
     batch_save_dir: Optional[str] = None,
     n_gsps: Optional[int] = N_GSP,
+    update_national: Optional[bool] = True,
+    update_gsps: Optional[bool] = True,
 ):
     """
     Run main app.
@@ -160,7 +176,12 @@ def run(
                     raise NotImplementedError(f"model name {model_name} has not be implemented. ")
 
         # save forecasts
-        save(forecasts=forecasts, session=session)
+        save(
+            forecasts=forecasts,
+            session=session,
+            update_national=update_national,
+            update_gsps=update_gsps,
+        )
 
 
 def make_dummy_forecasts(session: Session, n_gsps: Optional[int] = N_GSP):
