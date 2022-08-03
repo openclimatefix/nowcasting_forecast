@@ -6,7 +6,7 @@ ARG TESTING=0
 ARG GIT_PYTHON_REFRESH=quiet
 
 RUN apt-get update
-RUN apt-get git
+RUN apt-get install git
 
 # copy files
 COPY setup.py app/setup.py
