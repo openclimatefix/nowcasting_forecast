@@ -320,6 +320,10 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
             id = batch.gsp.gsp_id[0 : self.batch_size, 0]
 
+            # horrible fix to remove gsp_id embedding,
+            # this sets all embeddings to 1
+            id = torch.zeros([self.batch_size]) + 1
+
             id = id.type(torch.IntTensor)
             id = id.to(out.device)
             id_embedding = self.pv_system_id_embedding(id)
