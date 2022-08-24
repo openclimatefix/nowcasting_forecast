@@ -40,6 +40,9 @@ logging.getLogger("nowcasting_forecast").setLevel(
 logging.getLogger("nowcasting_dataset").setLevel(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
 )
+logging.getLogger("nowcasting_datamodel").setLevel(
+    level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
+)
 # TODO make logs show up in AWS
 
 
