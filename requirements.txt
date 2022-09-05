@@ -16,3 +16,4 @@ huggingface_hub
 pvlib
 protobuf<4.21.0
 ocf_datapipes
+power_perceiver

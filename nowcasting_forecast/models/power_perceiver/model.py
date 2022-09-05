@@ -22,7 +22,7 @@ import nowcasting_forecast
 
 logger = logging.getLogger(__name__)
 
-NAME = "cnn"
+NAME = "power_perceiver"
 
 
 def power_perceiver_run_one_batch(
