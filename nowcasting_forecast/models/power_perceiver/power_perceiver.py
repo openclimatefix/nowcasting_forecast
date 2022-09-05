@@ -25,18 +25,17 @@ logger = logging.getLogger(__name__)
 NAME = "cnn"
 
 
-def cnn_run_one_batch(
+def power_perceiver_run_one_batch(
     batch: dict[BatchKey, np.ndarray],
     pytorch_model,
-    n_examples: Optional[int] = None,
 ) -> pd.DataFrame:
     """Run model for one batch"""
 
     n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
+    history_idx = batch[BatchKey.gsp_t0_idx][0]
     # run model
     network_output = pytorch_model(batch)
-    # TODO These include history time, so need to account for that
-    distribution = get_distribution(network_output["predicted_gsp_power"])
+    distribution = get_distribution(network_output["predicted_gsp_power"][history_idx+1:])
     predictions = distribution.mean
 
     # re-normalize

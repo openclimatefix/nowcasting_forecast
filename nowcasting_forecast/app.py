@@ -16,6 +16,9 @@ from nowcasting_forecast.batch import make_batches
 from nowcasting_forecast.models.cnn.cnn import cnn_run_one_batch
 from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 from nowcasting_forecast.models.cnn.model import Model as CNN_Model
+from power_perceiver.production.model import FullModel as PowerPerceiver_Model
+from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
+from nowcasting_forecast.models.power_perceiver.power_perceiver import power_perceiver_run_one_batch
 from nowcasting_forecast.models.nwp_simple_trained.model import Model
 from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
     nwp_irradiance_simple_trained_run_one_batch,
@@ -178,17 +181,13 @@ def run(
                         n_gsps=n_gsps,
                     )
                 elif model_name == "power_perceiver":
-                    dataloader = get_cnn_data_loader(
-                        src_path=f"{temporary_dir}/live",
-                        tmp_path=f"{temporary_dir}/live",
-                        batch_save_dir=batch_save_dir,
-                    )
+                    dataloader = get_power_perceiver_data_loader()
                     forecasts = general_forecast_run_all_batches(
                         session=session,
                         batches_dir=temporary_dir,
-                        callable_function_for_on_batch=cnn_run_one_batch,
+                        callable_function_for_on_batch=power_perceiver_run_one_batch,
                         model_name="power_perceiver",
-                        ml_model=CNN_Model,
+                        ml_model=PowerPerceiver_Model,
                         dataloader=dataloader,
                         use_hf=True,
                         configuration_file="nowcasting_forecast/config/mvp_v3.yaml",
