@@ -96,7 +96,10 @@ configuration: mvp_v1.yaml
 
 ### CNN
 
-# TODO
+This model takes both satellite and NWP video data and puts them through
+separate 3D convolutional neural networks. These are then connected with
+a few fully connected layers, joined with some simple input data like
+historic PV data.
 
 ## 🩺 Testing
 
