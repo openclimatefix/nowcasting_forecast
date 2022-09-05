@@ -126,6 +126,8 @@ def run(
                 config_filename = "nowcasting_forecast/config/mvp_v1.yaml"
             elif model_name == "cnn":
                 config_filename = "nowcasting_forecast/config/mvp_v2.yaml"
+            elif model_name == "power_perceiver":
+                config_filename = "nowcasting_forecast/config/mvp_v3.yaml"
             else:
                 raise NotImplementedError(f"Model {model_name} has not be implemented")
 
@@ -173,6 +175,23 @@ def run(
                         dataloader=dataloader,
                         use_hf=True,
                         configuration_file="nowcasting_forecast/config/mvp_v2.yaml",
+                        n_gsps=n_gsps,
+                    )
+                elif model_name == "power_perceiver":
+                    dataloader = get_cnn_data_loader(
+                        src_path=f"{temporary_dir}/live",
+                        tmp_path=f"{temporary_dir}/live",
+                        batch_save_dir=batch_save_dir,
+                    )
+                    forecasts = general_forecast_run_all_batches(
+                        session=session,
+                        batches_dir=temporary_dir,
+                        callable_function_for_on_batch=cnn_run_one_batch,
+                        model_name="power_perceiver",
+                        ml_model=CNN_Model,
+                        dataloader=dataloader,
+                        use_hf=True,
+                        configuration_file="nowcasting_forecast/config/mvp_v3.yaml",
                         n_gsps=n_gsps,
                     )
                 else:

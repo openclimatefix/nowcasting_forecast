@@ -1,0 +1,56 @@
+general:
+  description: Config for producing batches on for live forecasts.
+  name: power_perceiver
+input_data:
+  #---------------------- GSP -------------------
+  gsp:
+    gsp_zarr_path: ./nowcasting_forecast
+    history_minutes: 60
+    forecast_minutes: 480
+    log_level: "INFO"
+    is_live: True
+
+  #---------------------- NWP -------------------
+  nwp:
+    nwp_channels:
+      - t
+      - dswrf
+      - prate
+      - si10
+    nwp_image_size_pixels_width: 4
+    nwp_image_size_pixels_height: 4
+    nwp_zarr_path: !ENV ${NWP_ZARR_PATH}
+    history_minutes: 60
+    forecast_minutes: 480
+
+  #---------------------- HRVSatellite -------------
+  hrvsatellite:
+    hrvsatellite_channels:
+      - HRV
+    hrvsatellite_image_size_pixels_width: 256
+    hrvsatellite_image_size_pixels_height: 128
+    history_minutes: 60
+    forecast_minutes: 0
+    hrvsatellite_zarr_path: !ENV ${HRV_SATELLITE_ZARR_PATH}
+    is_live: True
+
+  #--------- PV --------
+  pv:
+    is_live: True
+    live_interpolate_minutes: 60
+    live_load_extra_minutes: 60
+    forecast_minutes: 0
+    pv_files_groups:
+      - label: sheffield_solar_passiv
+        pv_filename: /not_needed_for_live/
+        pv_metadata_filename: /not_needed_for_live/
+
+output_data:
+  filepath: ./batches/
+process:
+  batch_size: 32
+  seed: 1234
+  upload_every_n_batches: 0 # Write directly to output_data.filepath, not to a temp directory.
+  n_train_batches: 0
+  n_validation_batches: 0
+  n_test_batches: 0
