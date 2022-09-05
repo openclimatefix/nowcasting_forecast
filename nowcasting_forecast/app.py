@@ -99,6 +99,13 @@ logging.getLogger("nowcasting_datamodel").setLevel(
     help="Update the GSPS forecast in the latest table",
     type=click.BOOL,
 )
+@click.option(
+    "--create-batches",
+    default=True,
+    envvar="CREATE_BATCHES",
+    help="Make preprepared batches for the model",
+    type=click.BOOL,
+)
 def run(
     db_url: str,
     fake: bool = False,
@@ -107,6 +114,7 @@ def run(
     n_gsps: Optional[int] = N_GSP,
     update_national: Optional[bool] = True,
     update_gsps: Optional[bool] = True,
+    create_batches: Optional[bool] = True
 ):
     """
     Run main app.
@@ -137,13 +145,13 @@ def run(
             with tempfile.TemporaryDirectory() as temporary_dir:
                 # make batches
                 save_dir = batch_save_dir + "batch/" if batch_save_dir is not None else None
-                make_batches(
-                    temporary_dir=temporary_dir,
-                    config_filename=config_filename,
-                    batch_save_dir=save_dir,
-                    n_gsps=n_gsps,
-                )
-
+                if create_batches:
+                    make_batches(
+                        temporary_dir=temporary_dir,
+                        config_filename=config_filename,
+                        batch_save_dir=save_dir,
+                        n_gsps=n_gsps,
+                    )
                 # make forecasts
                 if model_name == "nwp_simple":
                     forecasts = general_forecast_run_all_batches(
