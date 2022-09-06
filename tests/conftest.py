@@ -76,7 +76,7 @@ def db_connection():
     os.environ["DB_URL_PV"] = url
     os.environ["DB_URL"] = url
 
-    connection = DatabaseConnection(url=url)
+    connection = DatabaseConnection(url=url, echo=False)
     Base_Forecast.metadata.create_all(connection.engine)
     Base_PV.metadata.create_all(connection.engine)
 
