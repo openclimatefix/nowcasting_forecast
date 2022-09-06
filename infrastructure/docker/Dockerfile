@@ -72,10 +72,10 @@ SHELL ["/bin/bash", "--login", "-c"]
 
 # Install requirements
 COPY requirements.txt ./
-RUN source activate ${CONDA_ENV_NAME} \
-    && pip install cartopy \
-    && pip install --no-cache-dir -r requirements.txt \
-    && rm requirements.txt
+RUN source activate ${CONDA_ENV_NAME}
+RUN pip install cartopy
+RUN pip install --no-cache-dir -r requirements.txt
+RUN rm requirements.txt
 
 # Set ${CONDA_ENV_NAME} to default virutal environment
 RUN echo "source activate ${CONDA_ENV_NAME}" >> ~/.bashrc
