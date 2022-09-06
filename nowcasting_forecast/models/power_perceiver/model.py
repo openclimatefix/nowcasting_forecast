@@ -56,6 +56,7 @@ def power_perceiver_run_one_batch(
     for i in range(n_examples):
 
         # get id from location
+        # TODO These are all currently set to 1 as part of the change to new GSPs
         gsp_id = batch[BatchKey.gsp_id][i]
 
         # t0 value value
