@@ -55,7 +55,7 @@ RUN apt update && apt install -y bash \
 
 
 ENV CONDA_ENV_NAME=nowcasting_forecast
-ENV PYTHON_VERSION=3.9
+ENV PYTHON_VERSION=3.10
 
 # Install Miniconda and create main env
 ADD https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh miniconda3.sh
