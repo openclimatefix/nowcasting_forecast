@@ -64,7 +64,7 @@ RUN /bin/bash miniconda3.sh -b -p /conda \
     && rm miniconda3.sh
 ENV PATH="/conda/bin:${PATH}"
 ENV CFLAGS="-I/usr/local/include"
-RUN conda create -n ${CONDA_ENV_NAME} python=${PYTHON_VERSION} cartopy eccodes numpy -c conda-forge
+RUN conda create -n ${CONDA_ENV_NAME} python=${PYTHON_VERSION} cartopy==0.19.0.post1 eccodes numpy -c conda-forge
 
 
 # Make RUN commands use `bash --login`:
@@ -73,7 +73,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 # Install requirements
 COPY requirements.txt ./
 RUN source activate ${CONDA_ENV_NAME}
-RUN pip install cartopy
+RUN pip install cartopy==0.19.0.post1
 RUN pip install --no-cache-dir -r requirements.txt
 RUN rm requirements.txt
 
