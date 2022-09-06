@@ -1,7 +1,9 @@
-from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
 import os
 import tempfile
+
 import nowcasting_forecast
+from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
+
 
 def test_get_power_perceiver_data_loader():
 
