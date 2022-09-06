@@ -4,9 +4,9 @@ import tempfile
 import numpy as np
 import pytest
 import torch
+from power_perceiver.production.model import FullModel
 
 import nowcasting_forecast
-from power_perceiver.production.model import FullModel
 
 
 def test_model_init():
@@ -27,7 +27,6 @@ def test_model_load_weights():
 def test_model_load_weights_from_hf():
     model = FullModel.from_pretrained("openclimatefix/power_perceiver")
     model.set_gsp_id_to_one = True
-
 
 
 def test_model_load_weights_from_hf_load_model():
