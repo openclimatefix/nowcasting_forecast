@@ -73,6 +73,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 # Install requirements
 COPY requirements.txt ./
 RUN source activate ${CONDA_ENV_NAME} \
+    && pip install cartopy \
     && pip install --no-cache-dir -r requirements.txt \
     && rm requirements.txt
 
