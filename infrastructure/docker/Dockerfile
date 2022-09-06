@@ -63,6 +63,7 @@ RUN /bin/bash miniconda3.sh -b -p /conda \
     && echo export PATH=/conda/bin:$PATH >> .bashrc \
     && rm miniconda3.sh
 ENV PATH="/conda/bin:${PATH}"
+ENV CFLAGS="-I/usr/local/include"
 RUN conda create -n ${CONDA_ENV_NAME} python=${PYTHON_VERSION} cartopy eccodes numpy -c conda-forge
 
 
