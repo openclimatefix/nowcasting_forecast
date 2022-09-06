@@ -1,12 +1,19 @@
-from ocf_datapipes.production.power_perceiver import power_perceiver_production_datapipe
-import nowcasting_forecast
+import logging
 import os
 from typing import Optional
-import logging
+
+from ocf_datapipes.production.power_perceiver import power_perceiver_production_datapipe
+
+import nowcasting_forecast
 
 logger = logging.getLogger(__name__)
 
-def get_power_perceiver_data_loader(configuration_file: Optional[str] = None, n_batches: Optional[int] = 11, src_path: Optional[str] = None):
+
+def get_power_perceiver_data_loader(
+    configuration_file: Optional[str] = None,
+    n_batches: Optional[int] = 11,
+    src_path: Optional[str] = None,
+):
     """Get the Power Perceiver production Datapipes data loader"""
     logger.debug("Making Power Perceiver Data Loader")
 
