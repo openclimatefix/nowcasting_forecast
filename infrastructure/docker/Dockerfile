@@ -49,6 +49,8 @@ RUN apt update && apt install -y bash \
                    libaio-dev \
                    libgeos++-dev \
                    libproj-dev \
+                   proj-data \
+                   proj-bin \
                    && rm -rf /var/lib/apt/lists
 
 
