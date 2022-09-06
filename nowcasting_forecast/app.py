@@ -9,6 +9,7 @@ import click
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_national_forecast
 from nowcasting_datamodel.save import save
+from power_perceiver.production.model import FullModel as PowerPerceiver_Model
 from sqlalchemy.orm import Session
 
 from nowcasting_forecast import N_GSP, __version__
@@ -16,14 +17,13 @@ from nowcasting_forecast.batch import make_batches
 from nowcasting_forecast.models.cnn.cnn import cnn_run_one_batch
 from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 from nowcasting_forecast.models.cnn.model import Model as CNN_Model
-from power_perceiver.production.model import FullModel as PowerPerceiver_Model
-from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
-from nowcasting_forecast.models.power_perceiver.power_perceiver import power_perceiver_run_one_batch
 from nowcasting_forecast.models.nwp_simple_trained.model import Model
 from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
     nwp_irradiance_simple_trained_run_one_batch,
 )
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
+from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
+from nowcasting_forecast.models.power_perceiver.power_perceiver import power_perceiver_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 from nowcasting_forecast.utils import floor_minutes_dt
 
@@ -114,7 +114,7 @@ def run(
     n_gsps: Optional[int] = N_GSP,
     update_national: Optional[bool] = True,
     update_gsps: Optional[bool] = True,
-    create_batches: Optional[bool] = True
+    create_batches: Optional[bool] = True,
 ):
     """
     Run main app.

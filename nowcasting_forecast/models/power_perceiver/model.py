@@ -12,11 +12,11 @@ import os
 from datetime import timedelta, timezone
 from typing import Optional, Union
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+from ocf_datapipes.utils.consts import BatchKey
 from power_perceiver.production.model import FullModel
 from power_perceiver.pytorch_modules.mixture_density_network import get_distribution
-from ocf_datapipes.utils.consts import BatchKey
 
 import nowcasting_forecast
 
@@ -35,7 +35,7 @@ def power_perceiver_run_one_batch(
     history_idx = batch[BatchKey.gsp_t0_idx][0]
     # run model
     network_output = pytorch_model(batch)
-    distribution = get_distribution(network_output["predicted_gsp_power"][history_idx+1:])
+    distribution = get_distribution(network_output["predicted_gsp_power"][history_idx + 1 :])
     predictions = distribution.mean
 
     # re-normalize
@@ -60,7 +60,9 @@ def power_perceiver_run_one_batch(
         gsp_id = batch[BatchKey.gsp_id][i]
 
         # t0 value value
-        t0_datetime_utc = pd.to_datetime(batch[BatchKey.gsp_time_utc][batch[BatchKey.gsp_t0_idx][i]], utc=True).replace(tzinfo=timezone.utc)
+        t0_datetime_utc = pd.to_datetime(
+            batch[BatchKey.gsp_time_utc][batch[BatchKey.gsp_t0_idx][i]], utc=True
+        ).replace(tzinfo=timezone.utc)
 
         for t_index in range(len(predictions[0])):
             # add timezone
