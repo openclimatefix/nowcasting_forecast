@@ -48,6 +48,7 @@ RUN apt update && apt install -y bash \
                    wget \
                    libaio-dev \
                    libgeos++-dev \
+                   libproj-dev \
                    && rm -rf /var/lib/apt/lists
 
 
