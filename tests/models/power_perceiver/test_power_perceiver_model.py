@@ -1,9 +1,9 @@
 import os
 import tempfile
 
+import numpy as np
 import pytest
 import torch
-import numpy as np
 
 import nowcasting_forecast
 from nowcasting_forecast.models.power_perceiver.model import FullModel
@@ -45,5 +45,4 @@ def test_forward():
     # Need to make fake NumpyBatch
     model = FullModel()
 
-    #model.forward(batch)
-
+    # model.forward(batch)
