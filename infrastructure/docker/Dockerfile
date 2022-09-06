@@ -47,6 +47,7 @@ RUN apt update && apt install -y bash \
                    ca-certificates \
                    wget \
                    libaio-dev \
+                   libgeos++-dev \
                    && rm -rf /var/lib/apt/lists
 
 
@@ -95,4 +96,4 @@ RUN source activate ${CONDA_ENV_NAME} && pip install -e .
 SHELL ["conda", "run", "-n", "nowcasting_forecast", "/bin/bash", "-c"]
 
 # Example commnad that can be used, need to set API_KEY, API_SECRET and SAVE_DIR
-CMD ["conda", "run", "--no-capture-output", "-n", "satip", "nowcasting_forecast", "-u","nowcasting_forecast/app.py"]
+CMD ["conda", "run", "--no-capture-output", "-n", "nowcasting_forecast", "python", "-u","nowcasting_forecast/app.py"]
