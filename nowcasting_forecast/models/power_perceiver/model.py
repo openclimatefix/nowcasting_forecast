@@ -14,6 +14,7 @@ from datetime import timedelta, timezone
 import numpy as np
 import pandas as pd
 from ocf_datapipes.utils.consts import BatchKey
+from power_perceiver.production.model import FullModel
 from power_perceiver.pytorch_modules.mixture_density_network import get_distribution
 
 import nowcasting_forecast
@@ -25,9 +26,12 @@ NAME = "power_perceiver"
 
 def power_perceiver_run_one_batch(
     batch: dict[BatchKey, np.ndarray],
-    pytorch_model,
+    pytorch_model: FullModel,
 ) -> pd.DataFrame:
     """Run model for one batch"""
+
+    # TODO Remove when the model is retrained
+    pytorch_model.set_gsp_id_to_one = True
 
     n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
     history_idx = batch[BatchKey.gsp_t0_idx][0]

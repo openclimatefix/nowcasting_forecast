@@ -6,7 +6,7 @@ import pytest
 import torch
 
 import nowcasting_forecast
-from nowcasting_forecast.models.power_perceiver.model import FullModel
+from power_perceiver.production.model import FullModel
 
 
 def test_model_init():
@@ -26,6 +26,8 @@ def test_model_load_weights():
 
 def test_model_load_weights_from_hf():
     model = FullModel.from_pretrained("openclimatefix/power_perceiver")
+    model.set_gsp_id_to_one = True
+
 
 
 def test_model_load_weights_from_hf_load_model():
@@ -43,6 +45,6 @@ def test_model_load_weights_error():
 def test_forward():
 
     # Need to make fake NumpyBatch
-    model = FullModel()
+    model = FullModel(set_gsp_id_to_one=True)
 
     # model.forward(batch)
