@@ -23,7 +23,7 @@ from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
 )
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
-from nowcasting_forecast.models.power_perceiver.power_perceiver import power_perceiver_run_one_batch
+from nowcasting_forecast.models.power_perceiver.model import power_perceiver_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 from nowcasting_forecast.utils import floor_minutes_dt
 
