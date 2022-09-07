@@ -72,8 +72,9 @@ SHELL ["/bin/bash", "-c"]
 
 # Install requirements
 COPY requirements.txt ./
-RUN source activate ${CONDA_ENV_NAME} && pip install cartopy power-perceiver
-&& pip install --no-cache-dir --no-dependencies -r requirements.txt
+RUN source activate ${CONDA_ENV_NAME}  \
+    && pip install cartopy power-perceiver \
+    && pip install --no-cache-dir --no-dependencies -r requirements.txt
 RUN rm requirements.txt
 
 # Set ${CONDA_ENV_NAME} to default virutal environment
