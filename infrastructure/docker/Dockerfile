@@ -93,7 +93,7 @@ RUN if [ "$TESTING" = 1 ]; then pip install pytest pytest-cov coverage; fi
 
 # Cp in the development directory and install
 COPY . ./
-RUN source activate ${CONDA_ENV_NAME} && pip install -e .
+RUN source activate ${CONDA_ENV_NAME} && pip install --no-dependencies -e .
 
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "nowcasting_forecast", "/bin/bash", "-c"]
