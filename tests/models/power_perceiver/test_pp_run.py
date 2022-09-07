@@ -7,7 +7,7 @@ import zarr
 
 import nowcasting_forecast
 from nowcasting_forecast.batch import make_batches
-from nowcasting_forecast.models.power_perceiver.model import power_perceiver_run_one_batch, FullModel
+from nowcasting_forecast.models.power_perceiver.model import power_perceiver_run_one_batch, Model
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
@@ -47,7 +47,7 @@ def test_run(
             batches_dir=temp_dir,
             callable_function_for_on_batch=power_perceiver_run_one_batch,
             model_name="power_perceiver",
-            ml_model=FullModel,
+            ml_model=Model,
             dataloader=dataloader,
             use_hf=True,
             n_gsps=10,

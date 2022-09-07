@@ -10,18 +10,45 @@
 import logging
 import os
 from datetime import timedelta, timezone
+from typing import Optional
 
 import numpy as np
 import pandas as pd
 from ocf_datapipes.utils.consts import BatchKey
 from power_perceiver.production.model import FullModel
 from power_perceiver.pytorch_modules.mixture_density_network import get_distribution
+from nowcasting_forecast.models.hub import NowcastingModelHubMixin
+
+import pytorch_lightning as pl
 
 import nowcasting_forecast
 
 logger = logging.getLogger(__name__)
 
 NAME = "power_perceiver"
+
+
+class Model(FullModel, NowcastingModelHubMixin):
+
+    def load_model(
+        self,
+        local_filename: Optional[str] = None,
+        use_hf: bool = True,
+    ):
+        """
+        Load model weights
+        """
+
+        if use_hf:
+            logger.debug('Loading mode from Hugging Face "openclimatefix/power_perceiver" ')
+            model = Model.from_pretrained("openclimatefix/power_perceiver")
+            logger.debug("Loading mode from Hugging Face: done")
+            return model
+        else:
+            logger.debug(f"Loading model weights from {local_filename}")
+            model = self.load_from_checkpoint(checkpoint_path=local_filename)
+            logger.debug("Loading model weights: done")
+            return model
 
 
 def power_perceiver_run_one_batch(
