@@ -36,7 +36,9 @@ def test_run(
             sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
 
-        topo_path = os.path.join(os.path.dirname(nowcasting_forecast.__file__), "data", "europe_dem_2km_osgb.tif")
+        topo_path = os.path.join(
+            os.path.dirname(nowcasting_forecast.__file__), "data", "europe_dem_2km_osgb.tif"
+        )
 
         os.environ["TOPOGRAPHIC_FILENAME"] = topo_path
 
