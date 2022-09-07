@@ -73,6 +73,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 # Install requirements
 COPY requirements.txt ./
 RUN source activate ${CONDA_ENV_NAME}
+RUN python -m pip install --upgrade pip
 RUN pip install cartopy
 RUN pip install power-perceiver
 RUN pip install --no-cache-dir --no-dependencies -r requirements.txt
