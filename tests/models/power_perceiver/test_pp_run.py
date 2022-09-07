@@ -39,14 +39,6 @@ def test_run(
         topo_path = os.path.join(os.path.dirname(nowcasting_forecast.__file__), "../data", "europe_dem_2km_osgb.tif")
         os.environ["TOPOGRAPHIC_FILENAME"] = topo_path
 
-        make_batches(
-            config_filename=os.path.join(
-                os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v2.yaml"
-            ),
-            temporary_dir=temp_dir,
-            n_gsps=10,
-        )
-
         dataloader = get_power_perceiver_data_loader(
             src_path=os.path.join(temp_dir, "live")
         )
