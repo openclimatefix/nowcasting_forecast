@@ -67,12 +67,12 @@ ENV CFLAGS="-I/usr/local/include"
 RUN conda create -n ${CONDA_ENV_NAME} python=${PYTHON_VERSION} cartopy eccodes numpy -c conda-forge
 
 
-# Make RUN commands use `bash --login`:
-SHELL ["/bin/bash", "--login", "-c"]
+# Switch to bash shell
+SHELL ["/bin/bash", "-c"]
 
 # Install requirements
 COPY requirements.txt ./
-RUN conda activate ${CONDA_ENV_NAME}
+RUN source activate ${CONDA_ENV_NAME} && pip install power-perceiver
 RUN python -m pip install --upgrade pip
 RUN python -v
 RUN python3 -v
