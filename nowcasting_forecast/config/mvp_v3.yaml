@@ -45,6 +45,10 @@ input_data:
         pv_filename: /not_needed_for_live/
         pv_metadata_filename: /not_needed_for_live/
 
+  #------- Topo ---------
+  topographic:
+    topographic_filename: !ENV ${TOPOGRAPHIC_FILENAME}
+
 output_data:
   filepath: ./batches/
 process:
