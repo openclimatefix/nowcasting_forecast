@@ -72,7 +72,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 
 # Install requirements
 COPY requirements.txt ./
-RUN source activate ${CONDA_ENV_NAME}
+RUN conda activate ${CONDA_ENV_NAME}
 RUN python -m pip install --upgrade pip
 RUN python -v
 RUN python3 -v
