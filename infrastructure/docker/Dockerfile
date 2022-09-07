@@ -1,22 +1,48 @@
-FROM python:3.10-slim
+FROM ubuntu:latest
 
+# Basic setup
+RUN apt update && apt install -y bash \
+                   build-essential \
+                   git \
+                   curl \
+                   ca-certificates \
+                   wget \
+                   libaio-dev \
+                   libgeos++-dev \
+                   libproj-dev \
+                   proj-data \
+                   proj-bin \
+                   && rm -rf /var/lib/apt/lists
+
+ENV CONDA_ENV_NAME=nowcasting_forecast
+ENV PYTHON_VERSION=3.10
 ARG TESTING=0
 
-# make sure it doesnt fail if the docker file doesnt know the git commit
-ARG GIT_PYTHON_REFRESH=quiet
-
-RUN apt-get update
-RUN apt-get install git -y
-
-# copy files
-COPY setup.py app/setup.py
-COPY README.md app/README.md
-COPY requirements.txt app/requirements.txt
-RUN pip install git+https://github.com/SheffieldSolar/PV_Live-API#pvlive_api
+# Install Miniconda and create main env
+ADD https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh miniconda3.sh
+RUN /bin/bash miniconda3.sh -b -p /conda \
+    && echo export PATH=/conda/bin:$PATH >> .bashrc \
+    && rm miniconda3.sh
+ENV PATH="/conda/bin:${PATH}"
+ENV CFLAGS="-I/usr/local/include"
+RUN conda create -n ${CONDA_ENV_NAME} python=${PYTHON_VERSION} cartopy eccodes numpy -c conda-forge
 
 
-# install requirements
-RUN pip install -r app/requirements.txt
+# Switch to bash shell
+SHELL ["/bin/bash", "-c"]
+
+# Install requirements
+COPY requirements.txt ./
+RUN source activate ${CONDA_ENV_NAME} && pip install cartopy power-perceiver
+RUN source activate ${CONDA_ENV_NAME} && pip install ocf_datapipes --no-dependencies
+RUN source activate ${CONDA_ENV_NAME} && pip install git+https://github.com/SheffieldSolar/PV_Live-API#pvlive_api
+RUN source activate ${CONDA_ENV_NAME} && pip install git+https://github.com/peterdudfield/fastai.git@bug/3745-unet-xse_resnext50
+RUN source activate ${CONDA_ENV_NAME} && pip install -r requirements.txt
+RUN source activate ${CONDA_ENV_NAME} && pip install --upgrade pip
+RUN rm requirements.txt
+
+# Set ${CONDA_ENV_NAME} to default virutal environment
+RUN echo "source activate ${CONDA_ENV_NAME}" >> ~/.bashrc
 
 # copy library files
 COPY nowcasting_forecast/ app/nowcasting_forecast/
@@ -25,9 +51,16 @@ COPY tests/ app/tests/
 # change to app folder
 WORKDIR /app
 
-# install library
-RUN pip install -e .
+# install testing requirements
+RUN if [ "$TESTING" = 1 ]; then source activate ${CONDA_ENV_NAME} \
+  && pip install pytest pytest-cov coverage; fi
 
-RUN if [ "$TESTING" = 1 ]; then pip install pytest pytest-cov coverage; fi
+# Cp in the development directory and install
+COPY . ./
+RUN source activate ${CONDA_ENV_NAME} && pip install --no-dependencies -e .
 
-CMD ["python", "-u","nowcasting_forecast/app.py"]
+# Make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "nowcasting_forecast", "/bin/bash", "-c"]
+
+# Example commnad that can be used, need to set API_KEY, API_SECRET and SAVE_DIR
+CMD ["conda", "run", "--no-capture-output", "-n", "nowcasting_forecast", "python", "-u","nowcasting_forecast/app.py"]
