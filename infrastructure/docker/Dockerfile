@@ -73,12 +73,11 @@ SHELL ["/bin/bash", "-c"]
 
 # Install requirements
 COPY requirements.txt ./
-RUN source activate ${CONDA_ENV_NAME}  \
-    && pip install cartopy power-perceiver \
-    && pip install ocf_datapipes --no-dependencies\
-    && pip install git+https://github.com/SheffieldSolar/PV_Live-API#pvlive_api \
-    && pip install -r requirements.txt \
-    && pip install --upgrade pip
+RUN source activate ${CONDA_ENV_NAME} && pip install cartopy power-perceiver
+RUN source activate ${CONDA_ENV_NAME} && pip install ocf_datapipes --no-dependencies
+RUN source activate ${CONDA_ENV_NAME} && pip install git+https://github.com/SheffieldSolar/PV_Live-API#pvlive_api
+RUN source activate ${CONDA_ENV_NAME} && pip install -r requirements.txt
+RUN source activate ${CONDA_ENV_NAME} && pip install --upgrade pip
 RUN rm requirements.txt
 
 # Set ${CONDA_ENV_NAME} to default virutal environment
