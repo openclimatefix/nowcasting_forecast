@@ -89,7 +89,8 @@ COPY tests/ app/tests/
 WORKDIR /app
 
 # install testing requirements
-RUN if [ "$TESTING" = 1 ]; then pip install pytest pytest-cov coverage; fi
+RUN if [ "$TESTING" = 1 ]; then source activate ${CONDA_ENV_NAME} \
+  && pip install pytest pytest-cov coverage; fi
 
 # Cp in the development directory and install
 COPY . ./
