@@ -14,14 +14,13 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
+import pytorch_lightning as pl
 from ocf_datapipes.utils.consts import BatchKey
 from power_perceiver.production.model import FullModel
 from power_perceiver.pytorch_modules.mixture_density_network import get_distribution
-from nowcasting_forecast.models.hub import NowcastingModelHubMixin
-
-import pytorch_lightning as pl
 
 import nowcasting_forecast
+from nowcasting_forecast.models.hub import NowcastingModelHubMixin
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +28,6 @@ NAME = "power_perceiver"
 
 
 class Model(FullModel, NowcastingModelHubMixin):
-
     def load_model(
         self,
         local_filename: Optional[str] = None,

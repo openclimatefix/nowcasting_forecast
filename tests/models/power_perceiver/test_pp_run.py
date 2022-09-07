@@ -7,8 +7,8 @@ import zarr
 
 import nowcasting_forecast
 from nowcasting_forecast.batch import make_batches
-from nowcasting_forecast.models.power_perceiver.model import power_perceiver_run_one_batch, Model
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
+from nowcasting_forecast.models.power_perceiver.model import Model, power_perceiver_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 
@@ -36,12 +36,12 @@ def test_run(
             sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
 
-        topo_path = os.path.join(os.path.dirname(nowcasting_forecast.__file__), "../data", "europe_dem_2km_osgb.tif")
+        topo_path = os.path.join(
+            os.path.dirname(nowcasting_forecast.__file__), "../data", "europe_dem_2km_osgb.tif"
+        )
         os.environ["TOPOGRAPHIC_FILENAME"] = topo_path
 
-        dataloader = get_power_perceiver_data_loader(
-            src_path=os.path.join(temp_dir, "live")
-        )
+        dataloader = get_power_perceiver_data_loader(src_path=os.path.join(temp_dir, "live"))
         _ = general_forecast_run_all_batches(
             session=db_session,
             batches_dir=temp_dir,
