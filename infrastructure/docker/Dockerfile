@@ -76,6 +76,7 @@ COPY requirements.txt ./
 RUN source activate ${CONDA_ENV_NAME}  \
     && pip install cartopy power-perceiver \
     && pip install nowcasting_dataset \
+    && pip install git+https://github.com/SheffieldSolar/PV_Live-API#pvlive_api \
     && pip install --no-cache-dir --no-dependencies -r requirements.txt \
     && pip install --upgrade pip
 RUN rm requirements.txt
