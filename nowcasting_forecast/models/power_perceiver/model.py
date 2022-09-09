@@ -28,6 +28,9 @@ NAME = "power_perceiver"
 
 
 class Model(FullModel, NowcastingModelHubMixin):
+    """
+    Model for Power Perceiver with Hugging Face mixing
+    """
     def load_model(
         self,
         local_filename: Optional[str] = None,
