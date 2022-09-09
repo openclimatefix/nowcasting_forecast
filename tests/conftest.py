@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 import numpy as np
+import pandas as pd
 import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
@@ -131,9 +132,10 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = pd.Timestamp(floor_minutes_dt(datetime.utcnow(), minutes=60) - timedelta(hours=2))
     image_size = 1000
-    time_steps = 10
+    time_steps = 11
+    init_times = 11
 
     x, y = make_image_coords_osgb(
         size_x=image_size,
@@ -145,9 +147,10 @@ def nwp_data():
 
     # time = pd.date_range(start=t0_datetime_utc, freq="30T", periods=10)
     step = [timedelta(minutes=60 * i) for i in range(0, time_steps)]
+    t0_datetime_utcs = [t0_datetime_utc + timedelta(minutes=60 * i) for i in range(0, init_times)]
 
     coords = (
-        ("init_time", [t0_datetime_utc]),
+        ("init_time", t0_datetime_utcs),
         ("variable", np.array(["dswrf"])),
         ("step", step),
         ("x", x),
@@ -159,7 +162,7 @@ def nwp_data():
             np.random.uniform(
                 0,
                 200,
-                size=(1, 1, time_steps, image_size, image_size),
+                size=(len(t0_datetime_utcs), 1, time_steps, image_size, image_size),
             )
         ),
         coords=coords,
