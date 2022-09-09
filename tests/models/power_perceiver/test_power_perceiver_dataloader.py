@@ -1,16 +1,15 @@
 import os
 import tempfile
-import zarr
 
 import numpy as np
 import xarray as xr
+import zarr
+from ocf_datapipes.config.load import load_yaml_configuration
+from ocf_datapipes.config.model import Configuration
+from ocf_datapipes.config.save import save_yaml_configuration
 
 import nowcasting_forecast
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
-
-from ocf_datapipes.config.model import Configuration
-from ocf_datapipes.config.load import load_yaml_configuration
-from ocf_datapipes.config.save import save_yaml_configuration
 
 
 def test_get_power_perceiver_data_loader(
@@ -26,7 +25,7 @@ def test_get_power_perceiver_data_loader(
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.zarr.zip"
         with zarr.ZipStore(nwp_path) as store:
-            nwp_data.to_zarr(store,  compute=True)
+            nwp_data.to_zarr(store, compute=True)
         os.environ["NWP_ZARR_PATH"] = nwp_path
 
         hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.zarr.zip"
