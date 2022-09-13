@@ -64,6 +64,9 @@ def power_perceiver_run_one_batch(
         n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
     history_idx = batch[BatchKey.gsp_t0_idx]
     # run model
+
+    assert BatchKey.hrvsatellite_actual in batch.keys()
+
     network_output = pytorch_model(batch)
     distribution = get_distribution(network_output["predicted_gsp_power"][history_idx + 1 :])
     predictions = distribution.mean
