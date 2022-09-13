@@ -400,15 +400,12 @@ def hrv_sat_data_2d(hrv_sat_data_general):
 
     sat.__setitem__("x_osgb", xr.DataArray(xx, dims=["x_geostationary", "y_geostationary"]))
     sat.__setitem__(
-        "y_osgb", xr.DataArray(yy[::-1, :], dims=["x_geostationary", "y_geostationary"])
+        "y_osgb", xr.DataArray(yy, dims=["x_geostationary", "y_geostationary"])
     )
 
-    # cheat to make coorindates work
-    sat.x_osgb[0, 0] -= 1
-    sat.y_osgb[0, 0] += 1
-
-    assert sat.x_osgb[0, 0] < sat.x_osgb[0, -1]
-    assert sat.y_osgb[0, 0] > sat.y_osgb[-1, 0]
+    # cheat to make coordinates work
+    sat.x_osgb[:, 0] += 1
+    sat.y_osgb[0, :] -= 1
 
     return sat.to_dataset(name="data").sortby("time")
 

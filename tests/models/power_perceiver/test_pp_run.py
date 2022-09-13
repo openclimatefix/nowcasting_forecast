@@ -16,7 +16,7 @@ def test_run(
     nwp_data,
     pv_yields_and_systems,
     sat_data,
-    hrv_sat_data,
+    hrv_sat_data_2d,
     db_session,
     input_data_last_updated,
     gsp_yields_and_systems,
@@ -29,7 +29,7 @@ def test_run(
         os.environ["NWP_PATH"] = nwp_path
         hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.zarr.zip"
         with zarr.ZipStore(hrv_sat_path) as store:
-            hrv_sat_data.to_zarr(store, compute=True)
+            hrv_sat_data_2d.to_zarr(store, compute=True)
         os.environ["HRV_SAT_PATH"] = hrv_sat_path
         sat_path = f"{temp_dir}/sat_unittest.zarr.zip"
         with zarr.ZipStore(sat_path) as store:
