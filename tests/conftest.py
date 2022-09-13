@@ -203,7 +203,7 @@ def pv_yields_and_systems(db_session):
         ml_capacity_kw=124,
     ).to_orm()
 
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.now(tz=timezone.utc)) - timedelta(hours=2)
 
     pv_yield_sqls = []
     for hour in range(0, 6):
