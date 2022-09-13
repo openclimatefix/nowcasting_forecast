@@ -4,16 +4,14 @@ import os
 import tempfile
 
 import zarr
+from ocf_datapipes.config.load import load_yaml_configuration
+from ocf_datapipes.config.model import Configuration
+from ocf_datapipes.config.save import save_yaml_configuration
 
 import nowcasting_forecast
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
 from nowcasting_forecast.models.power_perceiver.model import Model, power_perceiver_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
-
-from ocf_datapipes.config.load import load_yaml_configuration
-from ocf_datapipes.config.model import Configuration
-from ocf_datapipes.config.save import save_yaml_configuration
-
 
 
 def test_run(
