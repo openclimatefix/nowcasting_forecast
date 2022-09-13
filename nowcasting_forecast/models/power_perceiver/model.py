@@ -53,9 +53,7 @@ class Model(FullModel, NowcastingModelHubMixin):
 
 
 def power_perceiver_run_one_batch(
-    batch: dict[BatchKey, np.ndarray],
-    pytorch_model: FullModel,
-        n_examples:int = None
+    batch: dict[BatchKey, np.ndarray], pytorch_model: FullModel, n_examples: int = None
 ) -> pd.DataFrame:
     """Run model for one batch"""
 
