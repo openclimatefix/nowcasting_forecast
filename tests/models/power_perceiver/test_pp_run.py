@@ -6,10 +6,14 @@ import tempfile
 import zarr
 
 import nowcasting_forecast
-from nowcasting_forecast.batch import make_batches
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
 from nowcasting_forecast.models.power_perceiver.model import Model, power_perceiver_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
+
+from ocf_datapipes.config.load import load_yaml_configuration
+from ocf_datapipes.config.model import Configuration
+from ocf_datapipes.config.save import save_yaml_configuration
+
 
 
 def test_run(
@@ -42,7 +46,18 @@ def test_run(
 
         os.environ["TOPOGRAPHIC_FILENAME"] = topo_path
 
-        dataloader = get_power_perceiver_data_loader(src_path=os.path.join(temp_dir, "live"))
+        # make configuration
+        configuration_file = os.path.join(
+            os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v3.yaml"
+        )
+
+        filename = temp_dir + "/configuration.yaml"
+        configuration = Configuration(**load_yaml_configuration(configuration_file).__dict__)
+        configuration.input_data.pv.pv_image_size_meters_height = 10000000
+        configuration.input_data.pv.pv_image_size_meters_width = 10000000
+        save_yaml_configuration(configuration=configuration, filename=filename)
+
+        dataloader = get_power_perceiver_data_loader(configuration_file=filename)
         _ = general_forecast_run_all_batches(
             session=db_session,
             batches_dir=temp_dir,
