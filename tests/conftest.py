@@ -402,8 +402,8 @@ def hrv_sat_data_2d(hrv_sat_data_general):
     sat.__setitem__("y_osgb", xr.DataArray(yy[::-1,:], dims=["x_geostationary", "y_geostationary"]))
 
     # cheat to make coorindates work
-    sat.x_osgb[0, 0] += 1
-    sat.y_osgb[0, 0] -= 1
+    sat.x_osgb[0, 0] -= 1
+    sat.y_osgb[0, 0] += 1
 
     assert sat.x_osgb[0, 0] < sat.x_osgb[0, -1]
     assert sat.y_osgb[0, 0] > sat.y_osgb[-1, 0]
