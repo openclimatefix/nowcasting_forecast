@@ -29,7 +29,7 @@ input_data:
       - HRV
     hrvsatellite_image_size_pixels_width: 256
     hrvsatellite_image_size_pixels_height: 128
-    history_minutes: 60
+    history_minutes: 120
     forecast_minutes: 0
     hrvsatellite_zarr_path: !ENV ${HRV_SATELLITE_ZARR_PATH}
     is_live: True

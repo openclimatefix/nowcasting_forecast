@@ -7,6 +7,7 @@ import zarr
 from ocf_datapipes.config.load import load_yaml_configuration
 from ocf_datapipes.config.model import Configuration
 from ocf_datapipes.config.save import save_yaml_configuration
+from ocf_datapipes.utils.consts import BatchKey
 
 import nowcasting_forecast
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
@@ -52,4 +53,8 @@ def test_get_power_perceiver_data_loader(
 
         data_loader = get_power_perceiver_data_loader(configuration_file=filename)
 
-        _ = next(data_loader)
+        batch = next(data_loader)
+
+        assert BatchKey.hrvsatellite_actual in batch.keys()
+        assert len(batch[BatchKey.hrvsatellite_actual][:, :12, 0].shape) == 4  # (example, time, y, x)
+
