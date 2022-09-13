@@ -399,9 +399,7 @@ def hrv_sat_data_2d(hrv_sat_data_general):
     xx, yy = np.meshgrid(sat.x_geostationary.values, sat.y_geostationary.values, indexing="ij")
 
     sat.__setitem__("x_osgb", xr.DataArray(xx, dims=["x_geostationary", "y_geostationary"]))
-    sat.__setitem__(
-        "y_osgb", xr.DataArray(yy, dims=["x_geostationary", "y_geostationary"])
-    )
+    sat.__setitem__("y_osgb", xr.DataArray(yy, dims=["x_geostationary", "y_geostationary"]))
 
     # cheat to make coordinates work
     sat.x_osgb[:, 0] += 1
