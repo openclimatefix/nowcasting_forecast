@@ -17,7 +17,6 @@ from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 def test_run(
     nwp_data,
     pv_yields_and_systems,
-    sat_data,
     hrv_sat_data_2d,
     db_session,
     input_data_last_updated,
@@ -26,17 +25,15 @@ def test_run(
 
     with tempfile.TemporaryDirectory() as temp_dir:
         # save nwp data
-        nwp_path = f"{temp_dir}/unittest.netcdf"
-        nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
-        os.environ["NWP_PATH"] = nwp_path
+        nwp_path = f"{temp_dir}/unittest.zarr.zip"
+        with zarr.ZipStore(nwp_path) as store:
+            nwp_data.to_zarr(store, compute=True)
+        os.environ["NWP_ZARR_PATH"] = nwp_path
+
         hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.zarr.zip"
         with zarr.ZipStore(hrv_sat_path) as store:
             hrv_sat_data_2d.to_zarr(store, compute=True)
-        os.environ["HRV_SAT_PATH"] = hrv_sat_path
-        sat_path = f"{temp_dir}/sat_unittest.zarr.zip"
-        with zarr.ZipStore(sat_path) as store:
-            sat_data.to_zarr(store, compute=True)
-        os.environ["SAT_PATH"] = sat_path
+        os.environ["HRV_SATELLITE_ZARR_PATH"] = hrv_sat_path
 
         topo_path = os.path.join(
             os.path.dirname(nowcasting_forecast.__file__), "data", "europe_dem_2km_osgb.tif"

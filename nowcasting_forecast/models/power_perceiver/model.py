@@ -56,13 +56,15 @@ class Model(FullModel, NowcastingModelHubMixin):
 def power_perceiver_run_one_batch(
     batch: dict[BatchKey, np.ndarray],
     pytorch_model: FullModel,
+        n_examples:int = None
 ) -> pd.DataFrame:
     """Run model for one batch"""
 
     # TODO Remove when the model is retrained
     pytorch_model.set_gsp_id_to_one = True
 
-    n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
+    if n_examples is None:
+        n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
     history_idx = batch[BatchKey.gsp_t0_idx][0]
     # run model
     network_output = pytorch_model(batch)
