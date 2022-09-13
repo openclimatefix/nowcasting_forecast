@@ -56,5 +56,6 @@ def test_get_power_perceiver_data_loader(
         batch = next(data_loader)
 
         assert BatchKey.hrvsatellite_actual in batch.keys()
-        assert len(batch[BatchKey.hrvsatellite_actual][:, :12, 0].shape) == 4  # (example, time, y, x)
-
+        assert (
+            len(batch[BatchKey.hrvsatellite_actual][:, :12, 0].shape) == 4
+        )  # (example, time, y, x)
