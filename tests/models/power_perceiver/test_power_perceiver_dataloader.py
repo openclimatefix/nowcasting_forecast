@@ -16,7 +16,7 @@ from ocf_datapipes.config.save import save_yaml_configuration
 def test_get_power_perceiver_data_loader(
     nwp_data,
     pv_yields_and_systems,
-    hrv_sat_data,
+    hrv_sat_data_2d,
     db_session,
     input_data_last_updated,
     gsp_yields_and_systems,
@@ -31,7 +31,7 @@ def test_get_power_perceiver_data_loader(
 
         hrv_sat_path = f"{temp_dir}/hrv_sat_unittest.zarr.zip"
         with zarr.ZipStore(hrv_sat_path) as store:
-            hrv_sat_data.to_zarr(store, compute=True)
+            hrv_sat_data_2d.to_zarr(store, compute=True)
         os.environ["HRV_SATELLITE_ZARR_PATH"] = hrv_sat_path
 
         topo_path = os.path.join(
@@ -51,6 +51,6 @@ def test_get_power_perceiver_data_loader(
         configuration.input_data.pv.pv_image_size_meters_width = 10000000
         save_yaml_configuration(configuration=configuration, filename=filename)
 
-        datalaoder = get_power_perceiver_data_loader(configuration_file=filename)
+        data_loader = get_power_perceiver_data_loader(configuration_file=filename)
 
-        _ = next(datalaoder)
+        _ = next(data_loader)

@@ -132,7 +132,9 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = pd.Timestamp(floor_minutes_dt(datetime.utcnow(), minutes=60) - timedelta(hours=2))
+    t0_datetime_utc = pd.Timestamp(
+        floor_minutes_dt(datetime.utcnow(), minutes=60) - timedelta(hours=2)
+    )
     image_size = 1000
     time_steps = 11
     init_times = 11
@@ -340,7 +342,7 @@ def sat_data():
 
 
 @pytest.fixture()
-def hrv_sat_data():
+def hrv_sat_data_general():
 
     # middle of the UK
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
@@ -372,8 +374,40 @@ def hrv_sat_data():
     )  # Fake data for testing!
     area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
+
+    return sat
+
+
+@pytest.fixture()
+def hrv_sat_data(hrv_sat_data_general):
+
+    sat = hrv_sat_data_general
+
     sat["x_osgb"] = sat.x_geostationary
     sat["y_osgb"] = sat.y_geostationary
+    return sat.to_dataset(name="data").sortby("time")
+
+
+@pytest.fixture()
+def hrv_sat_data_2d(hrv_sat_data_general):
+    """
+    Add 2d x_osgb to the satellite images
+    """
+
+    sat = hrv_sat_data_general
+
+    xx, yy = np.meshgrid(sat.x_geostationary.values, sat.y_geostationary.values, indexing="ij")
+
+    sat.__setitem__("x_osgb", xr.DataArray(xx, dims=["x_geostationary", "y_geostationary"]))
+    sat.__setitem__("y_osgb", xr.DataArray(yy[::-1,:], dims=["x_geostationary", "y_geostationary"]))
+
+    # cheat to make coorindates work
+    sat.x_osgb[0, 0] += 1
+    sat.y_osgb[0, 0] -= 1
+
+    assert sat.x_osgb[0, 0] < sat.x_osgb[0, -1]
+    assert sat.y_osgb[0, 0] > sat.y_osgb[-1, 0]
+
     return sat.to_dataset(name="data").sortby("time")
 
 
