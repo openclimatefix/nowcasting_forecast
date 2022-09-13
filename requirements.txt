@@ -17,5 +17,6 @@ pvlib
 protobuf<4.21.0
 # ocfpipes see requirements-no-deps.txt
 torchdata
+bottleneck
 pytorch_msssim
 power-perceiver
