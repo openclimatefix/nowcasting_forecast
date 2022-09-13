@@ -3,6 +3,7 @@ import tempfile
 
 import pytest
 import torch
+
 from nowcasting_forecast.models.power_perceiver.model import Model
 
 
