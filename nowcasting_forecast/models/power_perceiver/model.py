@@ -14,7 +14,6 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
-
 from ocf_datapipes.utils.consts import BatchKey
 from power_perceiver.production.model import FullModel
 from power_perceiver.pytorch_modules.mixture_density_network import get_distribution
