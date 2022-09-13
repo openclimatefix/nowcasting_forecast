@@ -1,12 +1,9 @@
 import os
 import tempfile
 
-import numpy as np
 import pytest
 import torch
 from nowcasting_forecast.models.power_perceiver.model import Model
-
-import nowcasting_forecast
 
 
 def test_model_init():
@@ -39,11 +36,3 @@ def test_model_load_weights_error():
 
     with pytest.raises(Exception):
         model.load_from_checkpoint(checkpoint_path="./error.ckpt")
-
-
-def test_forward():
-
-    # Need to make fake NumpyBatch
-    model = Model(set_gsp_id_to_one=True)
-
-    # model.forward(batch)
