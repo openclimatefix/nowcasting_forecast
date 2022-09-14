@@ -4,6 +4,7 @@ import os
 from typing import Optional
 
 from ocf_datapipes.production.power_perceiver import power_perceiver_production_datapipe
+from torch.utils.data.dataloader import DataLoader
 
 import nowcasting_forecast
 
@@ -25,4 +26,5 @@ def get_power_perceiver_data_loader(
     datapipes = power_perceiver_production_datapipe(configuration_file)
 
     logger.debug("Done making Power Perceiver Data Loader")
-    return iter(datapipes)
+    data_loader = DataLoader(dataset=datapipes, batch_size=None)
+    return iter(data_loader)
