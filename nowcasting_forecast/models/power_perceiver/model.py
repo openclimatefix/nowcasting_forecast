@@ -14,6 +14,7 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
+import torch
 from ocf_datapipes.utils.consts import BatchKey
 from power_perceiver.production.model import FullModel
 from power_perceiver.pytorch_modules.mixture_density_network import get_distribution
@@ -24,8 +25,6 @@ from nowcasting_forecast.models.hub import NowcastingModelHubMixin
 logger = logging.getLogger(__name__)
 
 NAME = "power_perceiver"
-
-import torch
 
 
 class Model(FullModel, NowcastingModelHubMixin):
