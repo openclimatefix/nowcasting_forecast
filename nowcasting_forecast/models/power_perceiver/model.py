@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 NAME = "power_perceiver"
 
+import torch
+
 
 class Model(FullModel, NowcastingModelHubMixin):
     """
@@ -41,9 +43,18 @@ class Model(FullModel, NowcastingModelHubMixin):
         """
 
         if use_hf:
-            logger.debug('Loading mode from Hugging Face "openclimatefix/power_perceiver" ')
-            model = Model.from_pretrained("openclimatefix/power_perceiver")
-            logger.debug("Loading mode from Hugging Face: done")
+            local_filename = 'power_perciever.ckpt'
+            if os.path.isfile(local_filename):
+                logger.debug(f'Loading from file {local_filename}')
+                model = self.load_from_checkpoint(checkpoint_path=local_filename)
+            else:
+                logger.debug('Loading mode from Hugging Face "openclimatefix/power_perceiver" ')
+                model = Model.from_pretrained("openclimatefix/power_perceiver")
+                logger.debug("Loading mode from Hugging Face: done")
+
+                logger.debug(f'Saving model to {local_filename}, so it quicker next time')
+                torch.save({"state_dict": model.state_dict()}, local_filename)
+
             return model
         else:
             logger.debug(f"Loading model weights from {local_filename}")
