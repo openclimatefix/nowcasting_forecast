@@ -8,7 +8,6 @@ functions:
  - convert_to_forecast_sql: convert MLResults to ForecastSQL
 """
 
-import torch
 import logging
 import os
 from datetime import datetime, timezone
@@ -17,6 +16,7 @@ from typing import List, Optional
 
 import numpy as np
 import pandas as pd
+import torch
 from nowcasting_datamodel.models import (
     Forecast,
     ForecastSQL,
