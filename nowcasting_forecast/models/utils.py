@@ -8,6 +8,7 @@ functions:
  - convert_to_forecast_sql: convert MLResults to ForecastSQL
 """
 
+import torch
 import logging
 import os
 from datetime import datetime, timezone
@@ -264,7 +265,8 @@ def general_forecast_run_all_batches(
         if ml_model is not None:
             callbacks_args["pytorch_model"] = model
 
-        forecast_one_batch = callable_function_for_on_batch(**callbacks_args)
+        with torch.no_grad():
+            forecast_one_batch = callable_function_for_on_batch(**callbacks_args)
 
         if i == 0:
             logger.debug(

@@ -54,6 +54,7 @@ class Model(FullModel, NowcastingModelHubMixin):
                 logger.debug(f"Saving model to {local_filename}, so it quicker next time")
                 torch.save({"state_dict": model.state_dict()}, local_filename)
 
+            model.eval()
             return model
         else:
             logger.debug(f"Loading model weights from {local_filename}")
