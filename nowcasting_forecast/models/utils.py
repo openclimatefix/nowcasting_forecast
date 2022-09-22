@@ -309,4 +309,7 @@ def general_forecast_run_all_batches(
 
     logger.info(f"Made {len(forecast_sql)} forecasts")
 
+    # don't need the model any more
+    del model
+
     return forecast_sql
