@@ -320,10 +320,6 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
             id = batch.gsp.gsp_id[0 : self.batch_size, 0]
 
-            # horrible fix to remove gsp_id embedding,
-            # this sets all embeddings to 1
-            id = torch.zeros([self.batch_size]) + 1
-
             id = id.type(torch.IntTensor)
             id = id.to(out.device)
             id_embedding = self.pv_system_id_embedding(id)
@@ -354,7 +350,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         if use_hf:
             _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_cnn" ')
-            model = Model.from_pretrained("openclimatefix/nowcasting_cnn_v4")
+            model = Model.from_pretrained("openclimatefix/nowcasting_cnn_v5")
             _LOG.debug("Loading mode from Hugging Face: done")
             return model
         else:

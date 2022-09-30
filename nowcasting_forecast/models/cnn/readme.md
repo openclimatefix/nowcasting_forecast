@@ -35,3 +35,9 @@ https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRED-1171/
 This model can still predict GSP, even if GSP historic data is NaN.
 
 https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRED-1192/
+
+### v5
+
+Update to new GSP data
+
+https://app.neptune.ai/o/OpenClimateFix/org/predict-pv-yield/e/PRED-1197/
