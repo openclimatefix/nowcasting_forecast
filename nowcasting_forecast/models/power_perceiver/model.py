@@ -26,6 +26,8 @@ logger = logging.getLogger(__name__)
 
 NAME = "power_perceiver"
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 
 class Model(FullModel, NowcastingModelHubMixin):
     """
@@ -77,6 +79,10 @@ def power_perceiver_run_one_batch(
     # run model
 
     assert BatchKey.hrvsatellite_actual in batch.keys()
+
+    for key in BatchKey:
+        if key in batch.keys():
+            batch[key] = batch[key].to(device)
 
     network_output = pytorch_model(batch)
     distribution = get_distribution(network_output["predicted_gsp_power"][history_idx + 1 :])
