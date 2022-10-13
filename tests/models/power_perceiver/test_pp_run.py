@@ -63,5 +63,5 @@ def test_run(
             dataloader=dataloader,
             use_hf=True,
             n_gsps=10,
-            configuration_file=filename
+            configuration_file=filename,
         )

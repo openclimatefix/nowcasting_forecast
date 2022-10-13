@@ -61,14 +61,17 @@ def test_get_power_perceiver_data_loader(
             len(batch[BatchKey.hrvsatellite_actual][:, :12, 0].shape) == 4
         )  # (example, time, y, x)
 
-        assert batch[BatchKey.pv].shape == (4,37,8)  # (example, time, y, x)
+        assert batch[BatchKey.pv].shape == (4, 37, 8)  # (example, time, y, x)
 
-        assert batch[BatchKey.hrvsatellite_time_utc].shape == (4,37)
-        assert batch[BatchKey.hrvsatellite_time_utc].shape == (4,37)  # 12 history + now + 24 future = 19
-        assert batch[BatchKey.nwp_target_time_utc].shape == (4,10)
-        assert batch[BatchKey.nwp_init_time_utc].shape == (4,10)
-        assert batch[BatchKey.pv_time_utc].shape == (4,37)
-        assert batch[BatchKey.gsp_time_utc].shape == (4,19)  # 12 history + now + 6 future
+        assert batch[BatchKey.hrvsatellite_time_utc].shape == (4, 37)
+        assert batch[BatchKey.hrvsatellite_time_utc].shape == (
+            4,
+            37,
+        )  # 12 history + now + 24 future = 19
+        assert batch[BatchKey.nwp_target_time_utc].shape == (4, 10)
+        assert batch[BatchKey.nwp_init_time_utc].shape == (4, 10)
+        assert batch[BatchKey.pv_time_utc].shape == (4, 37)
+        assert batch[BatchKey.gsp_time_utc].shape == (4, 19)  # 12 history + now + 6 future
 
         assert batch[BatchKey.hrvsatellite_actual].shape == (
             4,
@@ -86,4 +89,3 @@ def test_get_power_perceiver_data_loader(
         )  # 2nd dim is 1 history + now + 9 future ?? TODO check
         assert batch[BatchKey.gsp].shape == (4, 19, 1)  # 2nd dim is 4 history + now + 2 future
         assert batch[BatchKey.hrvsatellite_surface_height].shape == (4, 128, 256)
-

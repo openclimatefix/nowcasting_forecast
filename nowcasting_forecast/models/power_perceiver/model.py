@@ -98,7 +98,7 @@ def power_perceiver_run_one_batch(
     gsp_ids = batch[BatchKey.gsp_id].detach().cpu().numpy()
     if len(gsp_ids.shape) == 2:
         # it seems to have shape [batch_size,1]
-        gsp_ids = gsp_ids[:,0]
+        gsp_ids = gsp_ids[:, 0]
     capacity = capacity.loc[gsp_ids]
     logger.warning(capacity)
     logger.warning(predictions.detach().cpu().numpy())
@@ -122,7 +122,7 @@ def power_perceiver_run_one_batch(
 
         # t0 value value
         t0_datetime_utc = pd.to_datetime(
-            batch[BatchKey.gsp_time_utc][i,batch[BatchKey.gsp_t0_idx]], utc=True
+            batch[BatchKey.gsp_time_utc][i, batch[BatchKey.gsp_t0_idx]], utc=True
         ).replace(tzinfo=timezone.utc)
 
         for t_index in range(len(predictions[0])):
