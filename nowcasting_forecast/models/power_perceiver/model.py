@@ -79,9 +79,7 @@ def power_perceiver_run_one_batch(
 
     assert BatchKey.hrvsatellite_actual in batch.keys()
 
-    for key in BatchKey:
-        if key in batch.keys():
-            batch[key] = batch[key].to(device)
+    # TODO need to data move to device if using GPU
 
     network_output = pytorch_model(batch)
     logger.warning(network_output["predicted_gsp_power"].shape)
