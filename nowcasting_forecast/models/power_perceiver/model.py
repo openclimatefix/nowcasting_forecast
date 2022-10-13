@@ -119,7 +119,7 @@ def power_perceiver_run_one_batch(
 
         # t0 value value
         t0_datetime_utc = pd.to_datetime(
-            batch[BatchKey.gsp_time_utc][i, batch[BatchKey.gsp_t0_idx]], utc=True, unit='s'
+            batch[BatchKey.gsp_time_utc][i, batch[BatchKey.gsp_t0_idx]], utc=True, unit="s"
         ).replace(tzinfo=timezone.utc)
 
         for t_index in range(len(predictions[0])):
