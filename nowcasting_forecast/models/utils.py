@@ -31,7 +31,7 @@ from nowcasting_datamodel.read.read import (
     get_model,
 )
 from nowcasting_datamodel.utils import datetime_must_have_timezone
-from nowcasting_dataset.config.load import load_yaml_configuration
+from ocf_datapipes.config.load import load_yaml_configuration
 from pydantic import BaseModel, Field, validator
 from sqlalchemy.orm.session import Session
 

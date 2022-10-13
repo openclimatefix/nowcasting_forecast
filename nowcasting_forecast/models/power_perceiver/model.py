@@ -85,7 +85,8 @@ def power_perceiver_run_one_batch(
             batch[key] = batch[key].to(device)
 
     network_output = pytorch_model(batch)
-    distribution = get_distribution(network_output["predicted_gsp_power"][history_idx + 1 :])
+    logger.warning(network_output["predicted_gsp_power"].shape)
+    distribution = get_distribution(network_output["predicted_gsp_power"])
     predictions = distribution.mean
 
     # re-normalize
@@ -94,7 +95,13 @@ def power_perceiver_run_one_batch(
         os.path.join(os.path.dirname(nowcasting_forecast.__file__), "data", "gsp_capacity.csv"),
         index_col=["gsp_id"],
     )
-    capacity = capacity.loc[batch[BatchKey.gsp_id]]
+    gsp_ids = batch[BatchKey.gsp_id].detach().cpu().numpy()
+    if len(gsp_ids.shape) == 2:
+        # it seems to have shape [batch_size,1]
+        gsp_ids = gsp_ids[:,0]
+    capacity = capacity.loc[gsp_ids]
+    logger.warning(capacity)
+    logger.warning(predictions.detach().cpu().numpy())
 
     # multiply predictions by capacities
     predictions = capacity.values * predictions.detach().cpu().numpy()
@@ -107,11 +114,15 @@ def power_perceiver_run_one_batch(
 
         # get id from location
         # TODO These are all currently set to 1 as part of the change to new GSPs
-        gsp_id = batch[BatchKey.gsp_id][i]
+        if len(batch[BatchKey.gsp_id].shape) == 2:
+            logger.debug(batch[BatchKey.gsp_id].shape)
+            gsp_id = batch[BatchKey.gsp_id][i][0]
+        else:
+            gsp_id = batch[BatchKey.gsp_id][i]
 
         # t0 value value
         t0_datetime_utc = pd.to_datetime(
-            batch[BatchKey.gsp_time_utc][batch[BatchKey.gsp_t0_idx][i]], utc=True
+            batch[BatchKey.gsp_time_utc][i,batch[BatchKey.gsp_t0_idx]], utc=True
         ).replace(tzinfo=timezone.utc)
 
         for t_index in range(len(predictions[0])):

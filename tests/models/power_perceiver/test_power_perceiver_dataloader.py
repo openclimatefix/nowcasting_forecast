@@ -49,6 +49,7 @@ def test_get_power_perceiver_data_loader(
         configuration = Configuration(**load_yaml_configuration(configuration_file).__dict__)
         configuration.input_data.pv.pv_image_size_meters_height = 10000000
         configuration.input_data.pv.pv_image_size_meters_width = 10000000
+        configuration.input_data.pv.n_pv_systems_per_example = 8
         save_yaml_configuration(configuration=configuration, filename=filename)
 
         data_loader = get_power_perceiver_data_loader(configuration_file=filename)
@@ -59,3 +60,30 @@ def test_get_power_perceiver_data_loader(
         assert (
             len(batch[BatchKey.hrvsatellite_actual][:, :12, 0].shape) == 4
         )  # (example, time, y, x)
+
+        assert batch[BatchKey.pv].shape == (4,37,8)  # (example, time, y, x)
+
+        assert batch[BatchKey.hrvsatellite_time_utc].shape == (4,37)
+        assert batch[BatchKey.hrvsatellite_time_utc].shape == (4,37)  # 12 history + now + 24 future = 19
+        assert batch[BatchKey.nwp_target_time_utc].shape == (4,10)
+        assert batch[BatchKey.nwp_init_time_utc].shape == (4,10)
+        assert batch[BatchKey.pv_time_utc].shape == (4,37)
+        assert batch[BatchKey.gsp_time_utc].shape == (4,19)  # 12 history + now + 6 future
+
+        assert batch[BatchKey.hrvsatellite_actual].shape == (
+            4,
+            13,
+            1,
+            128,
+            256,
+        )  # 2nd dim is 12 history + now
+        assert batch[BatchKey.nwp].shape == (
+            4,
+            10,
+            9,
+            4,
+            4,
+        )  # 2nd dim is 1 history + now + 9 future ?? TODO check
+        assert batch[BatchKey.gsp].shape == (4, 19, 1)  # 2nd dim is 4 history + now + 2 future
+        assert batch[BatchKey.hrvsatellite_surface_height].shape == (4, 128, 256)
+

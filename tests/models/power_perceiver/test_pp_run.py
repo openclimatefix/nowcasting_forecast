@@ -50,7 +50,7 @@ def test_run(
         configuration = Configuration(**load_yaml_configuration(configuration_file).__dict__)
         configuration.input_data.pv.pv_image_size_meters_height = 10000000
         configuration.input_data.pv.pv_image_size_meters_width = 10000000
-        configuration.process.batch_size = 2
+        configuration.process.batch_size = 4
         save_yaml_configuration(configuration=configuration, filename=filename)
 
         dataloader = get_power_perceiver_data_loader(configuration_file=filename)
@@ -63,4 +63,5 @@ def test_run(
             dataloader=dataloader,
             use_hf=True,
             n_gsps=10,
+            configuration_file=filename
         )
