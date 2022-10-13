@@ -75,7 +75,6 @@ def power_perceiver_run_one_batch(
 
     if n_examples is None:
         n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
-    history_idx = batch[BatchKey.gsp_t0_idx]
     # run model
 
     assert BatchKey.hrvsatellite_actual in batch.keys()
