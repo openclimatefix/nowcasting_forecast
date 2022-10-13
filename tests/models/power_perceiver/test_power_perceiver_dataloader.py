@@ -41,7 +41,7 @@ def test_get_power_perceiver_data_loader(
 
         # make configuration
         configuration_file = os.path.join(
-            os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v3.yaml"
+            os.path.dirname(nowcasting_forecast.__file__), "config", "pp_v1.yaml"
         )
 
         # for testing lets make sure there are plently of PV system in the area of intrested
