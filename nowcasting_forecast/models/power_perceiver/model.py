@@ -10,34 +10,80 @@
 import logging
 import os
 from datetime import timedelta, timezone
+from typing import Optional
 
 import numpy as np
 import pandas as pd
+import torch
 from ocf_datapipes.utils.consts import BatchKey
 from power_perceiver.production.model import FullModel
 from power_perceiver.pytorch_modules.mixture_density_network import get_distribution
 
 import nowcasting_forecast
+from nowcasting_forecast.models.hub import NowcastingModelHubMixin
 
 logger = logging.getLogger(__name__)
 
 NAME = "power_perceiver"
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
+class Model(FullModel, NowcastingModelHubMixin):
+    """
+    Model for Power Perceiver with Hugging Face mixing
+    """
+
+    def load_model(
+        self,
+        local_filename: Optional[str] = None,
+        use_hf: bool = True,
+    ):
+        """
+        Load model weights
+        """
+
+        if use_hf:
+            local_filename = "power_perciever.ckpt"
+            if os.path.isfile(local_filename):
+                logger.debug(f"Loading from file {local_filename}")
+                model = self.load_from_checkpoint(checkpoint_path=local_filename)
+            else:
+                logger.debug('Loading mode from Hugging Face "openclimatefix/power_perceiver" ')
+                model = Model.from_pretrained("openclimatefix/power_perceiver")
+                logger.debug("Loading mode from Hugging Face: done")
+
+                logger.debug(f"Saving model to {local_filename}, so it quicker next time")
+                torch.save({"state_dict": model.state_dict()}, local_filename)
+
+            model.eval()
+            return model
+        else:
+            logger.debug(f"Loading model weights from {local_filename}")
+            model = self.load_from_checkpoint(checkpoint_path=local_filename)
+            logger.debug("Loading model weights: done")
+            return model
+
 
 def power_perceiver_run_one_batch(
-    batch: dict[BatchKey, np.ndarray],
-    pytorch_model: FullModel,
+    batch: dict[BatchKey, np.ndarray], pytorch_model: FullModel, n_examples: int = None
 ) -> pd.DataFrame:
     """Run model for one batch"""
 
     # TODO Remove when the model is retrained
     pytorch_model.set_gsp_id_to_one = True
 
-    n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
-    history_idx = batch[BatchKey.gsp_t0_idx][0]
+    if n_examples is None:
+        n_examples = batch[BatchKey.hrvsatellite_actual].shape[0]
     # run model
+
+    assert BatchKey.hrvsatellite_actual in batch.keys()
+
+    # TODO need to data move to device if using GPU
+
     network_output = pytorch_model(batch)
-    distribution = get_distribution(network_output["predicted_gsp_power"][history_idx + 1 :])
+    logger.warning(network_output["predicted_gsp_power"].shape)
+    distribution = get_distribution(network_output["predicted_gsp_power"])
     predictions = distribution.mean
 
     # re-normalize
@@ -46,7 +92,13 @@ def power_perceiver_run_one_batch(
         os.path.join(os.path.dirname(nowcasting_forecast.__file__), "data", "gsp_capacity.csv"),
         index_col=["gsp_id"],
     )
-    capacity = capacity.loc[batch[BatchKey.gsp_id]]
+    gsp_ids = batch[BatchKey.gsp_id].detach().cpu().numpy()
+    if len(gsp_ids.shape) == 2:
+        # it seems to have shape [batch_size,1]
+        gsp_ids = gsp_ids[:, 0]
+    capacity = capacity.loc[gsp_ids]
+    logger.warning(capacity)
+    logger.warning(predictions.detach().cpu().numpy())
 
     # multiply predictions by capacities
     predictions = capacity.values * predictions.detach().cpu().numpy()
@@ -59,11 +111,15 @@ def power_perceiver_run_one_batch(
 
         # get id from location
         # TODO These are all currently set to 1 as part of the change to new GSPs
-        gsp_id = batch[BatchKey.gsp_id][i]
+        if len(batch[BatchKey.gsp_id].shape) == 2:
+            logger.debug(batch[BatchKey.gsp_id].shape)
+            gsp_id = batch[BatchKey.gsp_id][i][0]
+        else:
+            gsp_id = batch[BatchKey.gsp_id][i]
 
         # t0 value value
         t0_datetime_utc = pd.to_datetime(
-            batch[BatchKey.gsp_time_utc][batch[BatchKey.gsp_t0_idx][i]], utc=True
+            batch[BatchKey.gsp_time_utc][i, batch[BatchKey.gsp_t0_idx]], utc=True
         ).replace(tzinfo=timezone.utc)
 
         for t_index in range(len(predictions[0])):

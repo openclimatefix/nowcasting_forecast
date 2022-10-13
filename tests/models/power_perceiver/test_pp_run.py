@@ -1,19 +1,20 @@
+""" Test to make one batch and run it through the model """
+
 import os
 import tempfile
 
-import numpy as np
-import xarray as xr
 import zarr
 from ocf_datapipes.config.load import load_yaml_configuration
 from ocf_datapipes.config.model import Configuration
 from ocf_datapipes.config.save import save_yaml_configuration
-from ocf_datapipes.utils.consts import BatchKey
 
 import nowcasting_forecast
 from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
+from nowcasting_forecast.models.power_perceiver.model import Model, power_perceiver_run_one_batch
+from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 
-def test_get_power_perceiver_data_loader(
+def test_run(
     nwp_data,
     pv_yields_and_systems,
     hrv_sat_data_2d,
@@ -37,6 +38,7 @@ def test_get_power_perceiver_data_loader(
         topo_path = os.path.join(
             os.path.dirname(nowcasting_forecast.__file__), "data", "europe_dem_2km_osgb.tif"
         )
+
         os.environ["TOPOGRAPHIC_FILENAME"] = topo_path
 
         # make configuration
@@ -44,48 +46,22 @@ def test_get_power_perceiver_data_loader(
             os.path.dirname(nowcasting_forecast.__file__), "config", "pp_v1.yaml"
         )
 
-        # for testing lets make sure there are plently of PV system in the area of intrested
         filename = temp_dir + "/configuration.yaml"
         configuration = Configuration(**load_yaml_configuration(configuration_file).__dict__)
         configuration.input_data.pv.pv_image_size_meters_height = 10000000
         configuration.input_data.pv.pv_image_size_meters_width = 10000000
-        configuration.input_data.pv.n_pv_systems_per_example = 8
+        configuration.process.batch_size = 4
         save_yaml_configuration(configuration=configuration, filename=filename)
 
-        data_loader = get_power_perceiver_data_loader(configuration_file=filename)
-
-        batch = next(data_loader)
-
-        assert BatchKey.hrvsatellite_actual in batch.keys()
-        assert (
-            len(batch[BatchKey.hrvsatellite_actual][:, :12, 0].shape) == 4
-        )  # (example, time, y, x)
-
-        assert batch[BatchKey.pv].shape == (4, 37, 8)  # (example, time, y, x)
-
-        assert batch[BatchKey.hrvsatellite_time_utc].shape == (4, 37)
-        assert batch[BatchKey.hrvsatellite_time_utc].shape == (
-            4,
-            37,
-        )  # 12 history + now + 24 future = 19
-        assert batch[BatchKey.nwp_target_time_utc].shape == (4, 10)
-        assert batch[BatchKey.nwp_init_time_utc].shape == (4, 10)
-        assert batch[BatchKey.pv_time_utc].shape == (4, 37)
-        assert batch[BatchKey.gsp_time_utc].shape == (4, 19)  # 12 history + now + 6 future
-
-        assert batch[BatchKey.hrvsatellite_actual].shape == (
-            4,
-            13,
-            1,
-            128,
-            256,
-        )  # 2nd dim is 12 history + now
-        assert batch[BatchKey.nwp].shape == (
-            4,
-            10,
-            9,
-            4,
-            4,
-        )  # 2nd dim is 1 history + now + 9 future ?? TODO check
-        assert batch[BatchKey.gsp].shape == (4, 19, 1)  # 2nd dim is 4 history + now + 2 future
-        assert batch[BatchKey.hrvsatellite_surface_height].shape == (4, 128, 256)
+        dataloader = get_power_perceiver_data_loader(configuration_file=filename)
+        _ = general_forecast_run_all_batches(
+            session=db_session,
+            batches_dir=temp_dir,
+            callable_function_for_on_batch=power_perceiver_run_one_batch,
+            model_name="power_perceiver",
+            ml_model=Model,
+            dataloader=dataloader,
+            use_hf=True,
+            n_gsps=10,
+            configuration_file=filename,
+        )
