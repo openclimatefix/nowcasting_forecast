@@ -45,7 +45,7 @@ def test_forward():
 
     # make configuration
     configuration_file = os.path.join(
-        os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v2.yaml"
+        os.path.dirname(nowcasting_forecast.__file__), "config", "cnn_v1.yaml"
     )
 
     configuration = load_yaml_configuration(filename=configuration_file)

@@ -198,7 +198,7 @@ def run(
                         ml_model=PowerPerceiver_Model,
                         dataloader=dataloader,
                         use_hf=True,
-                        configuration_file="nowcasting_forecast/config/mvp_v3.yaml",
+                        configuration_file="nowcasting_forecast/config/pp_v1.yaml",
                         n_gsps=n_gsps,
                     )
                 else:

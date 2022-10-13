@@ -43,7 +43,7 @@ def test_run(
 
         # make configuration
         configuration_file = os.path.join(
-            os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v3.yaml"
+            os.path.dirname(nowcasting_forecast.__file__), "config", "pp_v1.yaml"
         )
 
         filename = temp_dir + "/configuration.yaml"
