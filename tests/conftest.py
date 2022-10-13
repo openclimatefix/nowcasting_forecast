@@ -78,12 +78,12 @@ def db_connection():
     os.environ["DB_URL"] = url
 
     connection = DatabaseConnection(url=url, echo=False)
-    Base_Forecast.metadata.create_all(connection.engine)
+    connection.create_all()
     Base_PV.metadata.create_all(connection.engine)
 
     yield connection
 
-    Base_Forecast.metadata.drop_all(connection.engine)
+    connection.drop_all()
     Base_PV.metadata.drop_all(connection.engine)
 
 
