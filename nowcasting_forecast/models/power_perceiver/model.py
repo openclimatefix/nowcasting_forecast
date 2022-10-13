@@ -71,6 +71,7 @@ def power_perceiver_run_one_batch(
     """Run model for one batch"""
 
     # TODO Remove when the model is retrained
+    gsp_ids = batch[BatchKey.gsp_id]
     pytorch_model.set_gsp_id_to_one = True
 
     if n_examples is None:
@@ -92,7 +93,7 @@ def power_perceiver_run_one_batch(
         os.path.join(os.path.dirname(nowcasting_forecast.__file__), "data", "gsp_capacity.csv"),
         index_col=["gsp_id"],
     )
-    gsp_ids = batch[BatchKey.gsp_id].detach().cpu().numpy()
+    gsp_ids = gsp_ids.detach().cpu().numpy()
     if len(gsp_ids.shape) == 2:
         # it seems to have shape [batch_size,1]
         gsp_ids = gsp_ids[:, 0]
