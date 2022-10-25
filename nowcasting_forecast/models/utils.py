@@ -16,6 +16,7 @@ from typing import List, Optional
 
 import numpy as np
 import pandas as pd
+import torch
 from nowcasting_datamodel.models import (
     Forecast,
     ForecastSQL,
@@ -30,7 +31,7 @@ from nowcasting_datamodel.read.read import (
     get_model,
 )
 from nowcasting_datamodel.utils import datetime_must_have_timezone
-from nowcasting_dataset.config.load import load_yaml_configuration
+from ocf_datapipes.config.load import load_yaml_configuration
 from pydantic import BaseModel, Field, validator
 from sqlalchemy.orm.session import Session
 
@@ -264,7 +265,8 @@ def general_forecast_run_all_batches(
         if ml_model is not None:
             callbacks_args["pytorch_model"] = model
 
-        forecast_one_batch = callable_function_for_on_batch(**callbacks_args)
+        with torch.no_grad():
+            forecast_one_batch = callable_function_for_on_batch(**callbacks_args)
 
         if i == 0:
             logger.debug(

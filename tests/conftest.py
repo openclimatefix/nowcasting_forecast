@@ -1,8 +1,9 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 import numpy as np
+import pandas as pd
 import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
@@ -19,9 +20,9 @@ from nowcasting_datamodel.models import (
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
 from nowcasting_datamodel.models.models import StatusSQL
-from nowcasting_dataset.config.model import Configuration
 from nowcasting_dataset.data_sources.fake.batch import make_image_coords_osgb
 from nowcasting_dataset.dataset.batch import Batch
+from ocf_datapipes.config.model import Configuration
 
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.utils import floor_minutes_dt
@@ -76,7 +77,7 @@ def db_connection():
     os.environ["DB_URL_PV"] = url
     os.environ["DB_URL"] = url
 
-    connection = DatabaseConnection(url=url)
+    connection = DatabaseConnection(url=url, echo=False)
     connection.create_all()
     Base_PV.metadata.create_all(connection.engine)
 
@@ -131,9 +132,12 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = pd.Timestamp(
+        floor_minutes_dt(datetime.utcnow(), minutes=60) - timedelta(hours=2)
+    )
     image_size = 1000
-    time_steps = 10
+    time_steps = 11
+    init_times = 11
 
     x, y = make_image_coords_osgb(
         size_x=image_size,
@@ -145,9 +149,10 @@ def nwp_data():
 
     # time = pd.date_range(start=t0_datetime_utc, freq="30T", periods=10)
     step = [timedelta(minutes=60 * i) for i in range(0, time_steps)]
+    t0_datetime_utcs = [t0_datetime_utc + timedelta(minutes=60 * i) for i in range(0, init_times)]
 
     coords = (
-        ("init_time", [t0_datetime_utc]),
+        ("init_time", t0_datetime_utcs),
         ("variable", np.array(["dswrf"])),
         ("step", step),
         ("x", x),
@@ -159,7 +164,7 @@ def nwp_data():
             np.random.uniform(
                 0,
                 200,
-                size=(1, 1, time_steps, image_size, image_size),
+                size=(len(t0_datetime_utcs), 1, time_steps, image_size, image_size),
             )
         ),
         coords=coords,
@@ -198,7 +203,7 @@ def pv_yields_and_systems(db_session):
         ml_capacity_kw=124,
     ).to_orm()
 
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.now(tz=timezone.utc)) - timedelta(hours=2)
 
     pv_yield_sqls = []
     for hour in range(0, 6):
@@ -213,7 +218,9 @@ def pv_yields_and_systems(db_session):
             pv_yield_1.pv_system = pv_system_sql_1
             pv_yield_sqls.append(pv_yield_1)
 
-    pv_yield_4 = PVYield(datetime_utc=datetime(2022, 1, 1, 4), solar_generation_kw=4).to_orm()
+    pv_yield_4 = PVYield(
+        datetime_utc=datetime(2022, 1, 1, 4, tzinfo=timezone.utc), solar_generation_kw=4
+    ).to_orm()
     pv_yield_4.pv_system = pv_system_sql_2
     pv_yield_sqls.append(pv_yield_4)
 
@@ -250,7 +257,7 @@ def gsp_yields_and_systems(db_session):
             installed_capacity_mw=123.0,
         ).to_orm()
 
-        t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+        t0_datetime_utc = floor_minutes_dt(datetime.now(tz=timezone.utc)) - timedelta(hours=2)
 
         gsp_yield_sqls = []
         for hour in range(0, 10):
@@ -337,7 +344,7 @@ def sat_data():
 
 
 @pytest.fixture()
-def hrv_sat_data():
+def hrv_sat_data_general():
 
     # middle of the UK
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
@@ -369,8 +376,37 @@ def hrv_sat_data():
     )  # Fake data for testing!
     area_attr = np.load(f"{local_path}/sat_data/hrv_area.npy")
     sat.attrs["area"] = area_attr
+
+    return sat
+
+
+@pytest.fixture()
+def hrv_sat_data(hrv_sat_data_general):
+
+    sat = hrv_sat_data_general
+
     sat["x_osgb"] = sat.x_geostationary
     sat["y_osgb"] = sat.y_geostationary
+    return sat.to_dataset(name="data").sortby("time")
+
+
+@pytest.fixture()
+def hrv_sat_data_2d(hrv_sat_data_general):
+    """
+    Add 2d x_osgb to the satellite images
+    """
+
+    sat = hrv_sat_data_general
+
+    xx, yy = np.meshgrid(sat.x_geostationary.values, sat.y_geostationary.values, indexing="ij")
+
+    sat.__setitem__("x_osgb", xr.DataArray(xx, dims=["x_geostationary", "y_geostationary"]))
+    sat.__setitem__("y_osgb", xr.DataArray(yy, dims=["x_geostationary", "y_geostationary"]))
+
+    # cheat to make coordinates work
+    sat.x_osgb[:, 0] += 1
+    sat.y_osgb[0, :] -= 1
+
     return sat.to_dataset(name="data").sortby("time")
 
 

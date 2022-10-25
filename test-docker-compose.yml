@@ -21,7 +21,8 @@ services:
       - GIT_PYTHON_REFRESH=quiet
       - LOG_LEVEL=DEBUG
     command: >
-      bash -c "pytest --cov=./nowcasting_forecast
+      bash -c "source activate nowcasting_forecast
+      && pytest --cov=./nowcasting_forecast
       && coverage report -m
       && coverage xml
       && cp .coverage ./tests/

@@ -45,7 +45,7 @@ def test_make_batches_mvp_v2_just_sat_data(sat_data):
 
     with tempfile.TemporaryDirectory() as temp_dir:
 
-        configuration = load_yaml_configuration("nowcasting_forecast/config/mvp_v2.yaml")
+        configuration = load_yaml_configuration("nowcasting_forecast/config/cnn_v1.yaml")
 
         configuration.input_data.nwp = None
         configuration.input_data.pv = None
@@ -91,7 +91,7 @@ def test_make_batches_mvp_v2(
         os.environ["SAT_PATH"] = sat_path
 
         make_batches(
-            config_filename="nowcasting_forecast/config/mvp_v2.yaml",
+            config_filename="nowcasting_forecast/config/cnn_v1.yaml",
             temporary_dir=temp_dir,
             n_gsps=10,
         )

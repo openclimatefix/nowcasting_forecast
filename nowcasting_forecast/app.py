@@ -9,6 +9,7 @@ import click
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_national_forecast
 from nowcasting_datamodel.save import save
+from power_perceiver.production.model import FullModel as PowerPerceiver_Model
 from sqlalchemy.orm import Session
 
 from nowcasting_forecast import N_GSP, __version__
@@ -21,6 +22,8 @@ from nowcasting_forecast.models.nwp_simple_trained.nwp_simple_trained import (
     nwp_irradiance_simple_trained_run_one_batch,
 )
 from nowcasting_forecast.models.nwp_solar_simple import nwp_irradiance_simple_run_one_batch
+from nowcasting_forecast.models.power_perceiver.dataloader import get_power_perceiver_data_loader
+from nowcasting_forecast.models.power_perceiver.model import power_perceiver_run_one_batch
 from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 from nowcasting_forecast.utils import floor_minutes_dt
 
@@ -41,6 +44,9 @@ logging.getLogger("nowcasting_dataset").setLevel(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
 )
 logging.getLogger("nowcasting_datamodel").setLevel(
+    level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
+)
+logging.getLogger("ocf_datapipes").setLevel(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
 )
 # TODO make logs show up in AWS
@@ -96,6 +102,13 @@ logging.getLogger("nowcasting_datamodel").setLevel(
     help="Update the GSPS forecast in the latest table",
     type=click.BOOL,
 )
+@click.option(
+    "--create-batches",
+    default=True,
+    envvar="CREATE_BATCHES",
+    help="Make preprepared batches for the model",
+    type=click.BOOL,
+)
 def run(
     db_url: str,
     fake: bool = False,
@@ -104,6 +117,7 @@ def run(
     n_gsps: Optional[int] = N_GSP,
     update_national: Optional[bool] = True,
     update_gsps: Optional[bool] = True,
+    create_batches: Optional[bool] = True,
 ):
     """
     Run main app.
@@ -125,20 +139,22 @@ def run(
             elif model_name == "nwp_simple_trained":
                 config_filename = "nowcasting_forecast/config/mvp_v1.yaml"
             elif model_name == "cnn":
-                config_filename = "nowcasting_forecast/config/mvp_v2.yaml"
+                config_filename = "nowcasting_forecast/config/cnn_v1.yaml"
+            elif model_name == "power_perceiver":
+                config_filename = "nowcasting_forecast/config/pp_v1.yaml"
             else:
                 raise NotImplementedError(f"Model {model_name} has not be implemented")
 
             with tempfile.TemporaryDirectory() as temporary_dir:
                 # make batches
                 save_dir = batch_save_dir + "batch/" if batch_save_dir is not None else None
-                make_batches(
-                    temporary_dir=temporary_dir,
-                    config_filename=config_filename,
-                    batch_save_dir=save_dir,
-                    n_gsps=n_gsps,
-                )
-
+                if create_batches:
+                    make_batches(
+                        temporary_dir=temporary_dir,
+                        config_filename=config_filename,
+                        batch_save_dir=save_dir,
+                        n_gsps=n_gsps,
+                    )
                 # make forecasts
                 if model_name == "nwp_simple":
                     forecasts = general_forecast_run_all_batches(
@@ -172,7 +188,20 @@ def run(
                         ml_model=CNN_Model,
                         dataloader=dataloader,
                         use_hf=True,
-                        configuration_file="nowcasting_forecast/config/mvp_v2.yaml",
+                        configuration_file="nowcasting_forecast/config/cnn_v1.yaml",
+                        n_gsps=n_gsps,
+                    )
+                elif model_name == "power_perceiver":
+                    dataloader = get_power_perceiver_data_loader()
+                    forecasts = general_forecast_run_all_batches(
+                        session=session,
+                        batches_dir=temporary_dir,
+                        callable_function_for_on_batch=power_perceiver_run_one_batch,
+                        model_name="power_perceiver",
+                        ml_model=PowerPerceiver_Model,
+                        dataloader=dataloader,
+                        use_hf=True,
+                        configuration_file="nowcasting_forecast/config/pp_v1.yaml",
                         n_gsps=n_gsps,
                     )
                 else:
