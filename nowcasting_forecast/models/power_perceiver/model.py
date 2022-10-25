@@ -83,7 +83,6 @@ def power_perceiver_run_one_batch(
     # TODO need to data move to device if using GPU
 
     network_output = pytorch_model(batch)
-    logger.warning(network_output["predicted_gsp_power"].shape)
     distribution = get_distribution(network_output["predicted_gsp_power"])
     predictions = distribution.mean
 
@@ -98,8 +97,6 @@ def power_perceiver_run_one_batch(
         # it seems to have shape [batch_size,1]
         gsp_ids = gsp_ids[:, 0]
     capacity = capacity.loc[gsp_ids]
-    logger.warning(capacity)
-    logger.warning(predictions.detach().cpu().numpy())
 
     # multiply predictions by capacities
     predictions = capacity.values * predictions.detach().cpu().numpy()
@@ -113,7 +110,6 @@ def power_perceiver_run_one_batch(
         # get id from location
         # TODO These are all currently set to 1 as part of the change to new GSPs
         if len(batch[BatchKey.gsp_id].shape) == 2:
-            logger.debug(batch[BatchKey.gsp_id].shape)
             gsp_id = batch[BatchKey.gsp_id][i][0]
         else:
             gsp_id = batch[BatchKey.gsp_id][i]

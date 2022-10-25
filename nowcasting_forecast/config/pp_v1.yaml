@@ -45,6 +45,8 @@ input_data:
         pv_filename: /not_needed_for_live/
         pv_metadata_filename: /not_needed_for_live/
     n_pv_systems_per_example: 8
+    pv_image_size_meters_height: 256_000
+    pv_image_size_meters_width: 256_000
 
   #------- Topo ---------
   topographic:

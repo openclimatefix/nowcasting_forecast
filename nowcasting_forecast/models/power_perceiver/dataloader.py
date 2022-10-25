@@ -21,7 +21,7 @@ def get_power_perceiver_data_loader(
 
     if configuration_file is None:
         configuration_file = os.path.join(
-            os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v3.yaml"
+            os.path.dirname(nowcasting_forecast.__file__), "config", "pp_v1.yaml"
         )
     datapipes = power_perceiver_production_datapipe(configuration_file)
 

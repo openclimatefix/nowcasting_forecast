@@ -46,6 +46,9 @@ logging.getLogger("nowcasting_dataset").setLevel(
 logging.getLogger("nowcasting_datamodel").setLevel(
     level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
 )
+logging.getLogger("ocf_datapipes").setLevel(
+    level=getattr(logging, os.getenv("LOGLEVEL", "DEBUG")),
+)
 # TODO make logs show up in AWS
 
 
