@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from freezegun import freeze_time
 from nowcasting_datamodel.models.models import StatusSQL
@@ -15,11 +15,11 @@ from nowcasting_forecast.models.sun import (
 def test_filter_forecasts_on_sun_elevation(forecasts):
 
     # night time
-    forecasts[0].forecast_values[0].target_time = datetime(2022, 1, 1)
+    forecasts[0].forecast_values[0].target_time = datetime(2022, 1, 1, tzinfo=timezone.utc)
     forecasts[0].forecast_values[0].expected_power_generation_megawatts = 1
 
     # day time
-    forecasts[0].forecast_values[1].target_time = datetime(2022, 1, 1, 12)
+    forecasts[0].forecast_values[1].target_time = datetime(2022, 1, 1, 12, tzinfo=timezone.utc)
     forecasts[0].forecast_values[1].expected_power_generation_megawatts = 1
 
     forecasts[-1].location.gsp_id = N_GSP
