@@ -15,11 +15,11 @@ from nowcasting_forecast.models.sun import (
 def test_filter_forecasts_on_sun_elevation(forecasts):
 
     # night time
-    forecasts[0].forecast_values[0].target_time = datetime(2022, 1, 1, tzinfo=timezone.utc)
+    forecasts[0].forecast_values[0].target_time = datetime(2023, 1, 1, tzinfo=timezone.utc)
     forecasts[0].forecast_values[0].expected_power_generation_megawatts = 1
 
     # day time
-    forecasts[0].forecast_values[1].target_time = datetime(2022, 1, 1, 12, tzinfo=timezone.utc)
+    forecasts[0].forecast_values[1].target_time = datetime(2023, 1, 1, 12, tzinfo=timezone.utc)
     forecasts[0].forecast_values[1].expected_power_generation_megawatts = 1
 
     forecasts[-1].location.gsp_id = N_GSP
@@ -30,7 +30,7 @@ def test_filter_forecasts_on_sun_elevation(forecasts):
     assert forecasts[0].forecast_values[1].expected_power_generation_megawatts == 1
 
 
-@freeze_time("2022-01-01 12:00:00")
+@freeze_time("2023-01-01 12:00:00")
 def test_drop_forecast_on_sun_elevation_day(db_session):
 
     status = StatusSQL(message="", status="ok")
@@ -45,7 +45,7 @@ def test_drop_forecast_on_sun_elevation_day(db_session):
     assert status.status == "ok"
 
 
-@freeze_time("2022-01-01 00:00:00")
+@freeze_time("2023-01-01 00:00:00")
 def test_drop_forecast_on_sun_elevation_night(db_session):
     status = StatusSQL(message="", status="ok")
     db_session.add(status)
@@ -63,7 +63,7 @@ def test_drop_forecast_on_sun_elevation_night(db_session):
     assert statuses[1].message == WARNING_MESSAGE
 
 
-@freeze_time("2022-01-01 00:00:00")
+@freeze_time("2023-01-01 00:00:00")
 def test_drop_forecast_on_sun_elevation_night_twice(db_session):
     status = StatusSQL(message=WARNING_MESSAGE, status="warning")
     db_session.add(status)
@@ -80,7 +80,7 @@ def test_drop_forecast_on_sun_elevation_night_twice(db_session):
     assert statuses[0].message == WARNING_MESSAGE
 
 
-@freeze_time("2022-01-01 12:00:00")
+@freeze_time("2023-01-01 12:00:00")
 def test_drop_forecast_on_sun_elevation_first_day(db_session):
     status = StatusSQL(message=WARNING_MESSAGE, status="warning")
     db_session.add(status)
