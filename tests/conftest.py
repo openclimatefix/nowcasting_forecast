@@ -102,7 +102,7 @@ def configuration():
     configuration = Configuration()
     configuration.input_data = configuration.input_data.set_all_to_defaults()
     configuration.process.batch_size = 4
-    configuration.input_data.nwp.nwp_channels = ["dlwrf",'t','prate','si10']
+    configuration.input_data.nwp.nwp_channels = ["dlwrf", "t", "prate", "si10"]
 
     return configuration
 
@@ -149,7 +149,7 @@ def nwp_data():
 
     coords = (
         ("init_time", [t0_datetime_utc]),
-        ("variable", np.array(["dswrf",'t','prate','si10'])),
+        ("variable", np.array(["dswrf", "t", "prate", "si10"])),
         ("step", step),
         ("x", x),
         ("y", y),
