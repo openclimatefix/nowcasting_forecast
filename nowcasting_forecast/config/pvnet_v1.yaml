@@ -22,7 +22,7 @@ input_data:
     nwp_image_size_pixels_height: 64
     nwp_image_size_pixels_width: 64
     nwp_zarr_path: !ENV ${NWP_ZARR_PATH}
-    forecast_minutes: 120
+    forecast_minutes: 180
     history_minutes: 60
 
   #---------------------- Satellite -------------

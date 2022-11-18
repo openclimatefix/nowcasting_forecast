@@ -350,7 +350,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         """
 
         if use_hf:
-            _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_cnn" ')
+            _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_pvnet_v1" ')
             model = Model.from_pretrained("openclimatefix/nowcasting_pvnet_v1")
             _LOG.debug("Loading mode from Hugging Face: done")
             return model
