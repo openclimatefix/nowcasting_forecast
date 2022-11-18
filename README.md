@@ -105,6 +105,7 @@ historic PV data.
 
 Tests are run by using the following command
 ```bash
+docker stop $(docker ps -a -q)
 docker-compose -f test-docker-compose.yml run forecast
 ```
 
