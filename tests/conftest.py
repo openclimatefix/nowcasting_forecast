@@ -148,7 +148,7 @@ def nwp_data():
 
     coords = (
         ("init_time", [t0_datetime_utc]),
-        ("variable", np.array(["dlwrf",'t','prate','si10'])),
+        ("variable", np.array(["dswrf",'t','prate','si10'])),
         ("step", step),
         ("x", x),
         ("y", y),
