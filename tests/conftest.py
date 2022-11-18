@@ -102,7 +102,7 @@ def configuration():
     configuration = Configuration()
     configuration.input_data = configuration.input_data.set_all_to_defaults()
     configuration.process.batch_size = 4
-    configuration.input_data.nwp.nwp_channels = ["dlwrf"]
+    configuration.input_data.nwp.nwp_channels = ["dlwrf", "t", "prate", "si10"]
 
     return configuration
 
@@ -119,6 +119,7 @@ def batch(configuration):
 def batch_nwp(configuration):
     configuration.input_data.nwp.history_minutes = 30
     configuration.input_data.nwp.history_minutes = 120
+    configuration.input_data.nwp.nwp_channels = configuration.input_data.nwp.nwp_channels[0:1]
 
     batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
 
@@ -148,7 +149,7 @@ def nwp_data():
 
     coords = (
         ("init_time", [t0_datetime_utc]),
-        ("variable", np.array(["dswrf"])),
+        ("variable", np.array(["dswrf", "t", "prate", "si10"])),
         ("step", step),
         ("x", x),
         ("y", y),
@@ -159,7 +160,7 @@ def nwp_data():
             np.random.uniform(
                 0,
                 200,
-                size=(1, 1, time_steps, image_size, image_size),
+                size=(1, 4, time_steps, image_size, image_size),
             )
         ),
         coords=coords,

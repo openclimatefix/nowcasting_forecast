@@ -125,7 +125,7 @@ def run(
             elif model_name == "nwp_simple_trained":
                 config_filename = "nowcasting_forecast/config/mvp_v1.yaml"
             elif model_name == "cnn":
-                config_filename = "nowcasting_forecast/config/mvp_v2.yaml"
+                config_filename = "nowcasting_forecast/config/pvnet_v1.yaml"
             else:
                 raise NotImplementedError(f"Model {model_name} has not be implemented")
 
@@ -172,7 +172,7 @@ def run(
                         ml_model=CNN_Model,
                         dataloader=dataloader,
                         use_hf=True,
-                        configuration_file="nowcasting_forecast/config/mvp_v2.yaml",
+                        configuration_file="nowcasting_forecast/config/pvnet_v1.yaml",
                         n_gsps=n_gsps,
                     )
                 else:

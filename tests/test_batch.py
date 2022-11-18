@@ -72,7 +72,7 @@ def test_make_batches_mvp_v2_just_sat_data(sat_data):
         _ = Satellite(sat)
 
 
-def test_make_batches_mvp_v2(
+def test_make_batches_pvnet_v1(
     nwp_data, pv_yields_and_systems, sat_data, hrv_sat_data, gsp_yields_and_systems
 ):
 
@@ -91,7 +91,7 @@ def test_make_batches_mvp_v2(
         os.environ["SAT_PATH"] = sat_path
 
         make_batches(
-            config_filename="nowcasting_forecast/config/mvp_v2.yaml",
+            config_filename="nowcasting_forecast/config/pvnet_v1.yaml",
             temporary_dir=temp_dir,
             n_gsps=10,
         )

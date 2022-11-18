@@ -31,14 +31,14 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         self,
         include_pv_or_gsp_yield_history: bool = True,
         include_nwp: bool = True,
-        forecast_minutes: int = 120,
+        forecast_minutes: int = 180,
         history_minutes: int = 30,
         number_of_conv3d_layers: int = 6,
         conv3d_channels: int = 32,
         image_size_pixels: int = 24,
         nwp_image_size_pixels: int = 64,
         number_sat_channels: int = 11,
-        number_nwp_channels: int = 1,
+        number_nwp_channels: int = 4,
         fc1_output_features: int = 128,
         fc2_output_features: int = 128,
         fc3_output_features: int = 64,
@@ -207,8 +207,9 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
                 out_features=128,
             )
         if self.include_sun:
+            # the minus 12 is bit of hard coded smudge
             self.sun_fc1 = nn.Linear(
-                in_features=2 * (self.forecast_len_5 + self.history_len_5 + 1),
+                in_features=2 * (self.forecast_len_5 + self.history_len_5 + 1 - 12),
                 out_features=16,
             )
 
@@ -349,8 +350,8 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         """
 
         if use_hf:
-            _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_cnn" ')
-            model = Model.from_pretrained("openclimatefix/nowcasting_cnn_v5")
+            _LOG.debug('Loading mode from Hugging Face "openclimatefix/nowcasting_pvnet_v1" ')
+            model = Model.from_pretrained("openclimatefix/nowcasting_pvnet_v1")
             _LOG.debug("Loading mode from Hugging Face: done")
             return model
         else:
