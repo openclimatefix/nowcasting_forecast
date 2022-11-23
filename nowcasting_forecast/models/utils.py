@@ -275,6 +275,9 @@ def general_forecast_run_all_batches(
 
         forecasts.append(forecast_one_batch)
 
+    # remove model to save memory
+    del model
+
     # make into one big dataframe
     forecasts = pd.concat(forecasts)
 
