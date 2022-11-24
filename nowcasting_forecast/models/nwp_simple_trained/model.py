@@ -169,7 +169,7 @@ class Model(pl.LightningModule):
         # download weights from s3
         _LOG.debug(f"Downloading from {remote_filename} to {local_filename}")
 
-        remote_filename = Pathy(remote_filename)
+        remote_filename = Pathy.fluid(remote_filename)
         filesystem = fsspec.open(remote_filename.parent).fs
         try:
             _LOG.debug(f"Copying file from {remote_filename} to {local_filename}")
