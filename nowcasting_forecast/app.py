@@ -125,6 +125,8 @@ def run(
             elif model_name == "nwp_simple_trained":
                 config_filename = "nowcasting_forecast/config/mvp_v1.yaml"
             elif model_name == "cnn":
+                config_filename = "nowcasting_forecast/config/mvp_v2.yaml"
+            elif model_name == "pvnet":
                 config_filename = "nowcasting_forecast/config/pvnet_v1.yaml"
             else:
                 raise NotImplementedError(f"Model {model_name} has not be implemented")
