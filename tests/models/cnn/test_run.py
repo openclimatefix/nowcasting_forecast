@@ -39,7 +39,8 @@ def test_run(
 
         make_batches(
             config_filename=os.path.join(
-                os.path.dirname(nowcasting_forecast.__file__), "config", "pvnet_v1.yaml"
+                # os.path.dirname(nowcasting_forecast.__file__), "config", "pvnet_v1.yaml"
+                os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v2.yaml"
             ),
             temporary_dir=temp_dir,
             n_gsps=10,

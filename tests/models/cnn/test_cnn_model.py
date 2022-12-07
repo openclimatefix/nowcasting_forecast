@@ -26,7 +26,8 @@ def test_model_load_weights():
 
 
 def test_model_load_weights_from_hf():
-    model = Model.from_pretrained("openclimatefix/nowcasting_pvnet_v1")
+    # model = Model.from_pretrained("openclimatefix/nowcasting_pvnet_v1")
+    model = Model.from_pretrained("openclimatefix/nowcasting_cnn_v5")
 
 
 def test_model_load_weights_from_hf_load_model():
@@ -45,7 +46,8 @@ def test_forward():
 
     # make configuration
     configuration_file = os.path.join(
-        os.path.dirname(nowcasting_forecast.__file__), "config", "pvnet_v1.yaml"
+        # os.path.dirname(nowcasting_forecast.__file__), "config", "pvnet_v1.yaml"
+        os.path.dirname(nowcasting_forecast.__file__), "config", "mvp_v2.yaml"
     )
 
     configuration = load_yaml_configuration(filename=configuration_file)
