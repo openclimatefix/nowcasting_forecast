@@ -38,7 +38,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         image_size_pixels: int = 24,
         nwp_image_size_pixels: int = 64,
         number_sat_channels: int = 11,
-        number_nwp_channels: int = 1, # 4 for pvent
+        number_nwp_channels: int = 1,  # 4 for pvent
         fc1_output_features: int = 128,
         fc2_output_features: int = 128,
         fc3_output_features: int = 64,
