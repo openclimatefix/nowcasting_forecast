@@ -286,7 +286,7 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
         if self.include_pv_yield_history:
             # just take the first 128
             pv_yield_history = (
-                pv_data[:, : self.history_len_5 + 1, :128].nan_to_num(nan=0.0).float()
+                pv_data[:, : self.history_len_5, :128].nan_to_num(nan=0.0).float()
             )
 
             pv_yield_history = pv_yield_history.reshape(
