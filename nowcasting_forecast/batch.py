@@ -25,7 +25,7 @@ def make_batches(
     logger.info(f"Making batches using configuration file: {config_filename}")
 
     if t0_datetime_utc is None:
-        t0_datetime_utc = floor_minutes_dt(datetime.now(tz=timezone.utc))  # add timezone
+        t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) 
         
         # add one second, this makes sure the most recent gsp data is used
         t0_datetime_utc = t0_datetime_utc + timedelta(seconds=1)
