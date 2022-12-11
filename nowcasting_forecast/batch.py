@@ -28,9 +28,6 @@ def make_batches(
 
     if t0_datetime_utc is None:
         t0_datetime_utc = pd.Timestamp(datetime.utcnow()).ceil('5T')
-        
-        # add one second, this makes sure the most recent gsp data is used
-        t0_datetime_utc = t0_datetime_utc + timedelta(seconds=1)
 
     # load config
     manager = ManagerLive()
