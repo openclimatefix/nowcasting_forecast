@@ -1,12 +1,11 @@
 """ Using ManagerLive to make batches """
 import logging
 import os
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
 import pandas as pd
-
 from nowcasting_dataset.manager.manager_live import ManagerLive
 
 from nowcasting_forecast import N_GSP
@@ -27,7 +26,7 @@ def make_batches(
     logger.info(f"Making batches using configuration file: {config_filename}")
 
     if t0_datetime_utc is None:
-        t0_datetime_utc = pd.Timestamp(datetime.utcnow()).ceil('5T')
+        t0_datetime_utc = pd.Timestamp(datetime.utcnow()).ceil("5T")
 
     # load config
     manager = ManagerLive()
