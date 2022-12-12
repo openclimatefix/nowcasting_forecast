@@ -280,7 +280,7 @@ def gsp_yields_and_systems(db_session):
 def sat_data():
 
     # middle of the UK
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1.5)
 
     times = [t0_datetime_utc]
     # this means there will be about 30 mins of no data.
@@ -341,7 +341,7 @@ def sat_data():
 def hrv_sat_data():
 
     # middle of the UK
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1.5)
     times = [t0_datetime_utc]
     time_steps = 26
     for i in range(1, time_steps):
