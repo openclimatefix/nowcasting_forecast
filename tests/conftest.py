@@ -132,7 +132,7 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1)
     image_size = 1000
     time_steps = 10
 
