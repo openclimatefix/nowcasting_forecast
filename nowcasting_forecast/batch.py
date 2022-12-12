@@ -5,10 +5,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+import pandas as pd
 from nowcasting_dataset.manager.manager_live import ManagerLive
 
 from nowcasting_forecast import N_GSP
-from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ def make_batches(
     logger.info(f"Making batches using configuration file: {config_filename}")
 
     if t0_datetime_utc is None:
-        t0_datetime_utc = floor_minutes_dt(datetime.utcnow())  # add timezone
+        t0_datetime_utc = pd.Timestamp(datetime.utcnow()).ceil("5T")
 
     # load config
     manager = ManagerLive()

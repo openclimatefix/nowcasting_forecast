@@ -109,7 +109,10 @@ def test_make_batches_pvnet_v1(
         # assert pv.power_mw.max() > 0
         assert (
             pd.to_datetime(pv.time.values[0, -1]).isoformat()
-            == floor_minutes_dt(datetime.now(tz=timezone.utc)).replace(tzinfo=None).isoformat()
+            == pd.Timestamp(datetime.now(tz=timezone.utc))
+            .ceil("5T")
+            .replace(tzinfo=None)
+            .isoformat()
         )
 
         gsp = xr.load_dataset(f"{temp_dir}/live/gsp/000000.nc", engine="h5netcdf")
@@ -117,5 +120,8 @@ def test_make_batches_pvnet_v1(
         assert len(gsp.time.values[0]) == 5
         assert (
             pd.to_datetime(gsp.time.values[0, -1]).isoformat()
-            == floor_minutes_dt(datetime.now(tz=timezone.utc)).replace(tzinfo=None).isoformat()
+            == pd.Timestamp(datetime.now(tz=timezone.utc))
+            .ceil("30T")
+            .replace(tzinfo=None)
+            .isoformat()
         )

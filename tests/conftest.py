@@ -132,7 +132,7 @@ def nwp_data():
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1)
     image_size = 1000
     time_steps = 10
 
@@ -202,7 +202,7 @@ def pv_yields_and_systems(db_session):
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
 
     pv_yield_sqls = []
-    for hour in range(0, 6):
+    for hour in range(0, 7):
         for minute in range(0, 60, 5):
             datetime_utc = t0_datetime_utc + timedelta(hours=hour - 2, minutes=minute)
             pv_yield_1 = PVYield(
@@ -280,7 +280,7 @@ def gsp_yields_and_systems(db_session):
 def sat_data():
 
     # middle of the UK
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1.5)
 
     times = [t0_datetime_utc]
     # this means there will be about 30 mins of no data.
@@ -341,7 +341,7 @@ def sat_data():
 def hrv_sat_data():
 
     # middle of the UK
-    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+    t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1.5)
     times = [t0_datetime_utc]
     time_steps = 26
     for i in range(1, time_steps):
