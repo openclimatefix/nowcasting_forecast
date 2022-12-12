@@ -1,15 +1,13 @@
 """ Using ManagerLive to make batches """
 import logging
 import os
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Optional
-
 import pandas as pd
+from datetime import datetime, timedelta, timezone
 from nowcasting_dataset.manager.manager_live import ManagerLive
-
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.utils import floor_minutes_dt
+from pathlib import Path
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
