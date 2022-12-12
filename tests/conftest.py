@@ -202,7 +202,7 @@ def pv_yields_and_systems(db_session):
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
 
     pv_yield_sqls = []
-    for hour in range(0, 6):
+    for hour in range(0, 7):
         for minute in range(0, 60, 5):
             datetime_utc = t0_datetime_utc + timedelta(hours=hour - 2, minutes=minute)
             pv_yield_1 = PVYield(
