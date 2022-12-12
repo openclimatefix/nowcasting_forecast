@@ -1,7 +1,7 @@
 """ Using ManagerLive to make batches """
 import logging
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -9,7 +9,6 @@ import pandas as pd
 from nowcasting_dataset.manager.manager_live import ManagerLive
 
 from nowcasting_forecast import N_GSP
-from nowcasting_forecast.utils import floor_minutes_dt
 
 logger = logging.getLogger(__name__)
 
