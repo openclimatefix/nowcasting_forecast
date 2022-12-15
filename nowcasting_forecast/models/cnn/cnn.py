@@ -61,10 +61,16 @@ def cnn_run_one_batch(
         # get id from location
         gsp_id = batch.metadata.id[i]
 
-        # t0 value value, make sure its rounded to the nearest 30 minutes
+        # t0 value value, make sure its rounded down to the nearest 30 minutes
         t0_datetime_utc = pd.Timestamp(
             batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
         ).ceil("30T")
+
+        # its 12.32, t0 will be 12.30 and the predictions will be for 13.00
+        if t0_datetime_utc.minute in [0, 30]:
+            t0_datetime_utc + timedelta(minutes=30)
+
+        logger.debug(f'The first target_time will be {t0_datetime_utc}')
 
         for t_index in range(len(predictions[0])):
             # add timezone
