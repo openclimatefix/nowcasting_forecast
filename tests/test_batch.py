@@ -121,7 +121,7 @@ def test_make_batches_pvnet_v1(
         assert (
             pd.to_datetime(pv.time.values[0, -1]).isoformat()
             == pd.Timestamp(datetime.now(tz=timezone.utc))
-            .ceil("5T")
+            .floor("5T")
             .replace(tzinfo=None)
             .isoformat()
         )
