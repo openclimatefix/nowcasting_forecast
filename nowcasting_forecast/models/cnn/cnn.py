@@ -68,7 +68,7 @@ def cnn_run_one_batch(
 
         # its 12.32, t0 will be 12.30 and the predictions will be for 13.00
         if t0_datetime_utc.minute in [0, 30]:
-            t0_datetime_utc + timedelta(minutes=30)
+            t0_datetime_utc = t0_datetime_utc + timedelta(minutes=30)
 
         logger.debug(f'The first target_time will be {t0_datetime_utc}')
 
