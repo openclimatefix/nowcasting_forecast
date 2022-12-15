@@ -25,7 +25,7 @@ def make_batches(
     logger.info(f"Making batches using configuration file: {config_filename}")
 
     if t0_datetime_utc is None:
-        t0_datetime_utc = pd.Timestamp(datetime.utcnow()).ceil("5T")
+        t0_datetime_utc = pd.Timestamp(datetime.utcnow()).floor("5T")
 
     # load config
     manager = ManagerLive()
