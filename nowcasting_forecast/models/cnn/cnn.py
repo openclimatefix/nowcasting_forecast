@@ -70,7 +70,8 @@ def cnn_run_one_batch(
         if t0_datetime_utc.minute in [0, 30]:
             t0_datetime_utc = t0_datetime_utc + timedelta(minutes=30)
 
-        logger.debug(f'The first target_time will be {t0_datetime_utc}')
+        if i == 0:
+            logger.debug(f'The first target_time will be {t0_datetime_utc}')
 
         for t_index in range(len(predictions[0])):
             # add timezone
