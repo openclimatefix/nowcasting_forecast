@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 import numpy as np
@@ -214,7 +214,7 @@ def pv_yields_and_systems(db_session):
             pv_yield_1.pv_system = pv_system_sql_1
             pv_yield_sqls.append(pv_yield_1)
 
-    pv_yield_4 = PVYield(datetime_utc=datetime(2022, 1, 1, 4), solar_generation_kw=4).to_orm()
+    pv_yield_4 = PVYield(datetime_utc=datetime(2022, 1, 1, 4, tzinfo=timezone.utc), solar_generation_kw=4).to_orm()
     pv_yield_4.pv_system = pv_system_sql_2
     pv_yield_sqls.append(pv_yield_4)
 
@@ -251,7 +251,7 @@ def gsp_yields_and_systems(db_session):
             installed_capacity_mw=123.0,
         ).to_orm()
 
-        t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=2)
+        t0_datetime_utc = floor_minutes_dt(datetime.now(timezone.utc)) - timedelta(hours=2)
 
         gsp_yield_sqls = []
         for hour in range(0, 10):
