@@ -40,6 +40,17 @@ def test_make_batches_mvp_v1(nwp_data, pv_yields_and_systems):
             n_gsps=10,
         )
 
+        assert os.path.exists(f"{temp_dir}/live")
+        assert os.path.exists(f"{temp_dir}/live/spatial_and_temporal_locations_of_each_example.csv")
+
+        locations = pd.read_csv(f"{temp_dir}/live/spatial_and_temporal_locations_of_each_example.csv")
+        assert (
+                    pd.to_datetime(locations.iloc[0].t0_datetime_utc).isoformat()
+                    == pd.Timestamp(datetime.now(tz=timezone.utc))
+                    .floor("5T")
+                    .replace(tzinfo=None)
+                    .isoformat()
+                )
 
 def test_make_batches_mvp_v2_just_sat_data(sat_data):
 
