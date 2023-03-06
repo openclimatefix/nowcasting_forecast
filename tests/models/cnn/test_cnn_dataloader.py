@@ -9,7 +9,6 @@ from nowcasting_forecast.models.cnn.dataloader import get_cnn_data_loader
 
 
 def test_get_cnn_data_loader():
-
     with tempfile.TemporaryDirectory() as temp_dir:
         # make configuration
         configuration_file = os.path.join(

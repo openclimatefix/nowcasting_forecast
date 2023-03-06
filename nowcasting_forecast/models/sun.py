@@ -48,7 +48,6 @@ def filter_forecasts_on_sun_elevation(forecasts: List[ForecastSQL]) -> List[Fore
 
         # check that any elevations are < 'ELEVATION_LIMIT'
         if (sun_df["elevation"] < ELEVATION_LIMIT).sum() > 0:
-
             logger.debug(f"Got sun angle for {lat} {lon} {target_times}, and some are below zero")
 
             # loop through target times
@@ -94,7 +93,6 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
         status = get_latest_status(session=session)
 
         if (status.status != "warning") and (status.message != WARNING_MESSAGE):
-
             # set status
             logger.debug("Setting status to warning")
             status = StatusSQL(message=WARNING_MESSAGE, status="warning")
@@ -105,7 +103,6 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
             logger.debug(f"Warning already set to {WARNING_MESSAGE}")
 
     else:
-
         # get status
         status = get_latest_status(session=session)
         if status is not None:
@@ -113,7 +110,6 @@ def drop_forecast_on_sun_elevation(forecasts: List[ForecastSQL], session: Sessio
 
             # set status to ok
             if (status.status == "warning") and (status.message == WARNING_MESSAGE):
-
                 logger.debug("Setting status to ok")
                 status = StatusSQL(message="", status="ok")
                 session.add(status)

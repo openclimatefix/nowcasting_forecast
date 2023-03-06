@@ -298,7 +298,6 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         # *********************** NWP Data ************************************
         if self.include_nwp:
-
             # shape: batch_size, n_chans, seq_len, height, width
             # nwp_data = x.nwp.data.float()
 
@@ -318,7 +317,6 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
 
         # ********************** Embedding of PV system ID ********************
         if self.embedding_dem:
-
             id = batch.gsp.gsp_id[0 : self.batch_size, 0]
 
             id = id.type(torch.IntTensor)
@@ -327,7 +325,6 @@ class Model(pl.LightningModule, NowcastingModelHubMixin):
             out = torch.cat((out, id_embedding), dim=1)
 
         if self.include_sun:
-
             sun = torch.cat((batch.sun.sun_azimuth_angle, batch.sun.sun_elevation_angle), dim=1)
             out_sun = self.sun_fc1(sun)
             out = torch.cat((out, out_sun), dim=1)

@@ -13,7 +13,6 @@ from nowcasting_forecast.models.sun import (
 
 
 def test_filter_forecasts_on_sun_elevation(forecasts):
-
     # night time
     forecasts[0].forecast_values[0].target_time = datetime(2023, 1, 1, tzinfo=timezone.utc)
     forecasts[0].forecast_values[0].expected_power_generation_megawatts = 1
@@ -32,7 +31,6 @@ def test_filter_forecasts_on_sun_elevation(forecasts):
 
 @freeze_time("2023-01-01 12:00:00")
 def test_drop_forecast_on_sun_elevation_day(db_session):
-
     status = StatusSQL(message="", status="ok")
     db_session.add(status)
 

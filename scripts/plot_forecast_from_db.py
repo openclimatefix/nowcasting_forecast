@@ -25,10 +25,8 @@ creation_utc_init = datetime(2022, 7, 22, 0)
 forecasts = []
 connection = DatabaseConnection(url=db_url, base=Base_Forecast, echo=True)
 with connection.get_session() as session:
-
     # get forecast for 3 hours
     for minutes in range(0, 30 * 2 * 3, 30):
-
         creation_utc = creation_utc_init + timedelta(minutes=minutes)
         print(f"Getting forecast for {creation_utc}")
 

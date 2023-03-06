@@ -11,7 +11,6 @@ from nowcasting_forecast.models.cnn.model import Model
 
 
 def test_model_init():
-
     _ = Model()
 
 
@@ -43,7 +42,6 @@ def test_model_load_weights_error():
 
 
 def test_forward():
-
     # make configuration
     configuration_file = os.path.join(
         # os.path.dirname(nowcasting_forecast.__file__), "config", "pvnet_v1.yaml"

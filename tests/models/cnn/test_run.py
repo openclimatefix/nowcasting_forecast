@@ -22,7 +22,6 @@ def test_run(
     input_data_last_updated,
     gsp_yields_and_systems,
 ):
-
     with tempfile.TemporaryDirectory() as temp_dir:
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"

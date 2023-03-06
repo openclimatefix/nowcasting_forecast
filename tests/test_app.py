@@ -13,7 +13,6 @@ from nowcasting_forecast.app import run
 
 
 def test_fake(db_connection: DatabaseConnection):
-
     runner = CliRunner()
     response = runner.invoke(
         run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
@@ -30,7 +29,6 @@ def test_fake(db_connection: DatabaseConnection):
 
 
 def test_fake_twice(db_connection: DatabaseConnection):
-
     runner = CliRunner()
     response = runner.invoke(
         run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
@@ -69,9 +67,7 @@ def test_not_fake(
     gsp_yields_and_systems,
     pv_yields_and_systems,
 ):
-
     with tempfile.TemporaryDirectory() as temp_dir:
-
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
@@ -100,9 +96,7 @@ def test_not_fake(
 
 @pytest.mark.skip("CI doesnt have access to AWS for model weights")
 def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_data_last_updated):
-
     with tempfile.TemporaryDirectory() as temp_dir:
-
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")

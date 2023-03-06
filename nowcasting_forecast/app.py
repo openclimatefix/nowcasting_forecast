@@ -115,11 +115,9 @@ def run(
 
     connection = DatabaseConnection(url=db_url)
     with connection.get_session() as session:
-
         if fake:
             forecasts = make_dummy_forecasts(session=session, n_gsps=n_gsps)
         else:
-
             if model_name == "nwp_simple":
                 config_filename = "nowcasting_forecast/config/mvp_v0.yaml"
             elif model_name == "nwp_simple_trained":
