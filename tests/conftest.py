@@ -99,7 +99,6 @@ def engine_url():
 
 @pytest.fixture()
 def db_connection(engine_url):
-
     database_connection = DatabaseConnection(engine_url, echo=True)
 
     engine = database_connection.engine
