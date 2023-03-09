@@ -19,7 +19,6 @@ from nowcasting_forecast.models.utils import general_forecast_run_all_batches
 
 @freeze_time("2023-01-01 12:00:00")
 def test_general_run_all_batches(batch, configuration, db_session, input_data_last_updated, status):
-
     with tempfile.TemporaryDirectory() as tempdir:
         batch.save_netcdf(batch_i=0, path=os.path.join(tempdir, "live"))
 
@@ -43,11 +42,9 @@ def test_general_run_all_batches(batch, configuration, db_session, input_data_la
 def test_general_batches_and_national(
     batch, configuration, db_session, input_data_last_updated, status
 ):
-
     n_gsps = configuration.process.batch_size
 
     with tempfile.TemporaryDirectory() as tempdir:
-
         batch.save_netcdf(batch_i=0, path=os.path.join(tempdir, "live"))
 
         configuration.output_data.filepath = tempdir
@@ -70,7 +67,6 @@ def test_general_batches_and_national(
 def test_general_run_all_batches_check_locations(
     batch, configuration, db_session, input_data_last_updated, status
 ):
-
     with tempfile.TemporaryDirectory() as tempdir:
         batch.save_netcdf(batch_i=0, path=os.path.join(tempdir, "live"))
 

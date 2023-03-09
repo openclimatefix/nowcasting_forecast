@@ -7,12 +7,10 @@ from nowcasting_forecast.models.nwp_solar_simple import (
 
 
 def test_nwp_irradiance_simple(batch):
-
     _ = nwp_irradiance_simple(batch=batch)
 
 
 def test_nwp_irradiance_simple_run_one_batch(batch, db_session):
-
     forecast_df = nwp_irradiance_simple_run_one_batch(batch=batch)
 
     # make sure the target times are different

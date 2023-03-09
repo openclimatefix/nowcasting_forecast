@@ -35,7 +35,6 @@ def status(db_session):
 
 @pytest.fixture
 def forecast_sql(db_session):
-
     # create
     f = make_fake_forecasts(gsp_ids=[1], session=db_session)
 
@@ -47,7 +46,6 @@ def forecast_sql(db_session):
 
 @pytest.fixture
 def forecasts(db_session) -> List[ForecastSQL]:
-
     # create
     f = make_fake_forecasts(gsp_ids=list(range(1, 11)), session=db_session)
 
@@ -59,7 +57,6 @@ def forecasts(db_session) -> List[ForecastSQL]:
 
 @pytest.fixture
 def forecasts_all(db_session) -> List[ForecastSQL]:
-
     # create
     f = make_fake_forecasts(gsp_ids=list(range(1, N_GSP + 1)), session=db_session)
 
@@ -71,7 +68,6 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
 
 @pytest.fixture
 def db_connection():
-
     url = os.getenv("DB_URL", "sqlite:///test.db")
     os.environ["DB_URL_PV"] = url
     os.environ["DB_URL"] = url
@@ -98,7 +94,6 @@ def db_session(db_connection):
 
 @pytest.fixture()
 def configuration():
-
     configuration = Configuration()
     configuration.input_data = configuration.input_data.set_all_to_defaults()
     configuration.process.batch_size = 4
@@ -109,7 +104,6 @@ def configuration():
 
 @pytest.fixture()
 def batch(configuration):
-
     batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
 
     return batch
@@ -128,7 +122,6 @@ def batch_nwp(configuration):
 
 @pytest.fixture
 def nwp_data():
-
     # middle of the UK
     x_center_osgb = 500_000
     y_center_osgb = 500_000
@@ -280,7 +273,6 @@ def gsp_yields_and_systems(db_session):
 
 @pytest.fixture()
 def sat_data():
-
     # middle of the UK
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1.5)
 
@@ -341,7 +333,6 @@ def sat_data():
 
 @pytest.fixture()
 def hrv_sat_data():
-
     # middle of the UK
     t0_datetime_utc = floor_minutes_dt(datetime.utcnow()) - timedelta(hours=1.5)
     times = [t0_datetime_utc]

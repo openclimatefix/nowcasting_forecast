@@ -20,7 +20,6 @@ def save_fake_weights(path) -> str:
 
 
 def test_nwp_irradiance_simple(batch_nwp):
-
     model = Model()
     _ = nwp_irradiance_simple_trained(batch=batch_nwp, model=model)
 
