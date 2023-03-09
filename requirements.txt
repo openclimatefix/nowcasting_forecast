@@ -9,7 +9,7 @@ nowcasting_dataloader==2.0.5
 fsspec
 s3fs
 torch
-pytorch-lightning
+pytorch-lightning<1.9
 xarray
 zarr
 huggingface_hub
