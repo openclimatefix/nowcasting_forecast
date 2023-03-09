@@ -1,3 +1,4 @@
+""" Quick plotting script """
 import json
 from datetime import datetime, timedelta
 

@@ -1,5 +1,6 @@
 """
 log in to the HF command line then run this command to upload a new model
+
 'hugginface-cli login' (might need to do pip install huggingface_hub)
 The whole process might take about 5 mins
 """

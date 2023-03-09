@@ -8,7 +8,7 @@ from typing import Optional
 import click
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_national_forecast
-from nowcasting_datamodel.save import save
+from nowcasting_datamodel.save.save import save
 from sqlalchemy.orm import Session
 
 from nowcasting_forecast import N_GSP, __version__

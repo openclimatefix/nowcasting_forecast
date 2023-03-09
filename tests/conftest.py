@@ -5,8 +5,15 @@ from typing import List
 import numpy as np
 import pytest
 import xarray as xr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from testcontainers.postgres import PostgresContainer
 from nowcasting_datamodel.connection import DatabaseConnection
-from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_input_data_last_updated
+from nowcasting_datamodel.fake import (
+    make_fake_forecasts,
+    make_fake_input_data_last_updated,
+    make_fake_me_latest,
+)
 from nowcasting_datamodel.models import (
     ForecastSQL,
     GSPYield,
@@ -15,6 +22,7 @@ from nowcasting_datamodel.models import (
     PVSystem,
     PVSystemSQL,
     PVYield,
+    MetricValueSQL,
     solar_sheffield_passiv,
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
@@ -66,25 +74,56 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
     return f
 
 
-@pytest.fixture
-def db_connection():
-    url = os.getenv("DB_URL", "sqlite:///test.db")
-    os.environ["DB_URL_PV"] = url
-    os.environ["DB_URL"] = url
+@pytest.fixture(scope="session")
+def engine_url():
+    """Database engine, this includes the table creation."""
+    with PostgresContainer("postgres:14.5") as postgres:
+        url = postgres.get_connection_url()
+        os.environ["DB_URL"] = url
+        os.environ["DB_URL_PV"] = url
 
-    connection = DatabaseConnection(url=url, echo=False)
-    connection.create_all()
-    Base_PV.metadata.create_all(connection.engine)
+        database_connection = DatabaseConnection(url, echo=True)
 
-    yield connection
+        engine = database_connection.engine
 
-    connection.drop_all()
-    Base_PV.metadata.drop_all(connection.engine)
+        # Would like to do this here but found the data
+        # was not being deleted when using 'db_connection'
+        # database_connection.create_all()
+        # Base_PV.metadata.create_all(engine)
+
+        yield url
+
+        # Base_PV.metadata.drop_all(engine)
+        # Base_Forecast.metadata.drop_all(engine)
+
+        engine.dispose()
 
 
-@pytest.fixture(scope="function", autouse=True)
-def db_session(db_connection):
-    """Creates a new database session for a test."""
+@pytest.fixture()
+def db_connection(engine_url):
+    database_connection = DatabaseConnection(engine_url, echo=True)
+
+    engine = database_connection.engine
+    # connection = engine.connect()
+    # transaction = connection.begin()
+
+    # There should be a way to only make the tables once
+    # but make sure we remove the data
+    database_connection.create_all()
+    Base_PV.metadata.create_all(engine)
+
+    yield database_connection
+
+    # transaction.rollback()
+    # connection.close()
+
+    Base_PV.metadata.drop_all(engine)
+    Base_Forecast.metadata.drop_all(engine)
+
+
+@pytest.fixture()
+def db_session(db_connection, engine_url):
+    """Return a sqlalchemy session, which tears down everything properly post-test."""
 
     with db_connection.get_session() as s:
         s.begin()
@@ -105,6 +144,14 @@ def configuration():
 @pytest.fixture()
 def batch(configuration):
     batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
+
+    # make sure metadata is in 2023
+    for i in range(0, 4):
+        batch.metadata.space_time_locations[
+            i
+        ].t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(
+            year=2023
+        )
 
     return batch
 
@@ -372,4 +419,11 @@ def hrv_sat_data():
 def input_data_last_updated(db_session):
     i = make_fake_input_data_last_updated()
     db_session.add(i)
+    db_session.commit()
+
+
+@pytest.fixture()
+def me_latest(db_session):
+    metric_values = make_fake_me_latest(session=db_session)
+    db_session.add_all(metric_values)
     db_session.commit()
