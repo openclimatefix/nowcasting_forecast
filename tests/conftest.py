@@ -6,7 +6,11 @@ import numpy as np
 import pytest
 import xarray as xr
 from nowcasting_datamodel.connection import DatabaseConnection
-from nowcasting_datamodel.fake import make_fake_forecasts, make_fake_input_data_last_updated
+from nowcasting_datamodel.fake import (
+    make_fake_forecasts,
+    make_fake_input_data_last_updated,
+    make_fake_me_latest,
+)
 from nowcasting_datamodel.models import (
     ForecastSQL,
     GSPYield,
