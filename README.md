@@ -103,13 +103,9 @@ historic PV data.
 
 ## 🩺 Testing
 
-Tests are run by using the following command
-```bash
-docker stop $(docker ps -a -q)
-docker-compose -f test-docker-compose.yml run forecast
-```
+Tests are run with `pytest`
 
-These sets up `postgres` in a docker container and runs the tests in another docker container.
+These sets up `postgres` in a docker container.
 This slightly more complicated testing framework is needed (compared to running `pytest`)
 as some queries can not be fully tested on a `sqlite` database
 

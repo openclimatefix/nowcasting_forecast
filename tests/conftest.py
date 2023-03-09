@@ -22,6 +22,7 @@ from nowcasting_datamodel.models import (
     PVSystem,
     PVSystemSQL,
     PVYield,
+    MetricValueSQL,
     solar_sheffield_passiv,
 )
 from nowcasting_datamodel.models.base import Base_Forecast, Base_PV
@@ -73,46 +74,59 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
     return f
 
 
-@pytest.fixture(scope="session", autouse=True)
-def db_connection():
+@pytest.fixture(scope="session")
+def engine_url():
     """Database engine, this includes the table creation."""
     with PostgresContainer("postgres:14.5") as postgres:
         url = postgres.get_connection_url()
         os.environ["DB_URL"] = url
         os.environ["DB_URL_PV"] = url
 
-        database_connection = DatabaseConnection(url, echo=False)
+        database_connection = DatabaseConnection(url, echo=True)
 
         engine = database_connection.engine
 
-        database_connection.create_all()
-        Base_PV.metadata.create_all(engine)
+        # database_connection.create_all()
+        # Base_PV.metadata.create_all(engine)
 
-        yield database_connection
+        yield url
+
+        # Base_PV.metadata.drop_all(engine)
+        # Base_Forecast.metadata.drop_all(engine)
 
         engine.dispose()
 
 
 @pytest.fixture()
-def db_session(db_connection):
+def db_connection(engine_url):
+    
+    database_connection = DatabaseConnection(engine_url, echo=True)
+    
+    engine = database_connection.engine
+    # connection = engine.connect()
+    # transaction = connection.begin()
+
+    # THere should be a way to only make the table sonce but make sure we remove the data
+    database_connection.create_all()
+    Base_PV.metadata.create_all(engine)
+    
+    yield database_connection
+    
+    # transaction.rollback()
+    # connection.close()
+    
+    Base_PV.metadata.drop_all(engine)
+    Base_Forecast.metadata.drop_all(engine)
+    
+    
+@pytest.fixture()
+def db_session(db_connection, engine_url):
     """Return a sqlalchemy session, which tears down everything properly post-test."""
-    engine = db_connection.engine
-    connection = engine.connect()
-    # begin the nested transaction
-    transaction = connection.begin()
-    # use the connection with the already started transaction
 
-    with Session(bind=connection) as session:
-        yield session
-
-        session.close()
-        # roll back the broader transaction
-        transaction.rollback()
-        # put back the connection to the connection pool
-        connection.close()
-        session.flush()
-
-    engine.dispose()
+    with db_connection.get_session() as s:
+        s.begin()
+        yield s
+        s.rollback()
 
 
 
@@ -406,6 +420,6 @@ def input_data_last_updated(db_session):
 
 @pytest.fixture()
 def me_latest(db_session):
-    metric_values = make_fake_me_latest()
+    metric_values = make_fake_me_latest(session=db_session)
     db_session.add_all(metric_values)
     db_session.commit()

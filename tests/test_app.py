@@ -7,16 +7,20 @@ import zarr
 from click.testing import CliRunner
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.models import Forecast, ForecastSQL, LocationSQL
+from nowcasting_datamodel.fake import make_fake_me_latest
 
 from nowcasting_forecast import N_GSP
 from nowcasting_forecast.app import run
 
 
-def test_fake(db_connection: DatabaseConnection, me_latest):
+def test_fake(db_connection, me_latest):
+
     runner = CliRunner()
     response = runner.invoke(
-        run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
+        run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"] , catch_exceptions=True
     )
+    if response.exception:
+        raise response.exception
     assert response.exit_code == 0
 
     with db_connection.get_session() as session:
@@ -25,16 +29,21 @@ def test_fake(db_connection: DatabaseConnection, me_latest):
         assert len(forecasts) == (10 + 1) * 2  # 10 gsp + national, x2 for historic ones too
 
         locations = session.query(LocationSQL).all()
-        assert len(locations) == 10 + 1
+        assert len(locations) == 10 + 1 
+
 
 
 def test_fake_twice(db_connection: DatabaseConnection, me_latest):
+
     runner = CliRunner()
     response = runner.invoke(
-        run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
+        run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"] , catch_exceptions=True
     )
-    assert response.exit_code == 0
-
+    if response.exception:
+        raise response.exception
+    
+    assert response.exit_code == 0, response.exception
+    
     with db_connection.get_session() as session:
         forecasts = session.query(ForecastSQL).all()
         _ = Forecast.from_orm(forecasts[0])
@@ -66,8 +75,10 @@ def test_not_fake(
     hrv_sat_data,
     gsp_yields_and_systems,
     pv_yields_and_systems,
-    me_latest
+    me_latest,
 ):
+
+
     with tempfile.TemporaryDirectory() as temp_dir:
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
@@ -122,5 +133,5 @@ def test_mwp_1(db_connection: DatabaseConnection, nwp_data: xr.Dataset, input_da
         with db_connection.get_session() as session:
             forecasts = session.query(ForecastSQL).all()
             _ = Forecast.from_orm(forecasts[0])
-            assert len(forecasts) == 10 + 1  # 338 gsp + national
+            assert len(forecasts) == 10 + 1  # 10 gsp + national
             assert len(forecasts[0].forecast_values) > 1
