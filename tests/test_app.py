@@ -14,7 +14,6 @@ from nowcasting_forecast.app import run
 
 
 def test_fake(db_connection, me_latest):
-
     runner = CliRunner()
     response = runner.invoke(
         run,
@@ -35,7 +34,6 @@ def test_fake(db_connection, me_latest):
 
 
 def test_fake_twice(db_connection: DatabaseConnection, me_latest):
-
     runner = CliRunner()
     response = runner.invoke(
         run,
@@ -80,7 +78,6 @@ def test_not_fake(
     pv_yields_and_systems,
     me_latest,
 ):
-
     with tempfile.TemporaryDirectory() as temp_dir:
         # save nwp data
         nwp_path = f"{temp_dir}/unittest.netcdf"
