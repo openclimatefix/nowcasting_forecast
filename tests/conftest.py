@@ -5,6 +5,9 @@ from typing import List
 import numpy as np
 import pytest
 import xarray as xr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from testcontainers.postgres import PostgresContainer
 from nowcasting_datamodel.connection import DatabaseConnection
 from nowcasting_datamodel.fake import (
     make_fake_forecasts,
@@ -70,30 +73,47 @@ def forecasts_all(db_session) -> List[ForecastSQL]:
     return f
 
 
-@pytest.fixture
+@pytest.fixture(scope="session", autouse=True)
 def db_connection():
-    url = os.getenv("DB_URL", "sqlite:///test.db")
-    os.environ["DB_URL_PV"] = url
-    os.environ["DB_URL"] = url
+    """Database engine, this includes the table creation."""
+    with PostgresContainer("postgres:14.5") as postgres:
+        url = postgres.get_connection_url()
+        os.environ["DB_URL"] = url
+        os.environ["DB_URL_PV"] = url
 
-    connection = DatabaseConnection(url=url, echo=False)
-    connection.create_all()
-    Base_PV.metadata.create_all(connection.engine)
+        database_connection = DatabaseConnection(url, echo=False)
 
-    yield connection
+        engine = database_connection.engine
 
-    connection.drop_all()
-    Base_PV.metadata.drop_all(connection.engine)
+        database_connection.create_all()
+        Base_PV.metadata.create_all(engine)
+
+        yield database_connection
+
+        engine.dispose()
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture()
 def db_session(db_connection):
-    """Creates a new database session for a test."""
+    """Return a sqlalchemy session, which tears down everything properly post-test."""
+    engine = db_connection.engine
+    connection = engine.connect()
+    # begin the nested transaction
+    transaction = connection.begin()
+    # use the connection with the already started transaction
 
-    with db_connection.get_session() as s:
-        s.begin()
-        yield s
-        s.rollback()
+    with Session(bind=connection) as session:
+        yield session
+
+        session.close()
+        # roll back the broader transaction
+        transaction.rollback()
+        # put back the connection to the connection pool
+        connection.close()
+        session.flush()
+
+    engine.dispose()
+
 
 
 @pytest.fixture()
@@ -109,6 +129,11 @@ def configuration():
 @pytest.fixture()
 def batch(configuration):
     batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
+    
+    # make sure metadata is in 2023
+    for i in range(0,4):
+        batch.metadata.space_time_locations[i].t0_datetime_utc \
+            = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(year=2023)
 
     return batch
 
