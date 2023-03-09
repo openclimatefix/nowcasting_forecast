@@ -86,6 +86,8 @@ def engine_url():
 
         engine = database_connection.engine
 
+        # Would like to do this here but found the data
+        # was not being deleted when using 'db_connection'
         # database_connection.create_all()
         # Base_PV.metadata.create_all(engine)
 
@@ -105,7 +107,8 @@ def db_connection(engine_url):
     # connection = engine.connect()
     # transaction = connection.begin()
 
-    # THere should be a way to only make the table sonce but make sure we remove the data
+    # There should be a way to only make the tables once
+    # but make sure we remove the data
     database_connection.create_all()
     Base_PV.metadata.create_all(engine)
 
