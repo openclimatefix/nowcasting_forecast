@@ -373,3 +373,10 @@ def input_data_last_updated(db_session):
     i = make_fake_input_data_last_updated()
     db_session.add(i)
     db_session.commit()
+
+
+@pytest.fixture()
+def me_latest(db_session):
+    metric_values = make_fake_me_latest()
+    db_session.add_all(metric_values)
+    db_session.commit()

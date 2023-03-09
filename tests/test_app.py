@@ -12,7 +12,7 @@ from nowcasting_forecast import N_GSP
 from nowcasting_forecast.app import run
 
 
-def test_fake(db_connection: DatabaseConnection):
+def test_fake(db_connection: DatabaseConnection, me_latest):
     runner = CliRunner()
     response = runner.invoke(
         run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
@@ -28,7 +28,7 @@ def test_fake(db_connection: DatabaseConnection):
         assert len(locations) == 10 + 1
 
 
-def test_fake_twice(db_connection: DatabaseConnection):
+def test_fake_twice(db_connection: DatabaseConnection, me_latest):
     runner = CliRunner()
     response = runner.invoke(
         run, ["--db-url", db_connection.url, "--fake", "true", "--n-gsps", "10"]
@@ -66,6 +66,7 @@ def test_not_fake(
     hrv_sat_data,
     gsp_yields_and_systems,
     pv_yields_and_systems,
+    me_latest
 ):
     with tempfile.TemporaryDirectory() as temp_dir:
         # save nwp data
