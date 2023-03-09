@@ -179,9 +179,9 @@ def convert_one_gsp_id_to_forecast_sql(
         # add timezone
         target_time = forecast.target_datetime_utc.replace(tzinfo=timezone.utc)
         f = ForecastValue(
-                target_time=target_time,
-                expected_power_generation_megawatts=forecast.forecast_gsp_pv_outturn_mw,
-            ).to_orm()
+            target_time=target_time,
+            expected_power_generation_megawatts=forecast.forecast_gsp_pv_outturn_mw,
+        ).to_orm()
         f.adjust_mw = 0.0
         forecast_values.append(f)
 

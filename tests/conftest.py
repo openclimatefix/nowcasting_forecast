@@ -99,9 +99,9 @@ def engine_url():
 
 @pytest.fixture()
 def db_connection(engine_url):
-    
+
     database_connection = DatabaseConnection(engine_url, echo=True)
-    
+
     engine = database_connection.engine
     # connection = engine.connect()
     # transaction = connection.begin()
@@ -109,16 +109,16 @@ def db_connection(engine_url):
     # THere should be a way to only make the table sonce but make sure we remove the data
     database_connection.create_all()
     Base_PV.metadata.create_all(engine)
-    
+
     yield database_connection
-    
+
     # transaction.rollback()
     # connection.close()
-    
+
     Base_PV.metadata.drop_all(engine)
     Base_Forecast.metadata.drop_all(engine)
-    
-    
+
+
 @pytest.fixture()
 def db_session(db_connection, engine_url):
     """Return a sqlalchemy session, which tears down everything properly post-test."""
@@ -127,7 +127,6 @@ def db_session(db_connection, engine_url):
         s.begin()
         yield s
         s.rollback()
-
 
 
 @pytest.fixture()
@@ -143,11 +142,14 @@ def configuration():
 @pytest.fixture()
 def batch(configuration):
     batch = Batch.fake(configuration=configuration, temporally_align_examples=True)
-    
+
     # make sure metadata is in 2023
-    for i in range(0,4):
-        batch.metadata.space_time_locations[i].t0_datetime_utc \
-            = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(year=2023)
+    for i in range(0, 4):
+        batch.metadata.space_time_locations[
+            i
+        ].t0_datetime_utc = batch.metadata.space_time_locations[i].t0_datetime_utc.replace(
+            year=2023
+        )
 
     return batch
 
