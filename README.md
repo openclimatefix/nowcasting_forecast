@@ -46,7 +46,10 @@ The following shows the main files
 |       +-- nwp_solar_simple.py
 |       +-- nwp_solar_simple_trained
 |           +-- model.py
-|           +-- nwp_simple_trained.py
+|       +-- cnn
+|           +-- cnn.py
+|           +-- dataloader.py
+|           +-- model.py
 |   +-- app.py
 |   +-- batch.py
 |   +-- dataloader.py
@@ -125,6 +128,8 @@ The version is bumped automatically for any push to `main`.
 ## Environmental Variables
 
 - DB_URL: The database url which the forecasts will be saved too
-- NWP_PATH: Override NWP data path. THis is useful when running this locally.
+- DB_URL_PV: The database url for the PV data
+- NWP_ZARR_PATH: Override NWP data path. This is useful when running this locally, and shows to get data from the cloud. 
+- SATELLITE_ZARR_PATH: Override Satellite data path. This is useful when running this locally, and shows to get data from the cloud. 
 - FAKE: Option to make fake/dummy forecasts
 - MODEL_NAME: Optional of 'nwp_simple' or 'nwp_simple_trained'
