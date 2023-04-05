@@ -129,7 +129,7 @@ The version is bumped automatically for any push to `main`.
 
 - DB_URL: The database url which the forecasts will be saved too
 - DB_URL_PV: The database url for the PV data
-- NWP_ZARR_PATH: Override NWP data path. This is useful when running this locally, and shows to get data from the cloud. 
-- SATELLITE_ZARR_PATH: Override Satellite data path. This is useful when running this locally, and shows to get data from the cloud. 
+- NWP_ZARR_PATH: Override NWP data path. This is useful when running this locally, and shows to get data from the cloud.
+- SATELLITE_ZARR_PATH: Override Satellite data path. This is useful when running this locally, and shows to get data from the cloud.
 - FAKE: Option to make fake/dummy forecasts
 - MODEL_NAME: Optional of 'nwp_simple' or 'nwp_simple_trained'
