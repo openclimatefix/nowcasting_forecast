@@ -424,6 +424,6 @@ def input_data_last_updated(db_session):
 
 @pytest.fixture()
 def me_latest(db_session):
-    metric_values = make_fake_me_latest(session=db_session, model_name='cnn')
+    metric_values = make_fake_me_latest(session=db_session, model_name="cnn")
     db_session.add_all(metric_values)
     db_session.commit()
