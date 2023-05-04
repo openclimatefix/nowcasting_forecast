@@ -32,6 +32,10 @@ def test_make_batches_mvp_v1(nwp_data, pv_yields_and_systems):
         nwp_data.to_netcdf(nwp_path, engine="h5netcdf")
         os.environ["NWP_PATH"] = nwp_path
 
+        now_5 = (
+            pd.Timestamp(datetime.now(tz=timezone.utc)).floor("5T").replace(tzinfo=None).isoformat()
+        )
+
         make_batches(
             config_filename="nowcasting_forecast/config/mvp_v1.yaml",
             temporary_dir=temp_dir,
@@ -44,13 +48,7 @@ def test_make_batches_mvp_v1(nwp_data, pv_yields_and_systems):
         locations = pd.read_csv(
             f"{temp_dir}/live/spatial_and_temporal_locations_of_each_example.csv"
         )
-        assert (
-            pd.to_datetime(locations.iloc[0].t0_datetime_utc).isoformat()
-            == pd.Timestamp(datetime.now(tz=timezone.utc))
-            .floor("5T")
-            .replace(tzinfo=None)
-            .isoformat()
-        )
+        assert pd.to_datetime(locations.iloc[0].t0_datetime_utc).isoformat() == now_5
 
 
 def test_make_batches_mvp_v2_just_sat_data(sat_data):
@@ -99,6 +97,13 @@ def test_make_batches_pvnet_v1(
             sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
 
+        now_30 = (
+            pd.Timestamp(datetime.now(tz=timezone.utc))
+            .floor("30T")
+            .replace(tzinfo=None)
+            .isoformat()
+        )
+
         make_batches(
             config_filename="nowcasting_forecast/config/pvnet_v1.yaml",
             temporary_dir=temp_dir,
@@ -116,21 +121,9 @@ def test_make_batches_pvnet_v1(
         pv = xr.load_dataset(f"{temp_dir}/live/pv/000000.nc", engine="h5netcdf")
         pv = PV(pv)
         # assert pv.power_mw.max() > 0
-        assert (
-            pd.to_datetime(pv.time.values[0, -1]).isoformat()
-            == pd.Timestamp(datetime.now(tz=timezone.utc))
-            .floor("5T")
-            .replace(tzinfo=None)
-            .isoformat()
-        )
+        assert pd.to_datetime(pv.time.values[0, -1]).isoformat() == now_30
 
         gsp = xr.load_dataset(f"{temp_dir}/live/gsp/000000.nc", engine="h5netcdf")
         gsp = GSP(gsp)
         assert len(gsp.time.values[0]) == 5
-        assert (
-            pd.to_datetime(gsp.time.values[0, -1]).isoformat()
-            == pd.Timestamp(datetime.now(tz=timezone.utc))
-            .floor("30T")
-            .replace(tzinfo=None)
-            .isoformat()
-        )
+        assert pd.to_datetime(gsp.time.values[0, -1]).isoformat() == now_30
