@@ -97,6 +97,12 @@ def test_make_batches_pvnet_v1(
             sat_data.to_zarr(store, compute=True)
         os.environ["SAT_PATH"] = sat_path
 
+        now_5 = (
+            pd.Timestamp(datetime.now(tz=timezone.utc))
+            .floor("30T")
+            .replace(tzinfo=None)
+            .isoformat()
+        )
         now_30 = (
             pd.Timestamp(datetime.now(tz=timezone.utc))
             .floor("30T")
@@ -121,7 +127,7 @@ def test_make_batches_pvnet_v1(
         pv = xr.load_dataset(f"{temp_dir}/live/pv/000000.nc", engine="h5netcdf")
         pv = PV(pv)
         # assert pv.power_mw.max() > 0
-        assert pd.to_datetime(pv.time.values[0, -1]).isoformat() == now_30
+        assert pd.to_datetime(pv.time.values[0, -1]).isoformat() == now_5
 
         gsp = xr.load_dataset(f"{temp_dir}/live/gsp/000000.nc", engine="h5netcdf")
         gsp = GSP(gsp)
