@@ -8,6 +8,7 @@ pandas==1.5.3
 nowcasting_dataset==3.7.19
 nowcasting_dataloader==2.0.5
 fsspec
+ocf_blosc2
 s3fs
 torch
 pytorch-lightning<1.9
