@@ -61,14 +61,12 @@ def cnn_run_one_batch(
         # get id from location
         gsp_id = batch.metadata.id[i]
 
-        # t0 value value, make sure its rounded down to the nearest 30 minutes
-        t0_datetime_utc = pd.Timestamp(
-            batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
-        ).ceil("30T")
-
+        t0_datetime_utc = batch.metadata.t0_datetime_utc[i].replace(tzinfo=timezone.utc)
+        # t0_datetime_utc is now rounded down to the nearest 5 minutes
+        # its 12.16, t0 will be 12.15 and the predictions will be for 12.30
         # its 12.32, t0 will be 12.30 and the predictions will be for 13.00
-        if t0_datetime_utc.minute in [0, 30]:
-            t0_datetime_utc = t0_datetime_utc + timedelta(minutes=30)
+        # its 12.37, t0 will be 12.35 and the predictions will be for 13.00
+        t0_datetime_utc = pd.Timestamp(t0_datetime_utc).floor("30T") + timedelta(minutes=30)
 
         if i == 0:
             logger.debug(f"The first target_time will be {t0_datetime_utc}")

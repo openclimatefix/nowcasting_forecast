@@ -98,10 +98,7 @@ def test_make_batches_pvnet_v1(
         os.environ["SAT_PATH"] = sat_path
 
         now_5 = (
-            pd.Timestamp(datetime.now(tz=timezone.utc))
-            .floor("30T")
-            .replace(tzinfo=None)
-            .isoformat()
+            pd.Timestamp(datetime.now(tz=timezone.utc)).floor("5T").replace(tzinfo=None).isoformat()
         )
         now_30 = (
             pd.Timestamp(datetime.now(tz=timezone.utc))
