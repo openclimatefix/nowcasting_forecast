@@ -4,7 +4,6 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
-import ocf_blosc2
 
 import pandas as pd
 from nowcasting_dataset.manager.manager_live import ManagerLive
