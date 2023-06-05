@@ -99,7 +99,7 @@ def test_make_batches_pvnet_v1(
 
         now_5 = (
             pd.Timestamp(datetime.now(tz=timezone.utc))
-            .floor("30T")
+            .floor("5T")
             .replace(tzinfo=None)
             .isoformat()
         )
